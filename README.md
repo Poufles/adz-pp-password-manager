@@ -1,0 +1,1 @@
+# adz-pp-password-manager
