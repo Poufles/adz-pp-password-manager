@@ -3,19 +3,31 @@ const HWPP = require("html-webpack-plugin");
 
 module.exports = {
     entry: {
-        bundle: path.resolve(__dirname, "./src/scripts/index.js"),
+        app: path.resolve(__dirname, "./src/scripts/index.js"),
+        login: path.resolve(__dirname, "./src/scripts/login.js"),
+        dashboard: path.resolve(__dirname, "./src/scripts/dashboard.js")
     },
     output: {
-        filename: "[name][contenthash].js",
+        filename: "[name][contenthash].bundle.js",
         path: path.resolve(__dirname, "dist"),
         clean: true,
         assetModuleFilename: "[name][ext]",
     },
     plugins: [
         new HWPP({
-            title: "LowKey",
             filename: "index.html",
+            template: "./src/templates/index.html",
+            chunks: ["app"]
+        }),
+        new HWPP({
+            filename: "login.html",
             template: "./src/templates/login.html",
+            chunks: ["login"]
+        }),
+        new HWPP({
+            filename: "dashboard.html",
+            template: "./src/templates/dashboard.html",
+            chunks: ["app"]
         })
     ],
     module: {

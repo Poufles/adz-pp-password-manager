@@ -6,7 +6,7 @@ module.exports = merge(common, {
     mode: 'development',
     devtool: "source-map",
     devServer: {
-        watchFiles: ["./src/templates/login.html"],
+        watchFiles: [ "./src/templates/login.html", "./src/templates/dashboard.html" ],
         static: {
             directory: path.resolve(__dirname, "dist")
         },
