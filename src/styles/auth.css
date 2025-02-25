@@ -1,0 +1,126 @@
+@import './main.css';
+@import './button.css';
+
+#page__main {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#page__main>.card {
+    background-color: var(--white-color);
+    box-shadow: 0 4px 4px rgba(192, 147, 226, 0.5);
+    border-radius: var(--b-radius-1);
+    height: clamp(463px, 100%, 520px);
+    width: clamp(320px, 100%, 388px);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#page__main #top>#header {
+    text-align: center;
+}
+
+#page__main #top #title {
+    font-size: var(--xlr-fn);
+
+    &>span {
+        color: #FFD700
+    }
+}
+
+#page__main #top #sub-title {
+    color: var(--meddle-color);
+    margin-top: -10px;
+}
+
+#page__main #top .container#sign-up {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#page__main #top #sign-up>p {
+    color: var(--meddle-color);
+}
+
+#page__main #top #sign-up>button {
+    color: blue;
+    text-decoration: underline;
+    transition: var(--trans-q);
+}
+
+#page__main #top #sign-up>button:hover {
+    color: var(--accent-color)
+}
+
+#page__main #top>#inputs {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+#page__main #top>#inputs>.item {
+    border: solid 2px var(--accent-color);
+    border-radius: var(--b-radius-2);
+    font-weight: bold;
+    width: 100%;
+    height: 50px;
+    position: relative;
+}
+
+#page__main #top>#inputs>.item:has(input[type=password]) {
+    padding-right: 5px;
+    display: flex;
+    align-items: center;
+}
+
+#page__main #top>#inputs .hint {
+    background-color: var(--white-color);
+    color: var(--accent-color);
+    font-weight: bold;
+    cursor: text;
+    padding: 0 5px;
+    transform: translateY(50%);
+    position: absolute;
+    bottom: 50%;
+    left: 10px;
+    transition: var(--trans-q);
+}
+
+#page__main #top>#inputs input {
+    background-color: transparent;
+    border: 0;
+    color: var(--accent-color);
+    padding: 0 10px;
+    width: inherit;
+    height: inherit;
+    outline: none;
+}
+
+#page__main #top>#inputs input::selection {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+}
+
+#page__main #top>#inputs>.item:has(>input:hover)>.hint,
+#page__main #top>#inputs>.item:has(>input:focus)>.hint,
+#page__main #top>#inputs>.item:has(>input:not(:placeholder-shown))>.hint {
+    bottom: 100%;
+}
+
+#page__main #bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    filter: opacity(0.5);
+}
+
+#page__main #bottom p {
+    font-style: italic;
+}

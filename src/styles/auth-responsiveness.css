@@ -1,0 +1,16 @@
+@media screen and (max-width: 500px) {
+
+    #page__main {
+        padding: 0 20px;
+    }
+
+    #page__main>.card {
+        background-color: transparent;
+        border-radius: none;
+        box-shadow: none;
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+}

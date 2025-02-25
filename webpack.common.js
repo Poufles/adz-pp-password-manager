@@ -4,7 +4,8 @@ const HWPP = require("html-webpack-plugin");
 module.exports = {
     entry: {
         app: path.resolve(__dirname, "./src/scripts/index.js"),
-        login: path.resolve(__dirname, "./src/scripts/login.js"),
+        auth: path.resolve(__dirname, "./src/scripts/auth.js"),
+        reg: path.resolve(__dirname, "./src/scripts/reg.js"),
         dashboard: path.resolve(__dirname, "./src/scripts/dashboard.js")
     },
     output: {
@@ -20,14 +21,19 @@ module.exports = {
             chunks: ["app"]
         }),
         new HWPP({
-            filename: "login.html",
-            template: "./src/templates/login.html",
-            chunks: ["login"]
+            filename: "auth.html",
+            template: "./src/templates/auth.html",
+            chunks: ["auth"]
+        }),
+        new HWPP({
+            filename: "register.html",
+            template: "./src/templates/reg.html",
+            chunks: ["reg"]
         }),
         new HWPP({
             filename: "dashboard.html",
             template: "./src/templates/dashboard.html",
-            chunks: ["app"]
+            chunks: ["dashboard"]
         })
     ],
     module: {

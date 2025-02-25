@@ -1,0 +1,24 @@
+@import './root.css';
+
+button {
+    background-color: var(--accent-color);
+    border: 0;
+    border-radius: var(--b-radius-2);
+    cursor: pointer;
+    color: var(--primary-color);
+    max-width: max-content;
+}
+
+button.button {
+    font-size: var(--md-fn);
+    font-weight: bold;
+    padding: 10px 20px;
+}
+
+button.no-bg {
+    background-color: transparent;
+}
+
+button:disabled {
+    cursor: default;
+}
