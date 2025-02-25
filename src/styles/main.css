@@ -1,0 +1,51 @@
+@import url('https://fonts.cdnfonts.com/css/alegreya-sans-sc');
+@import url('https://fonts.cdnfonts.com/css/alegreya-sans');
+@import './css-reset-jc.css';
+
+:root {
+    --font-main: "Alegreya Sans SC", sans-serif;
+    --font-sub: "Alegreya Sans", sans-serif;
+    --white-color: #FFF;
+    --primary-color: #FEF4FF;
+    --secondary-color: #C093E2;
+    --accent-color: #5F2F75;
+    --meddle-color: #08041F;
+    --xsm-fn: 10px;
+    --sm-fn: 14px;
+    --md-fn: 16px;
+    --lr-fn: 24px;
+    --xlr-fn: 32px;
+    --b-radius-1: 15px;
+    --b-radius-2: 7px;
+    --b-radius-3: 5px;
+    --trans-q: 0.2s;
+}
+
+body {
+    background-image: linear-gradient(180deg, var(--white-color) 50%, var(--primary-color));
+}
+
+.text {
+    font-family: var(--font-main);
+}
+
+.text-sub {
+    font-family: var(--font-sub);
+}
+
+.text.color {
+    color: var(--accent-color);
+}
+
+svg {
+    width: 25px;
+    height: 25px;
+}
+
+svg.fill {
+    fill: var(--accent-color);
+}
+
+svg.stroke {
+    stroke: var(--accent-color);
+}
