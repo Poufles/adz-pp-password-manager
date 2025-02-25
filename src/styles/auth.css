@@ -74,7 +74,7 @@
     position: relative;
 }
 
-#page__main #top>#inputs>.item:last-of-type {
+#page__main #top>#inputs>.item:has(input[type=password]) {
     padding-right: 5px;
     display: flex;
     align-items: center;
@@ -123,8 +123,4 @@
 
 #page__main #bottom p {
     font-style: italic;
-}
-
-#page__main #bottom button {
-    
 }

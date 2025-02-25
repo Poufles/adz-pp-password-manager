@@ -1,4 +1,4 @@
-@import './main.css';
+@import './root.css';
 
 button {
     background-color: var(--accent-color);
