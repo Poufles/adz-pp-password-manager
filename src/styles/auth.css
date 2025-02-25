@@ -74,7 +74,7 @@
     position: relative;
 }
 
-#page__main #top>#inputs>.item:has(input[type=password]) {
+#page__main #top>#inputs>.item:not(:first-of-type) {
     padding-right: 5px;
     display: flex;
     align-items: center;
