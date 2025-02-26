@@ -1,5 +1,5 @@
 @import './main.css';
-@import './button.css';
+@import './comp-button.css';
 
 #page__main {
     height: 100vh;
