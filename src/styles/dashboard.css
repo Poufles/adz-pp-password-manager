@@ -1,6 +1,9 @@
 @import './main.css';
 @import './button.css';
 
+body {
+}
+
 #page__dashboard {
     height: 100dvh;
     display: flex;
@@ -119,11 +122,24 @@
     width: 100%;
 }
 
-/* CHANGE LATER */
-#page__dashboard #card {
+/* CHANGE LATER (REMOVE) */
+#card {
     background-color: blue;
     border-radius: var(--b-radius-1);
     max-width: 316px;
     width: 100%;
+    height: 578px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* CHANGE LATER (REMOVE) */
+#card.modal {
+    width: 316px;
     height: 569px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%
 }

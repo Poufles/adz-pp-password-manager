@@ -7,12 +7,50 @@ const btn_create = document.querySelector('#create');
 
 btn_create.addEventListener('click', () => {
     const hasCreateElement = document.querySelector('#card');
-    
-    if (!hasCreateElement) {
+
+    if (!hasCreateElement && window.innerWidth > 899) {
         const card_element = document.createElement('section');
         card_element.setAttribute('id', 'card');
         sctn_bottom.appendChild(card_element);
-    } else {
+        sctn_bottom.removeChild(sctn_misc);
+
+        return;
+    }
+    
+    if (!hasCreateElement && window.innerWidth <= 899) {
+        const card_element = document.createElement('section');
+        card_element.setAttribute('id', 'card');
+        card_element.classList.add('modal');
+        sctn_bottom.appendChild(card_element);
+
+        return;
+    }
+
+    if (hasCreateElement) {
+        sctn_bottom.prepend(sctn_misc);
         sctn_bottom.removeChild(hasCreateElement);
+    }
+});
+
+window.addEventListener('resize', () => {
+    const hasCreateElement = document.querySelector('#card');
+
+    if (hasCreateElement && window.innerWidth <= 899) {
+        hasCreateElement.remove();
+        hasCreateElement.classList.add('modal');
+        hasCreateElement.textContent = " Oh hey you read this shit lmfao ";
+        document.body.appendChild(hasCreateElement)
+        if (!document.querySelector('#misc')) {
+            sctn_bottom.prepend(sctn_misc);
+        }
+    }
+
+    if (hasCreateElement && window.innerWidth > 899) {
+        hasCreateElement.remove();
+        hasCreateElement.classList.remove('modal');
+        sctn_bottom.appendChild(hasCreateElement);
+        if (document.querySelector('#misc')) {
+            sctn_bottom.removeChild(sctn_misc);
+        }
     }
 });
