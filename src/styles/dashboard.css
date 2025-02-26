@@ -20,6 +20,12 @@ body {
     gap: 12px;
 }
 
+
+#page__dashboard .circle:not(button) {
+    aspect-ratio: 1;
+    position: absolute;
+}
+
 #page__dashboard #header {
     background-color: var(--primary-color);
     border-radius: var(--b-radius-1);
@@ -27,14 +33,13 @@ body {
     width: 100%;
     height: 272px;
     display: flex;
+    justify-content: space-between;
     position: relative;
     overflow: hidden;
 }
 
 #page__dashboard #header>.circle {
-    aspect-ratio: 1;
     width: clamp(800px, 100%, 1500px);
-    position: absolute;
 }
 
 #page__dashboard #header>#circle-1 {
@@ -118,6 +123,46 @@ body {
     height: 20px;
 }
 
+/* MIGHT CHANGE LATER */
+#page__dashboard #header>#side-2 {
+    z-index: 1;
+}
+
+#page__dashboard #header>#side-2>#title {
+    padding: 30px 40px 0px 0px;
+    text-align: right;
+    font-size: var(--md-fn);
+    font-weight: bold;
+}
+
+#page__dashboard #header>#side-2>#recent-folders {
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    margin-top: 10px;
+    padding-left: 60px;
+    padding-right: 40px;
+    max-width: 312px;
+    width: max-content;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: left;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+}
+
+#page__dashboard #header>#side-2>#recent-folders::-webkit-scrollbar {
+    height: 0;
+}
+
+/* REMOVE LATER */
+#page__dashboard #header>#side-2>#recent-folders>#example-folder {
+    flex-shrink: 0;
+    background-color: black;
+    width: 100px;
+    height: 150px;
+}
+
 #page__dashboard #bottom {
     width: 100%;
     display: flex;
@@ -133,18 +178,68 @@ body {
 #page__dashboard #misc>#recent-files,
 #page__dashboard #misc>#key-status {
     border-radius: var(--b-radius-1);
+    box-shadow: 0 4px 4px var(--drop-shadow);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 }
 
 #page__dashboard #misc>#recent-files {
-    background-color: green;
+    background-color: var(--primary-color);
     width: 280px;
     height: 250px;
 }
 
+#page__dashboard #misc>#recent-files>.circle {
+    background-color: rgba(192, 147, 226, 0.2);
+    border-radius: 50%;
+    width: 378px;
+    transform: translateX(-50%);
+    top: 70%;
+    left: 50%;
+    z-index: -1;
+}
+
+#page__dashboard #misc>#recent-files>#title {
+    font-size: var(--lr-fn);
+    font-weight: bold;
+    padding: 20px 30px;
+}
+
+#page__dashboard #misc>#recent-files>#items {
+    padding: 0 30px;
+    max-width: max-content;
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    overflow: scroll;
+    scroll-behavior: smooth;
+}
+
+#page__dashboard #misc>#recent-files>#items::-webkit-scrollbar {
+    height: 0;
+}
+
+#page__dashboard #misc>#recent-files .example-item {
+    background-color: black;
+    width: 100px;
+    height: 150px;
+    flex-shrink: 0;
+}
+
 #page__dashboard #misc>#key-status {
-    background-color: blue;
+    background-color: rgba(192, 147, 226, 0.2);
     width: 280px;
     height: 316px;
+}
+
+#page__dashboard #misc>#key-status>.circle {
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    width: 378px;
+    transform: translateX(-50%);
+    top: 70%;
+    left: 50%;
 }
 
 
