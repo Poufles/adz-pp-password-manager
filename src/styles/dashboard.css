@@ -1,0 +1,129 @@
+@import './main.css';
+@import './button.css';
+
+#page__dashboard {
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#page__dashboard #wrapper {
+    margin: 40px;
+    max-width: 1290px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#page__dashboard #header {
+    background-color: red;
+    border-radius: var(--b-radius-1);
+    width: 100%;
+    height: 272px;
+}
+
+#page__dashboard #bottom {
+    width: 100%;
+    display: flex;
+    gap: 12px;
+}
+
+#page__dashboard #misc {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#page__dashboard #misc>#recent-files,
+#page__dashboard #misc>#key-status {
+    border-radius: var(--b-radius-1);
+}
+
+#page__dashboard #misc>#recent-files {
+    background-color: green;
+    width: 280px;
+    height: 250px;
+}
+
+#page__dashboard #misc>#key-status {
+    background-color: blue;
+    width: 280px;
+    height: 316px;
+}
+
+
+#page__dashboard #articles {
+    width: 100%;
+    display: grid;
+    gap: 12px;
+    grid-template-areas: 
+        'title search search'
+        'tags actions types'
+        'items items items'
+    ;
+    grid-template-rows: min-content min-content min-content;
+    grid-template-columns: auto auto min-content;
+}
+
+#page__dashboard #articles>#title {
+    grid-area: title;
+
+    font-size: var(--xlr-fn);
+    font-weight: bold;
+}
+
+/* CHANGE LATER */
+#page__dashboard #articles>#search {
+    justify-self: right;
+    grid-area: search;
+
+    background-color: transparent;
+    border: 2px solid var(--accent-color);
+    border-radius: 50px;
+    max-width: 271px;
+    width: 271px;
+    height: 35px;
+}
+
+#page__dashboard #articles>#tags,
+#page__dashboard #articles>#actions,
+#page__dashboard #articles>#types {
+    display: flex;
+    gap: 12px;
+}
+
+#page__dashboard #articles>#tags {
+    grid-area: tags;
+}
+
+#page__dashboard #articles>#actions {
+    justify-self: start;
+    grid-area: actions;
+}
+
+#page__dashboard #articles>#types {
+    justify-self: right;
+    grid-area: types;
+}
+
+#page__dashboard #articles>#items {
+    grid-area: items;
+}
+
+#page__dashboard #articles>#items>#item-example {
+    background-color: black;
+    border-radius: var(--b-radius-1);
+    height: 92px;
+    width: 100%;
+}
+
+/* CHANGE LATER */
+#page__dashboard #card {
+    background-color: blue;
+    border-radius: var(--b-radius-1);
+    max-width: 316px;
+    width: 100%;
+    height: 569px;
+}
