@@ -1,0 +1,38 @@
+.circular-percentage {
+    width: max-content;
+    position: relative;
+}
+
+.circular-percentage>#circle {
+    aspect-ratio: 1;
+    border-radius: 50%;
+}
+
+.circular-percentage>#circle {
+    background-image: conic-gradient(var(--accent-color) var(--percent), transparent calc(var(--percent)));
+    border: 2px solid var(--accent-color);
+    mask-image: radial-gradient(circle, transparent 50%, black 50.75%);
+    width: 150px;
+    position: relative;
+}
+
+.circular-percentage>#circle::after {
+    content: '';
+    aspect-ratio: 1;
+    border: 2px solid var(--accent-color);
+    border-radius: 50%;
+    width: calc(150px * 0.735);
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.circular-percentage>#percentage {
+    font-size: var(--xlr-fn);
+    font-weight: bold;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
