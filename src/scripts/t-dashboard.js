@@ -4,6 +4,18 @@
 const sctn_bottom = document.querySelector('#bottom');
 const sctn_misc = document.querySelector('#misc');
 const btn_create = document.querySelector('#create');
+const p_date = document.querySelector('#clock');
+
+setInterval(() => {
+    const now = new Date();
+    const formattedTime = new Intl.DateTimeFormat(navigator.language, {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    }).format(now);
+
+    p_date.textContent = formattedTime;
+}, 1000);
 
 btn_create.addEventListener('click', () => {
     const hasCreateElement = document.querySelector('#card');
@@ -16,7 +28,7 @@ btn_create.addEventListener('click', () => {
 
         return;
     }
-    
+
     if (!hasCreateElement && window.innerWidth <= 899) {
         const card_element = document.createElement('section');
         card_element.setAttribute('id', 'card');

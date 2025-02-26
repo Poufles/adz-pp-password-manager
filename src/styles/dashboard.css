@@ -21,10 +21,101 @@ body {
 }
 
 #page__dashboard #header {
-    background-color: red;
+    background-color: var(--primary-color);
     border-radius: var(--b-radius-1);
+    box-shadow: 0 4px 4px var(--drop-shadow);
     width: 100%;
     height: 272px;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+#page__dashboard #header>.circle {
+    aspect-ratio: 1;
+    width: clamp(800px, 100%, 1500px);
+    position: absolute;
+}
+
+#page__dashboard #header>#circle-1 {
+    background-color: rgba(192, 147, 226, 0.2);
+    border-radius: 50%;
+    top: 40%;
+    right: clamp(20%, 10vw, 50%);
+}
+
+#page__dashboard #header>#circle-2 {
+    background-color: rgbA(95, 47, 117, 0.2);
+    border-radius: 50%;
+    top: 40%;
+    left: clamp(20%, 10vw, 80%);
+}
+
+#page__dashboard #header>#side-1 {
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1;
+}
+
+#page__dashboard #header>#side-1>#info>#title {
+    font-size: var(--xlr-fn);
+    font-weight: bold;
+}
+
+#page__dashboard #header>#side-1>#info>#motd {
+    font-size: var(--md-fn);
+    font-weight: bold;
+    margin-top: -10px;
+}
+
+#page__dashboard #header>#side-1>#info>#clock {
+    font-size: var(--md-fn);
+    font-weight: bold;
+    margin-top: -5px;
+}
+
+#page__dashboard #header>#side-1>#menu>#title {
+    font-size: var(--md-fn);
+    font-weight: bold;
+}
+
+#page__dashboard #header>#side-1>#menu>#actions>button,
+#page__dashboard #header>#side-1>#menu>#actions>button:active:not(:hover) {
+    background-color: transparent;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+    transition: var(--trans-q);
+}
+
+#page__dashboard #header>#side-1>#menu>#actions>button:hover {
+    border-bottom: 2px solid var(--accent-color);
+}
+
+#page__dashboard #header>#side-1>#menu>#actions>button:active {
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    border-bottom: 2px solid transparent;
+}
+
+#page__dashboard #header>#side-1>#menu>#actions>button:active>svg {
+    fill: var(--primary-color);
+}
+
+#page__dashboard #header>#side-1>#menu>#actions>button:last-of-type:active>svg {
+    fill: var(--primary-color);
+    stroke: var(--primary-color);
+}
+
+#page__dashboard #header>#side-1>#menu>#actions>button:active:not(:hover)>svg {
+    fill: var(--accent-color);
+}
+
+#page__dashboard #header>#side-1>#menu>#actions svg {
+    aspect-ratio: 1;
+    width: 20px;
+    height: 20px;
 }
 
 #page__dashboard #bottom {
