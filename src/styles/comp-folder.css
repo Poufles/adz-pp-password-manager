@@ -5,8 +5,8 @@
     box-shadow: 0 4px 4px rgba(95, 47, 117, 0.5);
     cursor: pointer;
     padding: 10px 15px;
-    width: 100px;
-    height: 150px;
+    min-width: 100px;
+    min-height: 150px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
