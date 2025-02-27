@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/comp-card-item.css">
+    <title>Item</title>
+</head>
+
+<body style="height: 100dvh; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 20px;">
+    <button class="container item" id="item-1">
+        <span class="compartment-left">
+            <span tabindex="0" role="button" class="container button" id="favorite">
+                <svg class="stroke" width="40" height="40" viewBox="0 0 40 40" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M21.0525 4.43501L25.165 13.165C25.3363 13.5275 25.6663 13.7788 26.0488 13.8375L35.245 15.2375C36.2075 15.3838 36.5913 16.6225 35.895 17.3338L29.24 24.1288C28.9638 24.4113 28.8375 24.8175 28.9025 25.2163L30.4738 34.8113C30.6375 35.815 29.6325 36.5813 28.7713 36.1063L20.5463 31.5763C20.205 31.3875 19.7963 31.3875 19.455 31.5763L11.23 36.1063C10.37 36.58 9.36375 35.815 9.5275 34.8113L11.0988 25.2163C11.1638 24.8175 11.0375 24.4113 10.7613 24.1288L4.10625 17.3338C3.41 16.6225 3.79375 15.3838 4.75625 15.2375L13.9525 13.8375C14.335 13.7788 14.665 13.5275 14.8363 13.165L18.9488 4.43501C19.3788 3.52126 20.6213 3.52126 21.0525 4.43501Z"
+                        stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </span>
+            <span id="item-icon">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_45_704)">
+                    <path d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z" fill="#176AE6"/>
+                    <path d="M27.2838 25.3159L28.1394 20.0797H22.08V16.0872C22.08 14.4384 22.5222 13.2656 24.8866 13.2656L28.3866 13.2672V7.98719C28.3866 7.98719 26.1653 7.5 24.0816 7.5C19.7331 7.5 16.8553 10.3719 16.8553 15.2469V20.08H11.6131V25.3162H16.8541V39.7516C17.8794 39.9137 18.9297 40 20 40C20.7025 40 21.3963 39.9628 22.08 39.8922V25.3159H27.2838Z" fill="white"/>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_45_704">
+                    <rect width="40" height="40" fill="white"/>
+                    </clipPath>
+                    </defs>
+                    </svg>
+            </span>
+            <span id="item-info">
+                <p class="text color" id="name">Facebook</p>
+                <span tabindex="0" role="button" class="text button" id="email">Sample01@gmail.com</span>
+            </span>
+        </span>
+        <span class="compartment-mid">
+            <span tabindex="0" role="button" class="button">
+                <p class="text">In <span id="folder-name">Folder Name</span></p>
+            </span>
+        </span>
+        <span class="compartment-right" id="actions">
+            <span tabindex="0" class="button" role="button" id="copy">
+                <span container="container" id="tooltip">
+                    <p class="container text" id="tip">Copy</p>
+                </span>
+                <svg class="fill" width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M27.5 27.5V32.5C27.5 35.3807 25.3807 37.5 22.5 37.5H7.5C4.61929 37.5 2.5 35.3807 2.5 32.5V17.5C2.5 14.6193 4.61929 12.5 7.5 12.5H12.5V7.5C12.5 4.61929 14.6193 2.5 17.5 2.5H32.5C35.3807 2.5 37.5 4.61929 37.5 7.5V22.5C37.5 25.3807 35.3807 27.5 32.5 27.5H27.5ZM22.5 27.5H17.5C14.6193 27.5 12.5 25.3807 12.5 22.5V17.5H7.5V32.5H22.5V27.5ZM17.5 7.5V22.5H32.5V7.5H17.5Z" />
+                </svg>
+            </span>
+            <span tabindex="0" class="button" role="button" id="more">
+                <span class="container" id="tooltip">
+                    <span id="tip">
+                        <span tabindex="0" role="button" class="text button" id="copy">
+                            Copy
+                        </span>
+                        <span tabindex="0" role="button" class="text button" id="edit">
+                            Edit
+                        </span>
+                        <span tabindex="0" role="button" class="text button" id="delete">
+                            Delete
+                        </span>
+                    </span>
+                </span>
+                <svg class="fill" width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M16.25 20C16.25 22.0675 17.9325 23.75 20 23.75C22.0675 23.75 23.75 22.0675 23.75 20C23.75 17.9325 22.0675 16.25 20 16.25C17.9325 16.25 16.25 17.9325 16.25 20Z" />
+                    <path
+                        d="M16.25 32.5C16.25 34.5675 17.9325 36.25 20 36.25C22.0675 36.25 23.75 34.5675 23.75 32.5C23.75 30.4325 22.0675 28.75 20 28.75C17.9325 28.75 16.25 30.4325 16.25 32.5Z" />
+                    <path
+                        d="M16.25 7.5C16.25 9.5675 17.9325 11.25 20 11.25C22.0675 11.25 23.75 9.5675 23.75 7.5C23.75 5.4325 22.0675 3.75 20 3.75C17.9325 3.75 16.25 5.4325 16.25 7.5Z" />
+                </svg>
+
+            </span>
+        </span>
+    </button>
+</body>
+
+</html>

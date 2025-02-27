@@ -1,6 +1,7 @@
 @import './main.css';
 @import './comp-button.css';
 @import './comp-searchbar.css';
+@import './comp-folder.css';
 
 #page__dashboard {
     height: 100dvh;
@@ -84,6 +85,11 @@
     font-weight: bold;
 }
 
+#page__dashboard #header>#side-1>#menu>#actions>button {
+    height: 40px;
+    width: 40px;
+}
+
 #page__dashboard #header>#side-1>#menu>#actions>button,
 #page__dashboard #header>#side-1>#menu>#actions>button:active:not(:hover) {
     background-color: transparent;
@@ -134,10 +140,8 @@
 }
 
 #page__dashboard #header>#side-2>#recent-folders {
-    border-top-left-radius: 50px;
-    border-bottom-left-radius: 50px;
     margin-top: 10px;
-    padding: 0 40px 0 60px;
+    padding: 0 40px 10px 60px;
     max-width: 312px;
     width: max-content;
     display: flex;
@@ -200,12 +204,12 @@
 #page__dashboard #misc #title {
     font-size: var(--lr-fn);
     font-weight: bold;
-    padding: 20px 30px;
+    padding: 20px 30px 5px;
     text-align: center;
 }
 
 #page__dashboard #misc>#recent-files>#items {
-    padding: 0 30px;
+    padding: 0 30px 10px;
     max-width: 100%;
     width: 100%;
     display: flex;
