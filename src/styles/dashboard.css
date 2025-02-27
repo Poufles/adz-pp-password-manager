@@ -1,9 +1,6 @@
 @import './main.css';
 @import './comp-button.css';
 
-body {
-}
-
 #page__dashboard {
     height: 100dvh;
     display: flex;
@@ -139,8 +136,7 @@ body {
     border-top-left-radius: 50px;
     border-bottom-left-radius: 50px;
     margin-top: 10px;
-    padding-left: 60px;
-    padding-right: 40px;
+    padding: 0 40px 0 60px;
     max-width: 312px;
     width: max-content;
     display: flex;
@@ -200,19 +196,20 @@ body {
     z-index: -1;
 }
 
-#page__dashboard #misc>#recent-files>#title {
+#page__dashboard #misc #title {
     font-size: var(--lr-fn);
     font-weight: bold;
     padding: 20px 30px;
+    text-align: center;
 }
 
 #page__dashboard #misc>#recent-files>#items {
     padding: 0 30px;
-    max-width: max-content;
+    max-width: 100%;
     width: 100%;
     display: flex;
     gap: 12px;
-    overflow: scroll;
+    overflow: auto;
     scroll-behavior: smooth;
 }
 
@@ -231,6 +228,9 @@ body {
     background-color: rgba(192, 147, 226, 0.2);
     width: 280px;
     height: 316px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #page__dashboard #misc>#key-status>.circle {
@@ -242,6 +242,18 @@ body {
     left: 50%;
 }
 
+#page__dashboard #misc>#key-status>#keys-checked {
+    margin-top: 5px;
+    font-size: var(--sm-fn);
+    font-weight: bold;
+    z-index: 1;
+}
+
+#page__dashboard #misc>#key-status>#status {
+    font-size: var(--md-fn);
+    font-weight: bold;
+    z-index: 1;
+}
 
 #page__dashboard #articles {
     width: 100%;
