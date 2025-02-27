@@ -1,5 +1,6 @@
 @import './main.css';
 @import './comp-button.css';
+@import './comp-searchbar.css';
 
 #page__dashboard {
     height: 100dvh;
@@ -269,9 +270,10 @@
 }
 
 #page__dashboard #articles>#title {
+    align-self: center;
     grid-area: title;
 
-    font-size: var(--xlr-fn);
+    font-size: var(--lr-fn);
     font-weight: bold;
 }
 
@@ -279,13 +281,6 @@
 #page__dashboard #articles>#search {
     justify-self: right;
     grid-area: search;
-
-    background-color: transparent;
-    border: 2px solid var(--accent-color);
-    border-radius: 50px;
-    max-width: 271px;
-    width: 271px;
-    height: 35px;
 }
 
 #page__dashboard #articles>#tags,
@@ -299,9 +294,28 @@
     grid-area: tags;
 }
 
+#page__dashboard #articles>#tags>button:not(.checked) {
+    background-color: transparent;
+    color: var(--accent-color);
+}
+
 #page__dashboard #articles>#actions {
     justify-self: start;
     grid-area: actions;
+}
+
+#page__dashboard #articles>#actions>button {
+    padding: 10px;
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+}
+
+#page__dashboard #articles>#actions>button>svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--primary-color);
 }
 
 #page__dashboard #articles>#types {
@@ -311,6 +325,19 @@
 
 #page__dashboard #articles>#items {
     grid-area: items;
+}
+
+#page__dashboard #articles>#types>button svg {
+    width: 20px;
+    height: 20px;
+}
+
+#page__dashboard #articles>#types>button.checked {
+    background-color: var(--accent-color);
+}
+
+#page__dashboard #articles>#types>button.checked svg {
+    fill: var(--primary-color);
 }
 
 #page__dashboard #articles>#items>#item-example {
