@@ -1,6 +1,6 @@
 @import './root.css';
 
-button {
+button:not(.folder) {
     background-color: var(--accent-color);
     border: 0;
     border-radius: var(--b-radius-2);

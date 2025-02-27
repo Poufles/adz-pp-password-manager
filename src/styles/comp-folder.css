@@ -1,0 +1,94 @@
+.folder {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 0;
+    border-radius: var(--b-radius-2);
+    box-shadow: 0 4px 4px rgba(95, 47, 117, 0.5);
+    cursor: pointer;
+    padding: 10px 15px;
+    width: 100px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.folder>#icon {
+    justify-items: left;
+}
+
+.folder>#icon>svg {
+    width: 16px;
+    height: 16px;
+}
+
+.folder>#folder-info {
+    flex-grow: 1;
+    align-content: end;
+    justify-items: center;
+}
+
+.folder>#folder-info p {
+    font-weight: bold;
+    text-overflow: ellipsis;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.folder>#folder-info svg {
+    width: 35px;
+    height: 35px;
+}
+
+.folder>#folder-keys {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.folder>#folder-keys p {
+    font-weight: bold;
+    font-size: var(--lr-fn);
+}
+
+.folder>#folder-keys svg {
+    width: 18px;
+    height: 18px;
+    transform: rotate(-45deg);
+}
+
+.folder.type-2>#folder-info {
+    flex-grow: 0;
+    display: flex;
+    gap: 2px;
+    align-items: center;
+}
+
+.folder.type-2>#folder-info p {
+    font-size: var(--sm-fn);
+    text-align: left;
+}
+
+.folder.type-2>#folder-info svg {
+    width: 20px;
+    height: 20px;
+}
+
+.folder.type-2>#folder-item {
+    flex-grow: 1;
+    align-content: center;
+    justify-items: center;
+}
+
+.folder.type-2>#folder-item svg {
+    width: 35px;
+    height: 35px;
+}
+
+.folder.type-2>#folder-item p {
+    font-weight: bold;
+    width: 100%;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
