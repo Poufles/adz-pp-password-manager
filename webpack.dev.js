@@ -10,7 +10,11 @@ module.exports = merge(common, {
         static: {
             directory: path.resolve(__dirname, "dist")
         },
-        open: true,
+        open: {
+            app: {
+                name: 'C:\\Program Files\\Google\\Chrome Dev\\Application\\chrome.exe'
+            }
+        },
         port: 3000,
         hot: true,
         compress: true,
