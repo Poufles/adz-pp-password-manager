@@ -1,0 +1,121 @@
+.creation#generator #generate-form {
+    gap: 12px
+}
+
+.creation#generator .inputs#input-indicator .container,
+.creation#generator .inputs#input-length .container {
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+.creation#generator .inputs#input-indicator #indicator-bar {
+    border: 2px solid var(--accent-color);
+    border-radius: 50px;
+    height: 20px;
+}
+
+.creation#generator .inputs#input-indicator #indicator-bar #indicator {
+    background-color: var(--accent-color);
+    border-radius: inherit;
+    width: var(--value);
+}
+
+.creation#generator .inputs#input-length input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    margin: 10px 0;
+    padding: 0;
+    height: 2px;
+}
+
+.creation#generator .inputs#input-length input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--primary-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+}
+
+.creation#generator .inputs#input-length input[type="range"]::-moz-range-thumb {
+    background-color: var(--primary-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 50%;
+    margin-top: -1px;
+    width: 15px;
+    height: 15px;
+}
+
+.creation#generator .inputs:has(input[type=checkbox]) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    font-weight: bold;
+    position: relative;
+}
+
+.creation#generator .inputs:has(input[type=checkbox]) label {
+    background-color: var(--white-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 50px;
+    cursor: pointer;
+    width: 35px;
+    height: 20px;
+    position: relative;
+    transition: var(--trans-q);
+}
+
+.creation#generator .inputs:has(input[type=checkbox]) label #thumb{
+    aspect-ratio: 1;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 25%;
+    transition: var(--trans-q);
+}
+
+.creation#generator .inputs input[type=checkbox] {
+    flex-grow: 0;
+
+    transform: translateY(-50%);
+    position: absolute;
+    top: 50%;
+    right: 3.5%;
+    visibility: hidden;
+    z-index: -1;
+}
+
+.creation#generator .inputs:has(input[type=checkbox]:checked) label {
+    background-color: var(--accent-color);
+}
+
+.creation#generator .inputs:has(input[type=checkbox]:checked) label #thumb {
+    background-color: var(--white-color);
+    left: 75%;
+}
+
+.creation#generator #input-actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.creation#generator #input-actions #copy svg {
+    fill: var(--primary-color);
+    width: 16px;
+    height: 16px;
+}
+
+.creation#generator #advise #msg {
+    text-wrap: pretty;
+    font-size: var(--xsm-fn);
+    line-height: 75%;
+}

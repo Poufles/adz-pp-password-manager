@@ -1,0 +1,207 @@
+.creation {
+    background-color: #FFF;
+    border-radius: var(--b-radius-1);
+    padding: 20px;
+    width: 316px;
+    height: 569px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px
+}
+
+.creation #top {
+    flex-grow: 0;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.creation #requirement #box {
+    background-color: var(--primary-color);
+    border-radius: var(--b-radius-2);
+    width: 100%;
+    height: 100px;
+    display: flex;
+}
+
+.creation #create-form,
+.creation#generator #generate-form {
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px
+}
+
+.creation #advise {
+    color: rgba(95, 47, 117, 0.5);
+    font-weight: bold;
+    text-align: center;
+}
+
+.creation #top #left {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.creation #top #title {
+    cursor: default;
+    font-size: var(--lr-fn);
+    font-weight: bold;
+}
+
+.creation #top #favorite  {
+    padding: 0;
+}
+
+.creation #top #close  {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+}
+
+.creation #top #close svg  {
+    fill: var(--primary-color);
+    width: 20px;
+    height: 20px;
+}
+
+.creation #requirement #box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: clip;
+}
+
+.creation #requirement #box .circle {
+    position: absolute;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    transform: translate(-50%, -50%);
+}
+
+.creation #requirement #box .circle#circle-1 {
+    background-color: rgba(192, 147, 226, 0.2);
+    top: 100%;
+    left: 0;
+}
+
+.creation #requirement #box .circle#circle-2 {
+    background-color: rgba(95, 47, 117, 0.2);
+    top: 0;
+    left: 100%;
+}
+
+.creation #requirement #box #password-test {
+    background-color: transparent;
+    border: 0;
+    font-size: var(--lr-fn);
+    font-weight: bold;
+    text-align: center;
+    outline: 0;
+}
+
+.creation #requirement #box #password-test::selection {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+}
+
+.creation #requirement #box #password-test::placeholder {
+    color: inherit;
+}
+
+.creation .inputs {
+    display: flex;
+    flex-direction: column;
+}
+
+.creation #input-password {
+    flex-direction: row;
+    gap: 3px;
+    align-items: end;
+}
+
+.creation #input-password .container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.creation #input-password #keygen {
+    font-weight: bold;
+    padding: 5px 7px;
+    width: max-content;
+    height: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.creation #input-password #keygen svg {
+    fill: var(--primary-color);
+    width: 16px;
+    height: 16px;
+}
+
+.creation .inputs label {
+    font-size: var(--md-fn);
+    font-weight: bold;
+}
+
+.creation .inputs input {
+    flex-grow: 1;
+    border: 2px solid var(--accent-color);
+    border-radius: var(--b-radius-2);
+    font-weight: bold;
+    padding: 2px 5px;
+    outline: none;
+}
+
+.creation .inputs input::selection {
+    background-color: var(--accent-color);
+    color: var(--primary-color)
+}
+
+.creation .inputs#input-hint #notice {
+    color: rgba(95, 47, 117, 0.5);
+}
+
+.creation .inputs#input-actions {
+    flex-direction: row;
+    justify-content: center;
+
+    margin-top: 12px;
+    display: flex;
+    gap: 5px;
+}
+
+.creation .inputs#input-actions button  {
+    font-weight: bold;
+    height: 32px;
+    padding: 5px 7px;
+}
+
+.creation .inputs#input-actions #submit  {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+
+.creation .inputs#input-actions #submit svg {
+    fill: var(--primary-color);
+    height: 16px;
+    width: 16px;
+}
+
+@media screen and (max-width: 549px) {
+    .creation {
+        border-radius: 0;
+        padding: 20px;
+        width: 100%;
+        height: 100%;
+    }
+}

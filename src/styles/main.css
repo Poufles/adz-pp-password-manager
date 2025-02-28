@@ -19,7 +19,8 @@ body {
     font-family: var(--font-sub);
 }
 
-.text.color {
+.text.color,
+.text-sub.color {
     color: var(--accent-color);
 }
 
