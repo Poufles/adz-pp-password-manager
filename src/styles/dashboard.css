@@ -2,15 +2,18 @@
 @import './comp-button.css';
 @import './comp-searchbar.css';
 @import './comp-folder.css';
+@import './comp-card-item.css';
 
 #page__dashboard {
     height: 100dvh;
+    min-height: 900px;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
-#page__dashboard #wrapper {
+#page__dashboard>#wrapper {
     margin: 40px;
     max-width: 1290px;
     width: 100%;
@@ -31,6 +34,7 @@
     box-shadow: 0 4px 4px var(--drop-shadow);
     width: 100%;
     height: 272px;
+    min-height: 250px;
     display: flex;
     justify-content: space-between;
     position: relative;
@@ -262,6 +266,7 @@
 
 #page__dashboard #articles {
     width: 100%;
+    height: 578px;
     display: grid;
     gap: 12px;
     grid-template-areas: 
@@ -269,7 +274,7 @@
         'tags actions types'
         'items items items'
     ;
-    grid-template-rows: min-content min-content min-content;
+    grid-template-rows: min-content min-content auto;
     grid-template-columns: auto auto min-content;
 }
 
@@ -327,8 +332,17 @@
     grid-area: types;
 }
 
-#page__dashboard #articles>#items {
+#page__dashboard #articles>#key-items {
     grid-area: items;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+}
+
+#page__dashboard #articles>#key-items::-webkit-scrollbar {
+    width: 0;
 }
 
 #page__dashboard #articles>#types>button svg {
@@ -344,10 +358,7 @@
     fill: var(--primary-color);
 }
 
-#page__dashboard #articles>#items>#item-example {
-    background-color: black;
-    border-radius: var(--b-radius-1);
-    height: 92px;
+#page__dashboard #articles>#key-items>#item-example {
     width: 100%;
 }
 

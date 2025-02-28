@@ -2,8 +2,10 @@
     background-color: #fff;
     border-radius: var(--b-radius-1);
     border: 0;
+    cursor: pointer;
     padding: 10px 25px;
     height: 92px;
+    min-height: 92px;
     max-width: 1000px;
     width: 100%;
     display: flex;
@@ -61,7 +63,6 @@
 
 .item #actions>span.button {
     position: relative;
-    z-index: 2;
 }
 
 .item #actions #tooltip {
@@ -78,7 +79,6 @@
     transition-behavior: allow-discrete;
     transition-property: display opacity;
     transition-duration: var(--trans-q);
-    z-index: 1;
 }
 
 .item #actions #tooltip>#tip {
@@ -110,13 +110,23 @@
     }
 }
 
+.item #actions>#copy>#tooltip:hover {
+    cursor: default;
+    display: none;
+}
+
 .item #actions #more>#tooltip {
     border-radius: var(--b-radius-1);
+    left: -20%
 }
 
 .item #actions #more>#tooltip>#tip {
     text-align: left;
     padding: 0;
+}
+
+.item #actions #more #tip::after {
+    left: 70%;
 }
 
 .item #actions #more>#tooltip>#tip>.button {
@@ -125,10 +135,6 @@
     display: flex;
     gap: 2px;
     align-items: center;
-}
-
-.item #actions #more>#tooltip>#tip>.button:hover {
-    box-shadow: inset 0 0 0 50px rgba(255, 255, 255, 0.2);
 }
 
 @media screen and (min-width: 430px) {
