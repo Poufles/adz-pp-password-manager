@@ -1,0 +1,54 @@
+.creation#item-info #box {
+    gap: 5px
+}
+
+.creation#item-info #box #icon-logo svg {
+    width: 40px;
+    height: 40px;
+}
+
+.creation#item-info #box #info-name {
+    font-size: var(--lr-fn);
+    font-weight: bold;
+}
+
+.creation#item-info #box #info-link {
+    color: rgba(95, 47, 117, 0.5);
+    margin-top: -10px;
+    display: flex;
+    gap: 2px;
+    align-items: center;
+}
+
+.creation#item-info #box #info-link svg {
+    filter: opacity(0.5);
+    width: 16px;
+    height: 16px;
+}
+
+.creation#item-info #item-form {
+    gap: 12px;
+}
+
+.creation#item-info #item-form .inputs .container {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.creation#item-info #item-form .inputs .container button {
+    flex-shrink: 0;
+    border-radius: var(--b-radius-3);
+}
+
+.creation#item-info #item-form .inputs .container p {
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+}
+
+.creation#item-info #item-form .inputs .container svg {
+    fill: var(--primary-color);
+    width: 16px;
+    height: 16px;
+}
