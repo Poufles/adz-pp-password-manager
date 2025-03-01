@@ -1,0 +1,77 @@
+.creation.settings {
+    width: 500px;
+    height: 443px;
+}
+
+.creation.settings #settings-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.creation.settings #settings-info>.inputs {
+    flex-grow: 1;
+    width: calc(50% - 12px);
+    height: max-content;
+}
+
+.creation.settings #settings-info>.inputs p {
+    width: 100%;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+}
+
+.creation.settings #input-password .container #password {
+    width: 100%;
+}
+
+.creation.settings #input-password .container button {
+    flex-shrink: 1;
+    padding: 5px 0;
+}
+
+.creation.settings #input-password .container button svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--accent-color);
+}
+
+.creation.settings #settings-info>.inputs#info-email p {
+    color: rgba(95, 47, 117, 0.5);
+}
+
+.creation.settings #settings-info>.inputs input::placeholder {
+    color: var(--accent-color)
+}
+
+.creation.settings #settings-info>.inputs svg {
+    fill: var(--primary-color);
+    width: 16px;
+    height: 16px;
+}
+
+.creation.settings #advise {
+    flex-grow: 1;
+    align-content: end;
+}
+
+@media screen and (max-width: 549px) {
+    .creation.settings {
+        border-radius: 0;
+        padding: 20px;
+        width: 100%;
+        height: 100%;
+    }
+
+    .creation.settings #settings-info {
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .creation.settings #settings-info>.inputs {
+        flex-grow: 1;
+        width: 100%;
+    }
+}
