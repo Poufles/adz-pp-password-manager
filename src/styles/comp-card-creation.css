@@ -247,6 +247,60 @@
     text-decoration: line-through;
 }
 
+.creation#creator .inputs .dropdown {
+    border: 2px solid var(--accent-color);
+    border-radius: var(--b-radius-2);
+    padding-right: 5px;
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    position: relative;
+} 
+
+.creation#creator .inputs .dropdown input[type=text] {
+    border: none;
+}
+
+.creation#creator .inputs .dropdown button {
+    padding: 0;
+}
+
+.creation#creator .inputs .dropdown button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.creation#creator .inputs .dropdown #dropdown-items {
+    background-color: var(--accent-color);
+    border-bottom-left-radius: var(--b-radius-2);
+    border-bottom-right-radius: var(--b-radius-2);
+    color: var(--primary-color);
+    max-height: calc(34px * 3);
+    width: 100%;
+    position: absolute;
+    top: calc(100% - 1px);
+    left: 0;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    z-index: 1;
+}
+
+.creation#creator .inputs .dropdown #dropdown-items .item {
+    border-radius: 0;
+    padding: 5px 10px;
+    text-align: left;
+    width: 100%;
+    transition: var(--trans-q);
+}
+
+.creation#creator .inputs .dropdown #dropdown-items .item:hover {
+    box-shadow: inset 0 0 0 50px rgba(255, 255, 255, 0.3);
+}
+
+.creation#creator .inputs .dropdown #dropdown-items::-webkit-scrollbar {
+    width: 0;
+}
+
 @media screen and (max-width: 549px) {
     .creation {
         border-radius: 0;
