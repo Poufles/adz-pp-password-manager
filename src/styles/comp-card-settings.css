@@ -3,6 +3,68 @@
     height: 443px;
 }
 
+.creation.settings #box {
+    flex-direction: column;
+}
+
+.creation.settings #box #title {
+    font-weight: bold;
+}
+
+.creation.settings #box #preference-options {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 3px;
+    column-gap: 12px;
+    justify-content: center;
+}
+
+.creation.settings #box .option {
+    font-weight: bold;
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    position: relative;
+}
+
+.creation.settings #box .option label {
+    border: 2px solid var(--accent-color);
+    border-radius: 50px;
+    cursor: pointer;
+    height: 20px;
+    width: 35px;
+    position: relative;
+    transition: var(--trans-q);
+}
+
+.creation.settings #box .option #thumb {
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 26%;
+    transition: var(--trans-q);
+}
+
+.creation.settings #box .option input[type=checkbox] {
+    position: absolute;
+    display: none;
+}
+
+.creation.settings #box .option:has(input[type=checkbox]:checked) label {
+    background-color: var(--accent-color);
+}
+
+.creation.settings #box .option:has(input[type=checkbox]:checked) #thumb {
+    background-color: var(--primary-color);
+    left: 75%;
+}
+
 .creation.settings #settings-info {
     display: flex;
     flex-wrap: wrap;
