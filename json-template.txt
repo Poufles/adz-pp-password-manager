@@ -1,0 +1,34 @@
+{
+    "app": {
+        "accounts": [
+            {
+                "username": "username",
+                "masterkey": "keyinhash",
+                "dateofcreation": "date",
+                "email": "none",
+                "preference": [
+                    {
+                        "dark": false,
+                        "animation": false
+                    }
+                ],
+                "inSession": false,
+                "lastSession": "date and time",
+                "keys": [
+                    {
+                        "name": "item name",
+                        "email": "email@email.com",
+                        "key": "keyinhash",
+                        "website": "website",
+                        "fav": true,
+                        "hint": "40 max",
+                        "folder": "optional"
+                    }
+                ]
+            }
+        ],
+        "websites": {
+            "sitename": "link"
+        }
+    }
+}
