@@ -42,6 +42,7 @@ export async function Register(username, password) {
         inSession: true,
         lastSession: new Date(),
         keys: [],
+        folders: [],
     }
 
     // Verify already existing usernames
