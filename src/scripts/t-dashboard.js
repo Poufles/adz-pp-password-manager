@@ -1,20 +1,15 @@
 // THIS IS MEANT FOR TESTS
 // MAY OR MAY NOT BE FULLY IMPLEMENTED
 
+import { CurrentTimeToday } from "./date";
+
 const sctn_bottom = document.querySelector('#bottom');
 const sctn_misc = document.querySelector('#misc');
 const btn_create = document.querySelector('#create');
 const p_date = document.querySelector('#clock');
 
 setInterval(() => {
-    const now = new Date();
-    const formattedTime = new Intl.DateTimeFormat(navigator.language, {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-    }).format(now);
-
-    p_date.textContent = formattedTime;
+    p_date.textContent = CurrentTimeToday();
 }, 1000);
 
 btn_create.addEventListener('click', () => {
