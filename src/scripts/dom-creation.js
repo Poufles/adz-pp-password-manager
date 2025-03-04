@@ -1,4 +1,5 @@
 import StorageHandler from "./storage-handler";
+import { hidden_eye, open_eye } from "./svg";
 
 const CreationComponent = function () {
     const component_template =
@@ -49,7 +50,7 @@ const CreationComponent = function () {
         <form action="#" method="post" id="create-form">
             <div class="container inputs" id="input-email">
                 <label class="text color" for="email">Email Address</label>
-                <input class="text-sub color" type="text" id="email">
+                <input class="text-sub color" type="email" id="email">
             </div>
             <div class="container inputs" id="input-password">
                 <label class="text color" for="password">Password</label>
@@ -125,11 +126,91 @@ const CreationComponent = function () {
     creator_card.setAttribute('id', 'creator');
     creator_card.innerHTML = component_template;
 
-    // Listener for close button
-    const btn_close = creator_card.querySelector('button#close');
-    btn_close.addEventListener('mouseup', () => {
-        creator_card.remove();
+    // Get required info texts
+    const p_required_email = creator_card.querySelector('#required-info #required #item-1');
+    const p_required_password = creator_card.querySelector('#required-info #required #item-2');
+    const p_required_website = creator_card.querySelector('#required-info #required #item-3');
+
+    // Get optional info texts
+    const p_optional_fav = creator_card.querySelector('#optional-info #optional #item-1');
+    const p_optional_hint = creator_card.querySelector('#optional-info #optional #item-2');
+    const p_option_folder = creator_card.querySelector('#optional-info #optional #item-3');
+
+    // Get advise text
+    const p_advise = creator_card.querySelector('#advise');
+
+    // Get fav button
+    const btn_fav = creator_card.querySelector('button#favorite');
+    // Listener for favorite button
+    btn_fav.addEventListener('mouseup', function () {
+        let isFavorite = this.classList.contains('ticked');
+        if (isFavorite) {
+            this.classList.remove('ticked');
+            p_optional_fav.classList.remove('ticked');
+        } else {
+            this.classList.add('ticked');
+            p_optional_fav.classList.add('ticked');
+        }
+    });
+
+    // Get email input
+    const input_email = creator_card.querySelector('input#email');
+    // Listener for email
+    input_email.addEventListener('focus', () => {
+        if (input_email.classList.contains('invalid')) {
+            input_email.classList.remove('invalid');
+            p_advise.classList.remove('invalid');
+            p_advise.textContent = 'Be sure to double check !';
+        }
+    });
+
+    input_email.addEventListener('blur', () => {
+        const email = input_email.value;
+
+        // Validate empty input
+        if (email === '') {
+            p_required_email.classList.remove('ticked');
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            input_email.classList.add('invalid');
+            p_advise.classList.add('invalid')
+            p_advise.textContent = 'Invalid Email !';
+            p_required_email.classList.remove('ticked');
+        } else {
+            p_required_email.classList.add('ticked');
+        }
     })
+
+    // Get password input
+    const input_pass = creator_card.querySelector('input#password');
+    const btn_eye = creator_card.querySelector('button#eye-hidden');
+    // Listener for password
+    input_pass.addEventListener('blur', () => {
+        const pass = input_pass.value;
+
+        // Validate empty input
+        if (pass === '') {
+            p_required_password.classList.remove('ticked');
+            return;
+        } else {
+            p_required_password.classList.add('ticked');
+        }
+
+    })
+    // Listener for eye button
+    btn_eye.addEventListener('mouseup', function () {
+        let isHidden = !this.classList.contains('open-eye');
+        this.innerHTML = isHidden ? open_eye : hidden_eye;
+        if (isHidden) {
+            input_pass.setAttribute('type', 'text');
+            this.classList.add('open-eye');
+        } else {
+            input_pass.setAttribute('type', 'password');
+            this.classList.remove('open-eye');
+        }
+    });
 
     // Get website container
     const cont_website = creator_card.querySelector('#input-website .dropdown');
@@ -144,7 +225,53 @@ const CreationComponent = function () {
         button: btn_website,
         itemType: websites
     });
-    
+    // Listeners for website
+    input_website.addEventListener('blur', () => {
+        const website = input_website.value;
+
+        // Validate empty input
+        if (website === '') {
+            p_required_website.classList.remove('ticked');
+            return;
+        } else {
+            p_required_website.classList.add('ticked');
+        }
+    })
+
+    // Get hint input
+    const input_hint = creator_card.querySelector('input#hint');
+    // Listener for hint
+    input_hint.addEventListener('blur', () => {
+        const hint = input_hint.value;
+
+        // Validate empty input
+        if (hint === '') {
+            p_optional_hint.classList.remove('ticked');
+            return;
+        } else {
+            p_optional_hint.classList.add('ticked');
+        }
+    });
+
+    input_hint.addEventListener('keyup', function (e) {
+        const p_notice = creator_card.querySelector('span#notice');
+        const hint_length = this.value.length;
+
+        if (hint_length > 40) {
+            this.value = this.value.slice(0, 40);
+            return;
+        }
+
+        p_notice.textContent = `(${hint_length} / 40 Characters)`;
+    });
+
+    input_hint.addEventListener('keydown', function (e) {
+        const hint_length = this.value.length;
+        if (hint_length > 40) {
+            this.value = this.value.slice(0, 40);
+        }
+    });
+
     // Get folder container
     const cont_folder = creator_card.querySelector('#input-folder .dropdown');
     const input_folder = cont_folder.querySelector('input#folder');
@@ -158,11 +285,48 @@ const CreationComponent = function () {
         button: btn_folder,
         itemType: folders
     });
+    // Listeners for folder
+    input_folder.addEventListener('blur', () => {
+        const folder = input_folder.value;
+
+        // Validate empty input
+        if (folder === '') {
+            p_option_folder.classList.remove('ticked');
+            return;
+        } else {
+            p_option_folder.classList.add('ticked');
+        }
+    })
+
+    // Get reset button
+    const btn_reset = creator_card.querySelector('#input-actions #reset')
+    // Listener for reset
+    btn_reset.addEventListener('mousedown', () => {
+        resetComponent()
+    });
 
     const getComponent = () => creator_card;
+    const resetComponent = () => {
+        btn_fav.classList.remove('ticked');
+        input_email.value = '';
+        input_pass.value = '';
+        input_website.value = '';
+        input_hint.value = '';
+        input_folder.value = '';
+        p_required_email.classList.remove('ticked');
+        p_required_password.classList.remove('ticked');
+        p_required_website.classList.remove('ticked');
+        p_optional_fav.classList.remove('ticked');
+        p_optional_hint.classList.remove('ticked');
+        p_option_folder.classList.remove('ticked');
+        input_email.classList.remove('invalid');
+        p_advise.classList.remove('invalid');
+        p_advise.textContent = 'Be sure to double check !';
+    };
 
     return {
-        getComponent
+        getComponent,
+        resetComponent
     }
 }();
 
@@ -274,6 +438,16 @@ function DropdownItemCreator(container, inputField, load, count) {
     });
 
     container.appendChild(item);
+}
+
+/**
+ * Validates email (From ChatGPT)
+ * @param {String} email - Email input 
+ * @returns True if email is valid
+ */
+function isValidEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
 }
 
 export default CreationComponent;

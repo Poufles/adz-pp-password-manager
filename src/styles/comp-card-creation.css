@@ -39,6 +39,11 @@
     color: rgba(95, 47, 117, 0.5);
     font-weight: bold;
     text-align: center;
+    transition: var(--trans-q);
+}
+
+.creation #advise.invalid {
+    color: red;
 }
 
 .creation #top #left {
@@ -56,6 +61,10 @@
 .creation #top #left svg {
     width: 20px;
     height: 20px;
+}
+
+.creation #top #left #favorite.ticked svg {
+    fill: var(--accent-color);
 }
 
 .creation #top #favorite {
@@ -187,11 +196,26 @@
     outline: none;
 }
 
+.creation .inputs input {
+    transition: var(--trans-q);
+}
+
+.creation form>.inputs>input.invalid {
+    border: 2px solid red;
+}
+
 .creation .inputs input[type=password] {
     flex-grow: 0;
     border: 0;
     outline: none;
 }
+
+.creation .inputs#input-password input[type=text] {
+    padding: 1px 2px;
+    flex-grow: 0;
+    border: 0;
+    outline: none;
+} 
 
 .creation .inputs input::selection {
     background-color: var(--accent-color);
@@ -248,6 +272,7 @@
 }
 
 .creation#creator #box .info li.ticked {
+    color: green;
     text-decoration: line-through;
 }
 

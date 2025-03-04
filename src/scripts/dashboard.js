@@ -35,6 +35,7 @@ const cont_recent_folders = dashboard.querySelector('#header #recent-folders');
 const cont_recent_items = dashboard.querySelector('#recent-files #items');
 const cont_key_items = dashboard.querySelector('#articles #key-items');
 const btn_create = dashboard.querySelector('#articles #actions button#create')
+const cont_misc = dashboard.querySelector('section#misc');
 
 // Load username on header
 if (p_username) {
@@ -84,12 +85,27 @@ if (btn_create) {
         const cont_bottom = dashboard.querySelector('section#bottom');
 
         // Verify if card component exists
-        let card = CreationComponent.getComponent();
+        let card = CreationComponent.getComponent(cont_misc);
         if (cont_bottom.querySelector(`#${card.id}`)) {
+            CreationComponent.resetComponent();
             cont_bottom.removeChild(card);
+            // Add left section (misc section)
+            cont_bottom.prepend(cont_misc);
             return;
         }
 
+        // Add creator card
         cont_bottom.appendChild(card);
+        // Remove left section (misc section)
+        cont_misc.remove();
+
+        // Listener for creator close button
+        const btn_close = card.querySelector('#creator button#close');
+        btn_close.addEventListener('mouseup', () => {
+            CreationComponent.resetComponent();
+            cont_bottom.removeChild(card);
+            // Add left section (misc section)
+            cont_bottom.prepend(cont_misc);
+        })
     });
 }
