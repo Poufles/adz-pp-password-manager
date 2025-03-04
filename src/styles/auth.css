@@ -37,23 +37,23 @@
     margin-top: -10px;
 }
 
-#page__main #top .container#sign-up {
+#page__main #top .container#suggestion {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-#page__main #top #sign-up>p {
+#page__main #top #suggestion>p {
     color: var(--meddle-color);
 }
 
-#page__main #top #sign-up>button {
+#page__main #top #suggestion>button {
     color: blue;
     text-decoration: underline;
     transition: var(--trans-q);
 }
 
-#page__main #top #sign-up>button:hover {
+#page__main #top #suggestion>button:hover {
     color: var(--accent-color)
 }
 
@@ -72,6 +72,12 @@
     width: 100%;
     height: 50px;
     position: relative;
+    transition: var(--trans-q);
+}
+
+#page__main #top:has(#invalid.invalid)>#inputs>.item {
+    border: solid 2px red;
+    color: red
 }
 
 #page__main #top>#inputs>.item:not(:first-of-type) {
@@ -93,6 +99,10 @@
     transition: var(--trans-q);
 }
 
+#page__main #top:has(#invalid.invalid)>#inputs .hint {
+    color: red;
+}
+
 #page__main #top>#inputs input {
     background-color: transparent;
     border: 0;
@@ -101,6 +111,7 @@
     width: inherit;
     height: inherit;
     outline: none;
+    transition: var(--trans-q);
 }
 
 #page__main #top>#inputs input::selection {
@@ -114,6 +125,17 @@
     bottom: 100%;
 }
 
+#page__main #top #invalid {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+    display: none;
+
+    &.invalid {
+        display: block;
+    }
+}
+
 #page__main #bottom {
     display: flex;
     flex-direction: column;
@@ -123,4 +145,12 @@
 
 #page__main #bottom p {
     font-style: italic;
+}
+
+#page__main>#register>#top>#inputs {
+    margin-top: 10px;
+}
+
+#page__main>#register>#top #invalid {
+    margin-top: -10px;
 }

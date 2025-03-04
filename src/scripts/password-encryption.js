@@ -17,7 +17,6 @@ const Encryption = function(){
     const comparePassword = async (password, hash) => {
         try {
             const isMatch = await bcrypt.compare(password, hash);
-            console.log(isMatch);
             return isMatch;
         } catch (err) {
             console.error("Error during comparison:", err);

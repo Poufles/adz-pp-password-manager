@@ -1,11 +1,12 @@
 import { DateDifference } from "./date";
+import StorageHandler from "./storage-handler";
 
 function App() {
     let storageCopy;
     let sessionCopy;
 
     // Validate existing local storage
-    if (!localStorage.getItem('lowkey')) {
+    if (!StorageHandler.GetLocalStorage()) {
         const storageTemplate = { app: { accounts: [], websites: { sitename: "link" } } };
 
         // Create new lowkey storage
@@ -16,7 +17,7 @@ function App() {
     }
 
     // Check for any current sessions
-    const storage = JSON.parse(localStorage.getItem('lowkey'));
+    const storage = StorageHandler.GetLocalStorage();
     const accounts = storage.app.accounts;
 
     // Check if first time
@@ -26,8 +27,7 @@ function App() {
     }
 
     // Check every account for session
-    accounts.forEach(account => {
-        // Validate account in session
+    for (let account of accounts) {
         if (account.inSession) {
             let minuteDifference = DateDifference({
                 date: account.lastSession,
@@ -37,18 +37,16 @@ function App() {
             if (minuteDifference > 20) {
                 window.location.href = '/auth.html';
                 account.inSession = false;
-                localStorage.setItem('lowkey', JSON.stringify(storage));
-
+                StorageHandler.UpdateLocalStorage(storage)
                 return;
             } else {
-                sessionStorage.setItem('session', JSON.stringify(account));
-                sessionCopy = account
+                StorageHandler.UpdateSessionStorage(account);
+                sessionCopy = account;
                 window.location.href = '/dashboard.html';
-
                 return;
             }
         }
-    });
+    }
 
     window.location.href = '/auth.html';
 };

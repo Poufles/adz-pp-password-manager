@@ -2,67 +2,112 @@ import "../styles/auth.css";
 import "../styles/auth-responsiveness.css";
 import { hidden_eye, open_eye } from './svg.js';
 import { Login } from "./account.js";
+import StorageHandler from "./storage-handler.js";
+import { DateDifference } from "./date.js";
 
-const btn_new_account = document.querySelector('#sign-up');
-const input_password = document.querySelector('#password');
-const btn_visibility = document.querySelector('#visibility');
-const btn_login = document.querySelector('button#login');
+// Check account in session 
+const storage = StorageHandler.GetLocalStorage();
+const accounts = storage.app.accounts;
+
+for (let account of accounts) {
+    if (account.inSession) {
+        let minuteDifference = DateDifference({
+            date: account.lastSession,
+            type: 'minute'
+        });
+
+        if (minuteDifference > 20) {
+            window.location.href = '/auth.html';
+            account.inSession = false;
+            StorageHandler.UpdateLocalStorage(storage);
+        } else {
+            StorageHandler.UpdateSessionStorage(account);
+            window.location.href = '/dashboard.html';
+        }
+    }
+}
+
+const btn_suggestion_sign_up = document.querySelector('#login_page button#sign-up');
+const btn_visibility = document.querySelector('#login_page #visibility');
+const btn_login = document.querySelector('#login_page button#login');
+const input_username = document.querySelector('#login_page #username');
+const input_password = document.querySelector('#login_page #password');
+
 let isHolding = false;
 let hasMoved = false;
 
+// Listener for log in button
 if (btn_login) {
-    btn_login.addEventListener('click', () => {
+    btn_login.addEventListener('click', async () => {
         const user = document.querySelector('#username');
         const pass = document.querySelector('#password');
-        Login(user.value, pass.value);
+
+        // Verify for empty inputs
+        if (user.value === '' || pass.value === '') {
+            const txt_invalid = document.querySelector('#invalid');
+    
+            txt_invalid.textContent = 'Please enter your account credentials !'
+            txt_invalid.classList.add('invalid');
+            return;
+        }
+
+        // Verify account credentials
+        const isLoggedIn = await Login(user.value, pass.value);
+
+        if (isLoggedIn) {
+            window.location.href = '/dashboard.html';
+        } else {
+            const txt_invalid = document.querySelector('#invalid');
+
+            txt_invalid.textContent = 'Invalid Username/Password !';
+            txt_invalid.classList.add('invalid');
+            console.error('Invalid Username/Password');
+        }
     });
 }
 
-// btn_new_account.addEventListener('mousedown', () => {
-//     isHolding = true;
-//     hasMoved = false;
-// });
+// Listener for sign up suggestion link
+if (btn_suggestion_sign_up) {
+    MouseHandler(btn_suggestion_sign_up);
 
-// btn_new_account.addEventListener('mousemove', () => {
-//     if (isHolding) {
-//         hasMoved = true;
-//     }
-// });
+    btn_suggestion_sign_up.addEventListener('mouseup', () => {
+        if (isHolding && !hasMoved) {
+            window.location.href = '/register.html';
+        }
 
-// btn_new_account.addEventListener('mouseup', () => {
-//     if (isHolding && !hasMoved) {
-//         document.location.href = '/register.html';
-//     }
+        isHolding = false;
+    });
+}
 
-//     isHolding = false;
-// });
+// Listener for eye icon and password input elements
+if (input_password && btn_visibility) {
+    MouseHandler(btn_visibility);
+    VisibilityFunction(input_password, btn_visibility)
+}
 
-// btn_visibility.addEventListener('mousedown', () => {
-//     isHolding = true;
-//     hasMoved = false;
-// });
+// Listener for username input element
+if (input_username) {
+    input_username.addEventListener('focus', () => {
+        const txt_invalid = document.querySelector('#invalid');
+        
+        txt_invalid.classList.remove('invalid');
+    })
+}
 
-// btn_visibility.addEventListener('mousemove', () => {
-//     if (isHolding) {
-//         hasMoved = true;
-//     }
-// });
+// Listener for password input element
+if (input_password) {
+    input_password.addEventListener('focus', () => {
+        const txt_invalid = document.querySelector('#invalid');
 
-// btn_visibility.addEventListener('mouseup', function() {
-//     let isHidden = !this.classList.contains('open-eye');
-//     if (isHolding && !hasMoved) {
-//         this.innerHTML = isHidden ? open_eye : hidden_eye;
-//         if (isHidden) {
-//             this.classList.add('open-eye');
-//         } else {
-//             this.classList.remove('open-eye');
-//         }
-//     };
+        txt_invalid.classList.remove('invalid');
+    })
+}
 
-//     isHolding = false;
-// });
 
-export function VisibilityFunction(inputField, button) {
+/**
+ * @param {NodeElement} button - Element to add event listener to handle mouse input 
+ */
+export function MouseHandler(button) {
     button.addEventListener('mousedown', () => {
         isHolding = true;
         hasMoved = false;
@@ -73,7 +118,14 @@ export function VisibilityFunction(inputField, button) {
             hasMoved = true;
         }
     });
+};
 
+/**
+ * Used for changing a password visibility
+ * @inputField {NodeElement} Input element that takes the password 
+ * @button {NodeElement} Button element that is clickable to change password visibility 
+ */
+export function VisibilityFunction(inputField, button) {
     button.addEventListener('mouseup', function () {
         let isHidden = !this.classList.contains('open-eye');
         if (isHolding && !hasMoved) {
@@ -90,5 +142,3 @@ export function VisibilityFunction(inputField, button) {
         isHolding = false;
     });
 };
-
-VisibilityFunction(input_password, btn_visibility)

@@ -1,8 +1,10 @@
 import { CurrentDateToday } from "./date";
 import Encryption from "./password-encryption";
+import StorageHandler from "./storage-handler";
 
 export async function Login(username, password) {
-    const storage = JSON.parse(localStorage.getItem('lowkey'));
+    const storage = StorageHandler.GetLocalStorage();
+    console.log(storage);
     let accounts = storage.app.accounts;
 
     // Verify account existence
@@ -10,10 +12,13 @@ export async function Login(username, password) {
         if (account.username === username) {
             const isMatch = await Encryption.comparePassword(password, account.masterkey);
             if (isMatch) {
-                console.log('Logged In');
+                account.inSession = true;
+                account.lastSession = new Date();
+                StorageHandler.UpdateLocalStorage(storage);
+                StorageHandler.UpdateSessionStorage(account);
+
                 return true;
             } else {
-                console.error('Invalid Username/Password');
                 return false;
             }
         }
@@ -22,18 +27,18 @@ export async function Login(username, password) {
     return false;
 }
 
-export function Register(username, password) {
-    const storage = JSON.parse(localStorage.getItem('lowkey'));
+export async function Register(username, password) {
+    const storage = StorageHandler.GetLocalStorage();
     let accounts = storage.app.accounts;
     let newAccountTemplate = {
         username: "",
         masterkey: "",
         dateofcreation: "",
         email: "none",
-        preference: [{
+        preference: {
             dark: false,
             animation: true
-        }],
+        },
         inSession: false,
         lastSession: "",
         keys: [],
@@ -45,21 +50,19 @@ export function Register(username, password) {
         return false;
     }
 
-    CreateNewAccount(storage, accounts, newAccountTemplate, username, password);
-
-    return true;
-}
-
-async function CreateNewAccount(storage, accounts, template, newUser, newPass) {
     // Store new account
-    template.username = newUser;
-    template.masterkey = await Encryption.hashPassword(newPass);
-    template.dateofcreation = CurrentDateToday();
+    newAccountTemplate.username = username;
+    newAccountTemplate.masterkey = await Encryption.hashPassword(password);
+    newAccountTemplate.dateofcreation = CurrentDateToday();
+    newAccountTemplate.inSession = true;
+    newAccountTemplate.lastSession = new Date();
 
     // Add new and first account to the storage
-    accounts.push(template);
-    localStorage.setItem('lowkey', JSON.stringify(storage));
+    accounts.push(newAccountTemplate);
+    StorageHandler.UpdateLocalStorage(storage);
 
     // Create a session
-    sessionStorage.setItem('lowkey-session', template);
+    StorageHandler.UpdateSessionStorage(newAccountTemplate);
+
+    return true;
 }
