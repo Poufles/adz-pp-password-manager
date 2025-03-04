@@ -24,8 +24,14 @@ const StorageHandler = function () {
     /**
      * Updates the session storage
      * @param {Object} update - Object that contains the update 
+     * @param {boolean} hasEnded - (Optional) Defines if the session has ended 
      */
-    const UpdateSessionStorage = (update) => {
+    const UpdateSessionStorage = (update, hasEnded = false) => {
+        if (hasEnded) {
+            sessionStorage.removeItem('lowkey-session');
+            return;
+        }
+
         sessionStorage.setItem('lowkey-session', JSON.stringify(update));
     }
 

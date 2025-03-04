@@ -39,8 +39,8 @@ export async function Register(username, password) {
             dark: false,
             animation: true
         },
-        inSession: false,
-        lastSession: "",
+        inSession: true,
+        lastSession: new Date(),
         keys: [],
     }
 
@@ -54,8 +54,6 @@ export async function Register(username, password) {
     newAccountTemplate.username = username;
     newAccountTemplate.masterkey = await Encryption.hashPassword(password);
     newAccountTemplate.dateofcreation = CurrentDateToday();
-    newAccountTemplate.inSession = true;
-    newAccountTemplate.lastSession = new Date();
 
     // Add new and first account to the storage
     accounts.push(newAccountTemplate);

@@ -19,6 +19,7 @@ for (let account of accounts) {
         if (minuteDifference > 20) {
             window.location.href = '/auth.html';
             account.inSession = false;
+            StorageHandler.UpdateSessionStorage({}, true)
             StorageHandler.UpdateLocalStorage(storage);
         } else {
             StorageHandler.UpdateSessionStorage(account);
@@ -33,14 +34,13 @@ const btn_login = document.querySelector('#login_page button#login');
 const input_username = document.querySelector('#login_page #username');
 const input_password = document.querySelector('#login_page #password');
 
-let isHolding = false;
-let hasMoved = false;
+let state = { isHolding: false, hasMoved: false }
 
 // Listener for log in button
 if (btn_login) {
     btn_login.addEventListener('click', async () => {
-        const user = document.querySelector('#username');
-        const pass = document.querySelector('#password');
+        const user = document.querySelector('#login_page #username');
+        const pass = document.querySelector('#login_page #password');
 
         // Verify for empty inputs
         if (user.value === '' || pass.value === '') {
@@ -68,67 +68,65 @@ if (btn_login) {
 
 // Listener for sign up suggestion link
 if (btn_suggestion_sign_up) {
-    MouseHandler(btn_suggestion_sign_up);
+    MouseHandler(btn_suggestion_sign_up, state);
 
     btn_suggestion_sign_up.addEventListener('mouseup', () => {
-        if (isHolding && !hasMoved) {
+        if (state.isHolding && !state.hasMoved) {
             window.location.href = '/register.html';
         }
 
-        isHolding = false;
+        state.isHolding = false;
     });
 }
 
 // Listener for eye icon and password input elements
 if (input_password && btn_visibility) {
-    MouseHandler(btn_visibility);
-    VisibilityFunction(input_password, btn_visibility)
+    MouseHandler(btn_visibility, state);
+    VisibilityFunction(input_password, btn_visibility, state)
 }
 
 // Listener for username input element
 if (input_username) {
     input_username.addEventListener('focus', () => {
-        const txt_invalid = document.querySelector('#invalid');
-        
-        txt_invalid.classList.remove('invalid');
+        RemoveInvalid()
     })
 }
 
 // Listener for password input element
 if (input_password) {
     input_password.addEventListener('focus', () => {
-        const txt_invalid = document.querySelector('#invalid');
-
-        txt_invalid.classList.remove('invalid');
+        RemoveInvalid();
     })
 }
 
 
 /**
- * @param {NodeElement} button - Element to add event listener to handle mouse input 
+ * @param {Node} button - Element to add event listener to handle mouse input 
+ * @param {Object} state - Element to add event listener to handle mouse input 
  */
-export function MouseHandler(button) {
+export function MouseHandler(button, state) {
     button.addEventListener('mousedown', () => {
-        isHolding = true;
-        hasMoved = false;
+        state.isHolding = true;
+        state.hasMoved = false;
     });
-
+    
     button.addEventListener('mousemove', () => {
-        if (isHolding) {
-            hasMoved = true;
+        if (state.isHolding) {
+            state.hasMoved = true;
         }
     });
 };
 
 /**
  * Used for changing a password visibility
- * @inputField {NodeElement} Input element that takes the password 
- * @button {NodeElement} Button element that is clickable to change password visibility 
+ * @param {Node} inputField - Element that takes the password 
+ * @param {Node} button - Element that is clickable to change password visibility 
+ * @param {Object} state - State of the object 
  */
-export function VisibilityFunction(inputField, button) {
+export function VisibilityFunction(inputField, button, state) {
     button.addEventListener('mouseup', function () {
         let isHidden = !this.classList.contains('open-eye');
-        if (isHolding && !hasMoved) {
+        if (state.isHolding && !state.hasMoved) {
             this.innerHTML = isHidden ? open_eye : hidden_eye;
             if (isHidden) {
                 inputField.setAttribute('type', 'text');
@@ -139,6 +137,15 @@ export function VisibilityFunction(inputField, button) {
             }
         };
 
-        isHolding = false;
+        state.isHolding = false;
     });
 };
+
+/**
+ * Removes invalid class in #invalid
+ */
+export function RemoveInvalid() {
+    const txt_invalid = document.querySelector('#invalid');
+        
+    txt_invalid.classList.remove('invalid');
+}

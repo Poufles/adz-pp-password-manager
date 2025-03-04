@@ -147,10 +147,32 @@
     font-style: italic;
 }
 
-#page__main>#register>#top>#inputs {
+#page__main>#register_page>#top>#inputs {
     margin-top: 10px;
 }
 
-#page__main>#register>#top #invalid {
+#page__main>#register_page>#top #invalid {
     margin-top: -10px;
+}
+
+#page__main>#register_page>#top>#inputs>.item>#hint-password::after {
+    content: '(8 Characters Minimum)';
+    font-size: var(--sm-fn);
+    margin-left: 5px;
+    opacity: 0;
+    display: none;
+    transition-property: display opacity;
+    transition-behavior: allow-discrete;
+    transition-duration: var(--trans-q);
+}
+
+#page__main>#register_page>#top>#inputs>.item:has(>input:focus)>#hint-password::after,
+#page__main>#register_page>#top>#inputs>.item:has(>input:not(:placeholder-shown))>#hint-password::after,
+#page__main>#register_page>#top>#inputs>.item:has(>input:hover)>#hint-password::after {
+    display: inline;
+    opacity: 1;
+
+    @starting-style {
+        opacity: 0
+    }
 }
