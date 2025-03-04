@@ -2,10 +2,9 @@ import "../styles/dashboard.css";
 import "../styles/dashboard-responsiveness.css";
 import "../styles/comp-circular-percentage.css";
 import "../styles/comp-card-creation.css";
-// import "./t-dashboard.js";
 import StorageHandler from "./storage-handler.js";
 import { CurrentTimeToday, DateDifference } from "./date";
-import CreationComponent from "./creation.js";
+import CreationComponent from "./dom-creation.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();

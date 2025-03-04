@@ -1,6 +1,8 @@
-const CreationComponent = function(){
+import StorageHandler from "./storage-handler";
+
+const CreationComponent = function () {
     const component_template =
-    `
+        `
         <div class="container" id="top">
             <div id="left">
                 <p class="text color" id="title">New Key Item</p>
@@ -46,8 +48,8 @@ const CreationComponent = function(){
         </div>
         <form action="#" method="post" id="create-form">
             <div class="container inputs" id="input-email">
-                <label class="text color" for="username">Email Address</label>
-                <input class="text-sub color" type="text" id="username">
+                <label class="text color" for="email">Email Address</label>
+                <input class="text-sub color" type="text" id="email">
             </div>
             <div class="container inputs" id="input-password">
                 <label class="text color" for="password">Password</label>
@@ -117,35 +119,45 @@ const CreationComponent = function(){
         <p class="text" id="advise">Be sure to double check !</p>
     `;
 
-    const dropdown_template =
-    `
-     <div id="dropdown-items">
-        <button type="button" class="text item" id="item-1">
-            Facebook
-        </button>
-        <button type="button" class="text item" id="item-1">
-            Facebook
-         </button>
-        <button type="button" class="text item" id="item-1">
-            Facebook
-        </button>
-        <button type="button" class="text item" id="item-1">
-                Facebook
-        </button>
-    </div>
-    `;
-
     // Create component
     const creator_card = document.createElement('section');
     creator_card.classList.add('card', 'creation');
     creator_card.setAttribute('id', 'creator');
     creator_card.innerHTML = component_template;
-    
+
     // Listener for close button
     const btn_close = creator_card.querySelector('button#close');
     btn_close.addEventListener('mouseup', () => {
         creator_card.remove();
     })
+
+    // Get website container
+    const cont_website = creator_card.querySelector('#input-website .dropdown');
+    const input_website = cont_website.querySelector('input#website');
+    const btn_website = cont_website.querySelector('button#arrow-website');
+    const storage = StorageHandler.GetLocalStorage();
+    const websites = storage.app.websites;
+    // Create dropdown
+    DropdownLoader({
+        container: cont_website,
+        inputField: input_website,
+        button: btn_website,
+        itemType: websites
+    });
+    
+    // Get folder container
+    const cont_folder = creator_card.querySelector('#input-folder .dropdown');
+    const input_folder = cont_folder.querySelector('input#folder');
+    const btn_folder = cont_folder.querySelector('button#arrow-folder');
+    const session = StorageHandler.GetSessionStorage();
+    const folders = session.folders;
+    // Create dropdown
+    DropdownLoader({
+        container: cont_folder,
+        inputField: input_folder,
+        button: btn_folder,
+        itemType: folders
+    });
 
     const getComponent = () => creator_card;
 
@@ -153,5 +165,115 @@ const CreationComponent = function(){
         getComponent
     }
 }();
+
+
+/**
+ * Creates and load items for dropdown component
+ * @param {Node} container - The main container of the field 
+ * @param {Node} inputField - The input field sibling of dropdown
+ * @param {Node} button - The button sibling of dropdown
+ * @param {String} itemType - The type of items to be loaded 
+ */
+function DropdownLoader({ container, inputField, button, itemType }) {
+    // Listener for dropdown
+    inputField.addEventListener('focus', () => {
+        let dropdownExist = container.querySelector('#dropdown-items');
+
+        // Verify existing dropdown
+        if (!dropdownExist) {
+            const dropdown = document.createElement('div');
+            let itemCount = 0;
+
+            dropdown.setAttribute('id', 'dropdown-items');
+            container.appendChild(dropdown);
+
+            // Verify item type
+            if (itemType.length === 0) {
+                return;
+            }
+
+            // Add item to the dropdown
+            for (let type of itemType) {
+                DropdownItemCreator(dropdown, inputField, type, itemCount);
+                itemCount++
+            }
+        }
+    });
+
+    // Listener to remove dropdown
+    inputField.addEventListener('blur', () => {
+        let dropdownExist = container.querySelector('#dropdown-items');
+
+        // Verify existing website dropdown
+        if (dropdownExist) {
+            dropdownExist.remove();
+            dropdownExist = null;
+        }
+    });
+
+    // Listener for input field acting as search
+    inputField.addEventListener('keyup', () => {
+        let dropdownExist = container.querySelector('#dropdown-items');
+
+        // Verify existing website dropdown
+        if (dropdownExist) {
+            // Reset dropdown items
+            dropdownExist.innerHTML = '';
+
+            let itemCount = 0;
+
+            // Verify item type
+            if (itemType.length === 0) {
+                return;
+            }
+
+            // Add item to the dropdown
+            for (let type of itemType) {
+                let name = type.name.toLowerCase();
+                let searchInput = inputField.value.toLowerCase();
+
+                if (name.includes(searchInput)) {
+                    DropdownItemCreator(dropdownExist, inputField, type, itemCount)
+                }
+
+                itemCount++
+            }
+        }
+    });
+
+    // Listener for dropdown button(SVG)
+    button.addEventListener('focus', () => {
+        inputField.focus();
+    });
+};
+
+/**
+ * Creates items for dropdown
+ * @param {*} container - Dropdown container
+ * @param {*} inputField - Input field for selected item to go to
+ * @param {*} load - Type of dropdown
+ * @param {*} count - Item count
+ */
+function DropdownItemCreator(container, inputField, load, count) {
+    const item = document.createElement('button');
+    item.setAttribute('type', 'button');
+    item.setAttribute('id', `item-${count}`);
+    item.classList.add('text', 'item');
+    item.textContent = load.name;
+
+    item.addEventListener('mousedown', () => {
+        inputField.value = load.name;
+    });
+
+    item.addEventListener('mouseenter', () => {
+        inputField.value = load.name;
+    });
+
+    item.addEventListener('mouseleave', () => {
+        inputField.value = '';
+    });
+
+    container.appendChild(item);
+}
 
 export default CreationComponent;

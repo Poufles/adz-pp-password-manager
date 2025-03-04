@@ -1,4 +1,4 @@
-.item {
+.key-item {
     background-color: #fff;
     border-radius: var(--b-radius-1);
     border: 0;
@@ -13,30 +13,30 @@
     justify-content: space-between;
 }
 
-.item .button {
+.key-item .button {
     cursor: pointer;
 }
 
-.item .compartment-left {
+.key-item .compartment-left {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
 }
 
-.item .compartment-left #item-icon {
+.key-item .compartment-left #item-icon {
     border-left: 3px solid var(--accent-color);
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 10px;
 }
 
-.item .compartment-left #item-icon svg {
+.key-item .compartment-left #item-icon svg {
     width: 35px;
     height: 35px;
 }
 
-.item .compartment-left #item-info {
+.key-item .compartment-left #item-info {
     text-align: left;
 
     & p {
@@ -51,21 +51,21 @@
     }
 }
 
-.item .compartment-mid {
+.key-item .compartment-mid {
     color: rgba(95, 47, 117, 0.5);
 }
 
-.item #actions {
+.key-item #actions {
     display: flex;
     gap: 5px;
     align-items: center;
 }
 
-.item #actions>span.button {
+.key-item #actions>span.button {
     position: relative;
 }
 
-.item #actions #tooltip {
+.key-item #actions #tooltip {
     background-color: var(--accent-color);
     border-radius: 50px;
     cursor: default;
@@ -81,7 +81,7 @@
     transition-duration: var(--trans-q);
 }
 
-.item #actions #tooltip>#tip {
+.key-item #actions #tooltip>#tip {
     font-weight: bold;
     padding: 5px 20px;
     display: flex;
@@ -89,7 +89,7 @@
     position: relative;
 }
 
-.item #actions #tip::after {
+.key-item #actions #tip::after {
     content: '';
     border-top: 10px solid transparent;
     border-right: 10px solid transparent;
@@ -101,7 +101,7 @@
     left: 50%;
 }
 
-.item #actions>span:hover>#tooltip {
+.key-item #actions>span:hover>#tooltip {
     display: block;
     opacity: 1;
 
@@ -110,26 +110,26 @@
     }
 }
 
-.item #actions>#copy>#tooltip:hover {
+.key-item #actions>#copy>#tooltip:hover {
     cursor: default;
     display: none;
 }
 
-.item #actions #more>#tooltip {
+.key-item #actions #more>#tooltip {
     border-radius: var(--b-radius-1);
     left: -20%
 }
 
-.item #actions #more>#tooltip>#tip {
+.key-item #actions #more>#tooltip>#tip {
     text-align: left;
     padding: 0;
 }
 
-.item #actions #more #tip::after {
+.key-item #actions #more #tip::after {
     left: 70%;
 }
 
-.item #actions #more>#tooltip>#tip>.button {
+.key-item #actions #more>#tooltip>#tip>.button {
     font-weight: bold;
     padding: 10px 20px;
     display: flex;
@@ -138,19 +138,19 @@
 }
 
 @media screen and (min-width: 430px) {
-    .item #actions #more>#tooltip>#tip>.button#copy {
+    .key-item #actions #more>#tooltip>#tip>.button#copy {
         display: none;
     }
 }
 
 @media screen and (max-width: 429px) {
-    .item #actions>span#copy {
+    .key-item #actions>span#copy {
         display: none;
     }
 }
 
 @media screen and (max-width: 569px) {
-    .item .compartment-mid {
+    .key-item .compartment-mid {
         display: none;
     }
 }

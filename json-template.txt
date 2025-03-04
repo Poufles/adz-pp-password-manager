@@ -37,8 +37,11 @@
                 ]
             }
         ],
-        "websites": {
-            "sitename": "link"
-        }
+        "websites": [
+            {
+                "sitename": "name",
+                "link": "link",
+            }
+        ]
     }
 }
