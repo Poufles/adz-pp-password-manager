@@ -1,3 +1,5 @@
+import KeyItem from "./card-key";
+import { CreateNewKeyItem } from "./crud";
 import StorageHandler from "./storage-handler";
 import { hidden_eye, open_eye } from "./svg";
 
@@ -303,6 +305,25 @@ const CreationComponent = function () {
     // Listener for reset
     btn_reset.addEventListener('mousedown', () => {
         resetComponent()
+    });
+
+    // Get create button
+    const btn_create = creator_card.querySelector('#input-actions #submit')
+    // Listener for create
+    btn_create.addEventListener('mousedown', async () => {
+        const newItem = await CreateNewKeyItem({
+            name: input_website.value,
+            email: input_email.value,
+            key: input_pass.value,
+            website: input_website.value,
+            fav: btn_fav.classList.contains('ticked'),
+            hint: input_hint.value,
+            folder: input_folder.value
+        })
+
+        // Append new item
+        const cont_articles = document.querySelector('section#articles #key-items');
+        cont_articles.appendChild(KeyItem(newItem));
     });
 
     const getComponent = () => creator_card;

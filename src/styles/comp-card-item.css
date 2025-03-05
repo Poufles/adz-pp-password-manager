@@ -36,6 +36,10 @@
     height: 35px;
 }
 
+.key-item .compartment-left #favorite svg.ticked {
+    fill: var(--accent-color);
+}
+
 .key-item .compartment-left #item-info {
     text-align: left;
 
