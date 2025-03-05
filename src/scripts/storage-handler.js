@@ -39,7 +39,7 @@ const StorageHandler = function () {
         GetLocalStorage,
         GetSessionStorage,
         UpdateLocalStorage,
-        UpdateSessionStorage
+        UpdateSessionStorage,
     }
 }();
 

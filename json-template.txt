@@ -22,13 +22,26 @@
                         "website": "website",
                         "fav": true,
                         "hint": "40 max",
-                        "folder": "optional"
+                        "folder": "optional",
+                        "isRecent": "false",
+                        "openedAt": "Date and Time"
+                    }
+                ],
+                "folders": [
+                    {
+                        "name": "folder name",
+                        "keys": [],
+                        "isRecent": "false",
+                        "openedAt": "Date and Time"
                     }
                 ]
             }
         ],
-        "websites": {
-            "sitename": "link"
-        }
+        "websites": [
+            {
+                "sitename": "name",
+                "link": "link",
+            }
+        ]
     }
 }

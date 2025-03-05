@@ -39,6 +39,11 @@
     color: rgba(95, 47, 117, 0.5);
     font-weight: bold;
     text-align: center;
+    transition: var(--trans-q);
+}
+
+.creation #advise.invalid {
+    color: red;
 }
 
 .creation #top #left {
@@ -58,17 +63,21 @@
     height: 20px;
 }
 
-.creation #top #favorite  {
+.creation #top #left #favorite.ticked svg {
+    fill: var(--accent-color);
+}
+
+.creation #top #favorite {
     padding: 0;
 }
 
-.creation #top #close  {
+.creation #top #close {
     width: 26px;
     height: 26px;
     padding: 0;
 }
 
-.creation #top #close svg  {
+.creation #top #close svg {
     fill: var(--primary-color);
     width: 20px;
     height: 20px;
@@ -82,7 +91,7 @@
     overflow: clip;
 }
 
-.creation  #box .circle {
+.creation #box .circle {
     position: absolute;
     aspect-ratio: 1;
     border-radius: 50%;
@@ -174,6 +183,10 @@
     font-weight: bold;
 }
 
+.creation .inputs label {
+    width: max-content;
+}
+
 .creation .inputs input:not([type=password]) {
     flex-grow: 1;
     border: 2px solid var(--accent-color);
@@ -183,11 +196,26 @@
     outline: none;
 }
 
+.creation .inputs input {
+    transition: var(--trans-q);
+}
+
+.creation form>.inputs>input.invalid {
+    border: 2px solid red;
+}
+
 .creation .inputs input[type=password] {
     flex-grow: 0;
     border: 0;
     outline: none;
 }
+
+.creation .inputs#input-password input[type=text] {
+    padding: 1px 2px;
+    flex-grow: 0;
+    border: 0;
+    outline: none;
+} 
 
 .creation .inputs input::selection {
     background-color: var(--accent-color);
@@ -207,13 +235,13 @@
     gap: 5px;
 }
 
-.creation .inputs#input-actions button  {
+.creation .inputs#input-actions button {
     font-weight: bold;
     height: 32px;
     padding: 5px 7px;
 }
 
-.creation .inputs#input-actions #submit  {
+.creation .inputs#input-actions #submit {
     display: flex;
     gap: 3px;
     align-items: center;
@@ -244,6 +272,7 @@
 }
 
 .creation#creator #box .info li.ticked {
+    color: green;
     text-decoration: line-through;
 }
 
@@ -255,7 +284,7 @@
     gap: 3px;
     align-items: center;
     position: relative;
-} 
+}
 
 .creation#creator .inputs .dropdown input[type=text] {
     border: none;
@@ -286,6 +315,7 @@
 }
 
 .creation#creator .inputs .dropdown #dropdown-items .item {
+    background-color: var(--accent-color);
     border-radius: 0;
     padding: 5px 10px;
     text-align: left;

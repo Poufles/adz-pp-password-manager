@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+import StorageHandler from "./storage-handler";
+import { icon_facebook } from "./svg";
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/main.css">
-    <link rel="stylesheet" href="../styles/comp-card-item.css">
-    <title>Item</title>
-</head>
-
-<body style="height: 100dvh; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 20px;">
-    <button class="container key-item" id="item-1">
+const template =
+    `
         <span class="compartment-left">
             <span tabindex="0" role="button" class="container button" id="favorite">
                 <svg class="stroke" width="40" height="40" viewBox="0 0 40 40" fill="none"
@@ -21,26 +13,16 @@
                 </svg>
             </span>
             <span id="item-icon">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clip-path="url(#clip0_45_704)">
-                    <path d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z" fill="#176AE6"/>
-                    <path d="M27.2838 25.3159L28.1394 20.0797H22.08V16.0872C22.08 14.4384 22.5222 13.2656 24.8866 13.2656L28.3866 13.2672V7.98719C28.3866 7.98719 26.1653 7.5 24.0816 7.5C19.7331 7.5 16.8553 10.3719 16.8553 15.2469V20.08H11.6131V25.3162H16.8541V39.7516C17.8794 39.9137 18.9297 40 20 40C20.7025 40 21.3963 39.9628 22.08 39.8922V25.3159H27.2838Z" fill="white"/>
-                    </g>
-                    <defs>
-                    <clipPath id="clip0_45_704">
-                    <rect width="40" height="40" fill="white"/>
-                    </clipPath>
-                    </defs>
-                    </svg>
+                
             </span>
             <span id="item-info">
-                <p class="text color" id="name">Facebook</p>
-                <span tabindex="0" role="button" class="text button" id="email">Sample01@gmail.com</span>
+                <p class="text color" id="name"></p>
+                <span tabindex="0" role="button" class="text button" id="email"></span>
             </span>
         </span>
         <span class="compartment-mid">
             <span tabindex="0" role="button" class="button">
-                <p class="text">In <span id="folder-name">Folder Name</span></p>
+                <p class="text">In <span id="folder-name"></span></p>
             </span>
         </span>
         <span class="compartment-right" id="actions">
@@ -78,7 +60,77 @@
 
             </span>
         </span>
-    </button>
-</body>
+`;
 
-</html>
+export default function KeyItem(item) {
+    // <button class="container key-item" id="item-1">
+    const component = document.createElement('button');
+    // Assign attributes
+    component.classList.add('container', 'key-item');
+    component.setAttribute('id', `item-${item.index}`);
+    // Add template
+    component.innerHTML = template;
+
+    // Fill key card information
+    // Fill favorite information
+    let svg_fav = component.querySelector('span#favorite svg');
+    if (item.item.fav) svg_fav.classList.add('ticked');
+    // Fill icon information
+    let svg_icon = component.querySelector('span#item-icon');
+    svg_icon.innerHTML = icon_facebook; // CHANGE CODE HERE LATER
+    // Fill name information
+    let p_name = component.querySelector('#item-info>p#name');
+    p_name.textContent = item.item.name;
+    // Fill email information
+    let sp_email = component.querySelector('#item-info>span#email');
+    sp_email.textContent = item.item.email;
+    // Fill folder information
+    let cont_compartment_mid = component.querySelector('.compartment-mid');
+    if (item.item.folder === '') {
+        cont_compartment_mid.setAttribute('style', 'display: none');
+    } else {
+        let sp_folder = cont_compartment_mid.querySelector('span#folder-name');
+        sp_folder.textContent = item.item.folder;
+    }
+
+    // Add listeners
+    LoadListeners(component, item.index);
+
+    return component;
+};
+
+function LoadListeners(component, index) {
+    // Listener for the component itself
+    component.addEventListener('click', () => {
+        console.log('IM TAPPED!');
+    });
+
+    // Listener for svg button
+    const btn_fav = component.querySelector('span#favorite');
+    btn_fav.addEventListener('click', (e) => {
+        // Change item favorite status
+        const sp_fav = btn_fav.querySelector('svg');
+        sp_fav.classList.toggle('ticked');
+
+        // Update session storage
+        const sessionStorage = StorageHandler.GetSessionStorage();
+        const key = sessionStorage.keys[index];
+
+        key.fav = sp_fav.classList.contains('ticked') ? true : false;
+        StorageHandler.UpdateSessionStorage(sessionStorage);
+
+        // Update local storage 
+        const storage = StorageHandler.GetLocalStorage();
+        const accounts = storage.app.accounts;
+        // Iterate over storage
+        for (let i = 0; i < accounts.length; i++) {
+            if (accounts[i].inSession) {
+                storage.app.accounts[i] = StorageHandler.GetSessionStorage();
+                StorageHandler.UpdateLocalStorage(storage);
+            }
+        }
+
+        // Prevent bubbling
+        e.stopPropagation();
+    })
+};

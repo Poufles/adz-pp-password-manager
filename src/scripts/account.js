@@ -4,16 +4,18 @@ import StorageHandler from "./storage-handler";
 
 export async function Login(username, password) {
     const storage = StorageHandler.GetLocalStorage();
-    console.log(storage);
     let accounts = storage.app.accounts;
 
     // Verify account existence
     for (let account of accounts) {
         if (account.username === username) {
+            // Compare passwords
             const isMatch = await Encryption.comparePassword(password, account.masterkey);
             if (isMatch) {
+                // Put account in session
                 account.inSession = true;
                 account.lastSession = new Date();
+                // Update storages
                 StorageHandler.UpdateLocalStorage(storage);
                 StorageHandler.UpdateSessionStorage(account);
 
@@ -42,6 +44,7 @@ export async function Register(username, password) {
         inSession: true,
         lastSession: new Date(),
         keys: [],
+        folders: [],
     }
 
     // Verify already existing usernames
