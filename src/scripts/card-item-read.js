@@ -114,8 +114,6 @@ const template =
 `;
 const container = document.querySelector('#page__dashboard #bottom');
 
-let isShown = false;
-
 const ReadComponent = function () {
     const component = document.createElement('section');
     component.classList.add('card', 'creation');
@@ -132,7 +130,6 @@ const ReadComponent = function () {
         
         if (!container.contains(component)) {
             container.appendChild(component);
-            isShown = true;
         }
     }
 
@@ -140,8 +137,6 @@ const ReadComponent = function () {
         if (container.contains(component)) {
             container.removeChild(component);
         }
-        
-        isShown = false;
     }
 
     return {

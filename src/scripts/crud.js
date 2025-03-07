@@ -46,6 +46,6 @@ export async function CreateNewKeyItem({ name, email, key, website, fav = false,
     }
 };
 
-export function ReadKeyItem(index) {
+export function UpdateKeyItem(index) {
 
 }

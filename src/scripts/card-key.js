@@ -1,5 +1,6 @@
 import CreationComponent from "./card-creation";
 import ReadComponent from "./card-item-read";
+import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
 import { icon_facebook } from "./svg";
 
@@ -107,7 +108,6 @@ function LoadListeners(component, item) {
         const cont_misc = document.querySelector('#bottom #misc');
         const cont_card_creator = document.querySelector('#bottom #creator');
 
-
         // Verify if misc container is active
         if (cont_misc) {
             cont_misc.remove();
@@ -161,4 +161,18 @@ function LoadListeners(component, item) {
         // Prevent bubbling
         e.stopPropagation();
     })
+
+    // Listener for copy button
+    const btn_copy = component.querySelector('span#copy');
+    btn_copy.addEventListener('click', async (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+
+        const masterkey = StorageHandler.GetSessionStorage().masterkey;
+        const decryptedKey = await Encryption.decryptData(masterkey, item.item.key);
+
+        navigator.clipboard.writeText(decryptedKey)
+        .then(() => console.log("Texte copié !"))
+        .catch(err => console.error("Erreur lors de la copie :", err));
+    });
 };
