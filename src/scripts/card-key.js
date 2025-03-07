@@ -65,42 +65,99 @@ const template =
         </span>
 `;
 
-export default function KeyItem(item) {
-    // <button class="container key-item" id="item-1">
+/**
+ * Creates a key item component
+ * @param {Object} data - Object containing data 
+ * @returns Key item component
+ */
+export default function KeyItem() {
+    const container = document.querySelector('#bottom #articles #key-items')
     const component = document.createElement('button');
-    // Assign attributes
     component.classList.add('container', 'key-item');
-    component.setAttribute('id', `item-${item.index}`);
-    // Add template
     component.innerHTML = template;
+    
+    const render = (data) => {
+        component.setAttribute('id', `item-${data.index}`);
+        console.log(data);
+        LoadInformation(component, data.item);
 
-    // Fill key card information
-    // Fill favorite information
-    let svg_fav = component.querySelector('span#favorite svg');
-    if (item.item.fav) svg_fav.classList.add('ticked');
-    // Fill icon information
-    let svg_icon = component.querySelector('span#item-icon');
-    svg_icon.innerHTML = icon_facebook; // CHANGE CODE HERE LATER
-    // Fill name information
-    let p_name = component.querySelector('#item-info>p#name');
-    p_name.textContent = item.item.name;
-    // Fill email information
-    let sp_email = component.querySelector('#item-info>span#email');
-    sp_email.textContent = item.item.email;
-    // Fill folder information
-    let cont_compartment_mid = component.querySelector('.compartment-mid');
-    if (item.item.folder === '') {
-        cont_compartment_mid.setAttribute('style', 'display: none');
-    } else {
-        let sp_folder = cont_compartment_mid.querySelector('span#folder-name');
-        sp_folder.textContent = item.item.folder;
+        container.prepend(component);
+    }
+    
+    const unrender = () => {
+
     }
 
-    // Add listeners
-    LoadListeners(component, item);
-
-    return component;
+    return {
+        render,
+        unrender
+    };
 };
+
+// export default function KeyItem(item) {
+//     const component = document.createElement('button');
+//     component.classList.add('container', 'key-item');
+//     component.setAttribute('id', `item-${item.index}`);
+//     component.innerHTML = template;
+
+    
+//     // Fill key card information
+//     // Fill favorite information
+//     let svg_fav = component.querySelector('span#favorite svg');
+//     if (item.item.fav) svg_fav.classList.add('ticked');
+//     // Fill icon information
+//     let svg_icon = component.querySelector('span#item-icon');
+//     svg_icon.innerHTML = icon_facebook; // CHANGE CODE HERE LATER
+//     // Fill name information
+//     let p_name = component.querySelector('#item-info>p#name');
+//     p_name.textContent = item.item.name;
+//     // Fill email information
+//     let sp_email = component.querySelector('#item-info>span#email');
+//     sp_email.textContent = item.item.email;
+//     // Fill folder information
+//     let cont_compartment_mid = component.querySelector('.compartment-mid');
+//     if (item.item.folder === '') {
+//         cont_compartment_mid.setAttribute('style', 'display: none');
+//     } else {
+//         let sp_folder = cont_compartment_mid.querySelector('span#folder-name');
+//         sp_folder.textContent = item.item.folder;
+//     }
+
+//     // Add listeners
+//     LoadListeners(component, item);
+
+//     return component;
+// };
+
+/**
+ * 
+ * @param {Node} component - Key item component 
+ * @param {Object} data - Object that contains information for the key
+ */
+function LoadInformation(component, data) {
+    const svg_fav = component.querySelector('span#favorite svg');
+    const cont_icon = component.querySelector('#item-icon');
+    const p_name = component.querySelector('#name');
+    const p_email = component.querySelector('#email');
+    const cont_folder = component.querySelector('.compartment-mid');
+    const span_folder = cont_folder.querySelector('#folder-name');
+
+    console.log(data);
+    if (data.fav === true) {
+        svg_fav.classList.add('ticked')
+    } else {
+        svg_fav.classList.remove('ticked');
+    }
+    // CHANGE LATER
+    cont_icon.innerHTML = icon_facebook;
+    p_name.textContent = data.website.charAt(0).toUpperCase() + data.website.slice(1);
+    p_email.textContent = data.email;
+    if (data.folder) {
+        span_folder.textContent = data.folder; 
+    } else {
+        cont_folder.setAttribute('style', 'display: none');
+    }
+}
 
 function LoadListeners(component, item) {
     // Listener for the component itself
@@ -149,7 +206,6 @@ function LoadListeners(component, item) {
                 StorageHandler.UpdateLocalStorage(storage);
 
                 const cont_read = document.querySelector('#bottom section#item-info')
-                console.log(cont_read);
                 if (cont_read) {
                     const keys = StorageHandler.GetSessionStorage().keys;
                     const key = keys[item.index];
