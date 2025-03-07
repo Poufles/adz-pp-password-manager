@@ -2,6 +2,10 @@
     gap: 5px
 }
 
+.creation#item-info #favorite {
+    cursor: default;
+}
+
 .creation#item-info #box #icon-logo svg {
     width: 40px;
     height: 40px;

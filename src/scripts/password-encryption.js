@@ -47,7 +47,7 @@ const Encryption = function () {
     }
 
     async function encryptData(password, data) {
-        const key = await deriveKey(password);
+        const key = await deriveKey(extractKeyFromHash(password));
         const iv = crypto.getRandomValues(new Uint8Array(12));
         const encodedData = new TextEncoder().encode(data);
         const encrypted = await crypto.subtle.encrypt(
@@ -62,7 +62,7 @@ const Encryption = function () {
     }
 
     async function decryptData(password, encryptedData) {
-        const key = await deriveKey(password);
+        const key = await deriveKey(extractKeyFromHash(password));
         const data = JSON.parse(encryptedData);
         const iv = new Uint8Array(data.iv);
         const encrypted = new Uint8Array(data.encrypted);
@@ -75,7 +75,7 @@ const Encryption = function () {
     }
 
     function extractKeyFromHash(hashedMasterKey) {
-        return hashedMasterKey.slice(10, 42); 
+        return hashedMasterKey.slice(10, 35); 
     }
 
     return {
@@ -83,7 +83,7 @@ const Encryption = function () {
         comparePassword,
         encryptData,
         decryptData,
-        extractKeyFromHash
+        // extractKeyFromHash
     }
 
 }();

@@ -8,9 +8,9 @@ export async function CreateNewKeyItem({ name, email, key, website, fav = false,
     // Get master key
     const masterkey = sessionStorage.masterkey;
     // Derive master key
-    const derivationKey = Encryption.extractKeyFromHash(masterkey);
+    // const derivationKey = Encryption.extractKeyFromHash(masterkey);
     // Encrypt key
-    const encryptedKey = await Encryption.encryptData(derivationKey, key);
+    const encryptedKey = await Encryption.encryptData(masterkey, key);
     // Create new item
     const newKeyItem = {
         name,

@@ -2,9 +2,11 @@ import "../styles/dashboard.css";
 import "../styles/dashboard-responsiveness.css";
 import "../styles/comp-circular-percentage.css";
 import "../styles/comp-card-creation.css";
+import "../styles/comp-card-iteminfo.css";
 import StorageHandler from "./storage-handler.js";
 import { CurrentTimeToday, DateDifference } from "./date";
-import CreationComponent from "./dom-creation.js";
+import CreationComponent from "./card-creation.js";
+import KeyItem from "./card-key.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
@@ -72,15 +74,21 @@ if (cont_recent_items) {
 
 // Load keys on main article
 if (cont_key_items) {
-    // const session = StorageHandler.GetSessionStorage();
+    const session = StorageHandler.GetSessionStorage();
+    const key = session.keys;
+    const length = session.keys.length;
+    const cont_articles = dashboard.querySelector('section#articles #key-items');
 
-    // for (let key of session.keys) {
-    //     console.log('Key Items');
-    // } 
+    if (length !== 0) {
+        for (let iter = 0; iter < length; iter++) {
+            cont_articles.appendChild(KeyItem({item: key[iter], index: iter}));
+        }
+    }
 }
 
 // Listener for create button 
 if (btn_create) {
+    // CHANGE THIS LATER
     btn_create.addEventListener('mouseup', () => {
         const cont_bottom = dashboard.querySelector('section#bottom');
 
@@ -98,14 +106,5 @@ if (btn_create) {
         cont_bottom.appendChild(card);
         // Remove left section (misc section)
         cont_misc.remove();
-
-        // Listener for creator close button
-        const btn_close = card.querySelector('#creator button#close');
-        btn_close.addEventListener('mouseup', () => {
-            CreationComponent.resetComponent();
-            cont_bottom.removeChild(card);
-            // Add left section (misc section)
-            cont_bottom.prepend(cont_misc);
-        })
     });
 }

@@ -2,12 +2,6 @@ const path = require("path");
 const HWPP = require("html-webpack-plugin");
 
 module.exports = {
-    resolve: {
-        fallback: {
-            crypto: require.resolve('crypto-browserify'),
-            stream: require.resolve('stream-browserify')
-        }
-    },
     entry: {
         app: path.resolve(__dirname, "./src/scripts/index.js"),
         auth: path.resolve(__dirname, "./src/scripts/auth.js"),
