@@ -1,4 +1,4 @@
-import CreationComponent from "./card-creation";
+import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
@@ -20,7 +20,7 @@ const template =
             </span>
             <span id="item-info">
                 <p class="text color" id="name"></p>
-                <span tabindex="0" role="button" class="text button" id="email"></span>
+                <span tabindex="0" role="button" class="text-sub button" id="email"></span>
             </span>
         </span>
         <span class="compartment-mid">
@@ -75,15 +75,15 @@ export default function KeyItem() {
     const component = document.createElement('button');
     component.classList.add('container', 'key-item');
     component.innerHTML = template;
-    
+
     const render = (data) => {
         component.setAttribute('id', `item-${data.index}`);
-        console.log(data);
         LoadInformation(component, data.item);
+        LoadListeners(component, data);
 
         container.prepend(component);
     }
-    
+
     const unrender = () => {
 
     }
@@ -94,43 +94,8 @@ export default function KeyItem() {
     };
 };
 
-// export default function KeyItem(item) {
-//     const component = document.createElement('button');
-//     component.classList.add('container', 'key-item');
-//     component.setAttribute('id', `item-${item.index}`);
-//     component.innerHTML = template;
-
-    
-//     // Fill key card information
-//     // Fill favorite information
-//     let svg_fav = component.querySelector('span#favorite svg');
-//     if (item.item.fav) svg_fav.classList.add('ticked');
-//     // Fill icon information
-//     let svg_icon = component.querySelector('span#item-icon');
-//     svg_icon.innerHTML = icon_facebook; // CHANGE CODE HERE LATER
-//     // Fill name information
-//     let p_name = component.querySelector('#item-info>p#name');
-//     p_name.textContent = item.item.name;
-//     // Fill email information
-//     let sp_email = component.querySelector('#item-info>span#email');
-//     sp_email.textContent = item.item.email;
-//     // Fill folder information
-//     let cont_compartment_mid = component.querySelector('.compartment-mid');
-//     if (item.item.folder === '') {
-//         cont_compartment_mid.setAttribute('style', 'display: none');
-//     } else {
-//         let sp_folder = cont_compartment_mid.querySelector('span#folder-name');
-//         sp_folder.textContent = item.item.folder;
-//     }
-
-//     // Add listeners
-//     LoadListeners(component, item);
-
-//     return component;
-// };
-
 /**
- * 
+ * Loads key item information 
  * @param {Node} component - Key item component 
  * @param {Object} data - Object that contains information for the key
  */
@@ -142,7 +107,6 @@ function LoadInformation(component, data) {
     const cont_folder = component.querySelector('.compartment-mid');
     const span_folder = cont_folder.querySelector('#folder-name');
 
-    console.log(data);
     if (data.fav === true) {
         svg_fav.classList.add('ticked')
     } else {
@@ -153,45 +117,55 @@ function LoadInformation(component, data) {
     p_name.textContent = data.website.charAt(0).toUpperCase() + data.website.slice(1);
     p_email.textContent = data.email;
     if (data.folder) {
-        span_folder.textContent = data.folder; 
+        span_folder.textContent = data.folder;
     } else {
         cont_folder.setAttribute('style', 'display: none');
     }
 }
 
-function LoadListeners(component, item) {
-    // Listener for the component itself
-    component.addEventListener('click', () => {
-        const cont_misc = document.querySelector('#bottom #misc');
-        const cont_card_creator = document.querySelector('#bottom #creator');
+/**
+ * Load listeners for the component
+ * @param {Node} component - Key item component
+ * @param {Object} data - Object that contains information for the key
+ */
+function LoadListeners(component, data) {
+    const btn_fav = component.querySelector('span#favorite');
+    const cont_folder = component.querySelector('.compartment-mid');
+    const btn_folder = cont_folder.querySelector('span[role=button]');
+    const btn_copy = component.querySelectorAll('#copy');
+    const btn_edit = component.querySelector('button#edit');
+    const btn_delete = component.querySelector('button#delete');
 
-        // Verify if misc container is active
-        if (cont_misc) {
-            cont_misc.remove();
+    component.addEventListener('click', () => {
+        // CHANGE LATER
+        const misc = document.querySelector('#misc');
+        if (misc) {
+            misc.remove();
         }
 
-        // Verify if creator component is active
-        if (cont_card_creator) {
-            CreationComponent.resetComponent();
-            cont_card_creator.remove();
-        };
+        if (CreatEditComponent.isRendered()) {
+            CreatEditComponent.unrender();
+        }
 
-        // Render read component
-        const keys = StorageHandler.GetSessionStorage().keys;
-        const key = keys[item.index];
-        ReadComponent.render(key);
+        if (ReadComponent.isRendered()) {
+            ReadComponent.updateRender(data);
+        } else {
+            ReadComponent.render(data);
+        };
     });
 
-    // Listener for svg button
-    const btn_fav = component.querySelector('span#favorite');
     btn_fav.addEventListener('click', (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+
         // Change item favorite status
         const sp_fav = btn_fav.querySelector('svg');
         sp_fav.classList.toggle('ticked');
 
         // Update session storage
+        const index = data.index
         const sessionStorage = StorageHandler.GetSessionStorage();
-        const key = sessionStorage.keys[item.index];
+        const key = sessionStorage.keys[index];
 
         key.fav = sp_fav.classList.contains('ticked') ? true : false;
         StorageHandler.UpdateSessionStorage(sessionStorage);
@@ -208,27 +182,112 @@ function LoadListeners(component, item) {
                 const cont_read = document.querySelector('#bottom section#item-info')
                 if (cont_read) {
                     const keys = StorageHandler.GetSessionStorage().keys;
-                    const key = keys[item.index];
-                    ReadComponent.render(key);
-                }
-            }
-        }
-
-        // Prevent bubbling
-        e.stopPropagation();
-    })
-
-    // Listener for copy button
-    const btn_copy = component.querySelector('span#copy');
-    btn_copy.addEventListener('click', async (e) => {
-        // Prevent bubbling
-        e.stopPropagation();
-
-        const masterkey = StorageHandler.GetSessionStorage().masterkey;
-        const decryptedKey = await Encryption.decryptData(masterkey, item.item.key);
-
-        navigator.clipboard.writeText(decryptedKey)
-        .then(() => console.log("Texte copié !"))
-        .catch(err => console.error("Erreur lors de la copie :", err));
+                    const key = keys[index];
+                    ReadComponent.updateRender({
+                        item: key,
+                        index
+                    });
+                };
+            };
+        };
     });
+
+    btn_folder.addEventListener('click', () => {
+        // Prevent bubbling
+        e.stopPropagation();
+        console.log('CHANGE ME');
+    });
+
+    btn_copy.forEach(button => {
+        button.addEventListener('click', async (e) => {
+            // Prevent bubbling
+            e.stopPropagation();
+
+            const masterkey = StorageHandler.GetSessionStorage().masterkey;
+            const decryptedKey = await Encryption.decryptData(masterkey, data.item.key);
+
+            navigator.clipboard.writeText(decryptedKey)
+                .then(() => console.log("Texte copié !"))
+                .catch(err => console.error("Erreur lors de la copie :", err));
+        });
+    })
 };
+
+/**
+ * Load listeners for the component
+ * @param {Node} component - Key item component
+ * @param {Object} data - Object that contains information for the key
+ */
+// function LoadListeners(component, data) {
+//     // Listener for the component itself
+//     component.addEventListener('click', () => {
+//         const cont_misc = document.querySelector('#bottom #misc');
+//         const cont_card_creator = document.querySelector('#bottom #creator');
+
+//         // Verify if misc container is active
+//         if (cont_misc) {
+//             cont_misc.remove();
+//         }
+
+//         // Verify if creator component is active
+//         if (cont_card_creator) {
+//             CreationComponent.resetComponent();
+//             cont_card_creator.remove();
+//         };
+
+//         // Render read component
+//         const keys = StorageHandler.GetSessionStorage().keys;
+//         const key = keys[item.index];
+//         ReadComponent.render(key);
+//     });
+
+//     // Listener for svg button
+//     const btn_fav = component.querySelector('span#favorite');
+//     btn_fav.addEventListener('click', (e) => {
+//         // Change item favorite status
+//         const sp_fav = btn_fav.querySelector('svg');
+//         sp_fav.classList.toggle('ticked');
+
+//         // Update session storage
+//         const sessionStorage = StorageHandler.GetSessionStorage();
+//         const key = sessionStorage.keys[item.index];
+
+//         key.fav = sp_fav.classList.contains('ticked') ? true : false;
+//         StorageHandler.UpdateSessionStorage(sessionStorage);
+
+//         // Update local storage
+//         const storage = StorageHandler.GetLocalStorage();
+//         const accounts = storage.app.accounts;
+//         // Iterate over storage
+//         for (let i = 0; i < accounts.length; i++) {
+//             if (accounts[i].inSession) {
+//                 storage.app.accounts[i] = StorageHandler.GetSessionStorage();
+//                 StorageHandler.UpdateLocalStorage(storage);
+
+//                 const cont_read = document.querySelector('#bottom section#item-info')
+//                 if (cont_read) {
+//                     const keys = StorageHandler.GetSessionStorage().keys;
+//                     const key = keys[item.index];
+//                     ReadComponent.render(key);
+//                 }
+//             }
+//         }
+
+//         // Prevent bubbling
+//         e.stopPropagation();
+//     })
+
+//     // Listener for copy button
+//     const btn_copy = component.querySelector('span#copy');
+//     btn_copy.addEventListener('click', async (e) => {
+//         // Prevent bubbling
+//         e.stopPropagation();
+
+//         const masterkey = StorageHandler.GetSessionStorage().masterkey;
+//         const decryptedKey = await Encryption.decryptData(masterkey, item.item.key);
+
+//         navigator.clipboard.writeText(decryptedKey)
+//         .then(() => console.log("Texte copié !"))
+//         .catch(err => console.error("Erreur lors de la copie :", err));
+//     });
+// };

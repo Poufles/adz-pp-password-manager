@@ -119,6 +119,8 @@ const component_template =
         <p class="text" id="advise">Be sure to double check !</p>
     `;
 
+let isShown = false;
+
 const CreatEditComponent = function(){
     // Create component
     const container = document.querySelector('#bottom');
@@ -140,7 +142,8 @@ const CreatEditComponent = function(){
         btn_submit.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
 
         btn_close.addEventListener('click', () => {
-            container.removeChild(component);
+            unrender();
+            isShown = false;
         });
 
         LoadInputInfoAndListeners(component, data);
@@ -148,18 +151,23 @@ const CreatEditComponent = function(){
         
         if (!container.contains(component)) {
             container.appendChild(component);
+            isShown = true;
         }
     };
-
+    
     const unrender = () => {
         if (container.contains(component)) {
             container.removeChild(component);
+            isShown = false;
         }
     }
+
+    const isRendered = () => isShown;
     
     return {
         render,
-        unrender
+        unrender,
+        isRendered
     }
 }();
 
@@ -306,9 +314,7 @@ function LoadActionListener(component, data) {
         const hint = input_hint.value;
         const folder = input_folder.value;
         
-        console.log('Bonjour');
         if (email && password && website) {
-            console.log('Hello');
             const newKey = await CreateNewKeyItem({
                 email,
                 password,

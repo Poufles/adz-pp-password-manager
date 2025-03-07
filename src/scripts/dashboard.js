@@ -8,6 +8,7 @@ import { CurrentTimeToday, DateDifference } from "./date";
 import CreationComponent from "./card-creation.js";
 import KeyItem from "./card-key.js";
 import CreatEditComponent from "./card-createdit.js";
+import ReadComponent from "./card-item-read.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
@@ -75,29 +76,35 @@ if (cont_recent_items) {
 
 // Load keys on main article
 if (cont_key_items) {
-    // const session = StorageHandler.GetSessionStorage();
-    // const key = session.keys;
-    // const length = session.keys.length;
-    // const cont_articles = dashboard.querySelector('section#articles #key-items');
+    const session = StorageHandler.GetSessionStorage();
+    const key = session.keys;
+    const length = session.keys.length;
+    const cont_articles = dashboard.querySelector('section#articles #key-items');
 
-    // if (length !== 0) {
-    //     for (let iter = 0; iter < length; iter++) {
-    //         cont_articles.appendChild(KeyItem({item: key[iter], index: iter}));
-    //     }
-    // }
+    if (length !== 0) {
+        for (let iter = 0; iter < length; iter++) {
+            KeyItem().render({
+                item: key[iter],
+                index: iter
+            });
+        }
+    }
 }
 
 // Listener for create button 
 if (btn_create) {
     // CHANGE THIS LATER
     btn_create.addEventListener('click', () => {
-        const cont_createEdit = document.querySelector('#bottom .creation');
         const cont_misc = document.querySelector('#bottom #misc');
         if (cont_misc) {
             cont_misc.remove(); // CHANGE LATER
         }
+        
+        if (ReadComponent.isRendered()) {
+            ReadComponent.unrender();
+        };
 
-        if (!cont_createEdit) {
+        if (!CreatEditComponent.isRendered()) {
             CreatEditComponent.render('create');
         } else {
             CreatEditComponent.unrender();
