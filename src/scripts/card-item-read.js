@@ -126,27 +126,41 @@ const ReadComponent = function () {
 
         const btn_close = component.querySelector('#close');
 
-        btn_close.addEventListener('click', () => unrender());
+        btn_close.addEventListener('click', () => {
+            unrender();
+            isShown = false;
+        });
 
-        LoadInformation(component, data);
+        LoadInformation(component, data.item);
         
         if (!container.contains(component)) {
             container.appendChild(component);
             isShown = true;
         }
     }
-
+    
     const unrender = () => {
         if (container.contains(component)) {
             container.removeChild(component);
+            isShown = false;
         }
-        
-        isShown = false;
     }
+
+    /**
+     * Update component information
+     * @param {Object} data - Object containing key information (item and index) 
+     */
+    const updateRender = (data) => {
+        LoadInformation(component, data.item);
+    }
+
+    const isRendered = () => isShown;
 
     return {
         render,
         unrender,
+        updateRender,
+        isRendered
     }
 }();
 

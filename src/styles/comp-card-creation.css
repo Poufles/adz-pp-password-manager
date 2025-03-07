@@ -1,9 +1,9 @@
 .creation {
-    flex-grow: 1;
     background-color: #FFF;
     border-radius: var(--b-radius-1);
     padding: 20px;
-    width: 316px;
+    width: 100%;
+    max-width: 350px;
     min-height: 569px;
     height: 100%;
     display: flex;
@@ -331,6 +331,12 @@
 
 .creation#creator .inputs .dropdown #dropdown-items::-webkit-scrollbar {
     width: 0;
+}
+
+@media screen and (max-width: 899px) {
+    .creation {
+        max-width: none;
+    }
 }
 
 @media screen and (max-width: 549px) {
