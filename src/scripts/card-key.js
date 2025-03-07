@@ -1,3 +1,5 @@
+import CreationComponent from "./card-creation";
+import ReadComponent from "./card-item-read";
 import StorageHandler from "./storage-handler";
 import { icon_facebook } from "./svg";
 
@@ -94,15 +96,33 @@ export default function KeyItem(item) {
     }
 
     // Add listeners
-    LoadListeners(component, item.index);
+    LoadListeners(component, item);
 
     return component;
 };
 
-function LoadListeners(component, index) {
+function LoadListeners(component, item) {
     // Listener for the component itself
     component.addEventListener('click', () => {
-        console.log('IM TAPPED!');
+        const cont_misc = document.querySelector('#bottom #misc');
+        const cont_card_creator = document.querySelector('#bottom #creator');
+
+
+        // Verify if misc container is active
+        if (cont_misc) {
+            cont_misc.remove();
+        }
+
+        // Verify if creator component is active
+        if (cont_card_creator) {
+            CreationComponent.resetComponent();
+            cont_card_creator.remove();
+        };
+
+        // Render read component
+        const keys = StorageHandler.GetSessionStorage().keys;
+        const key = keys[item.index];
+        ReadComponent.render(key);
     });
 
     // Listener for svg button
@@ -114,7 +134,7 @@ function LoadListeners(component, index) {
 
         // Update session storage
         const sessionStorage = StorageHandler.GetSessionStorage();
-        const key = sessionStorage.keys[index];
+        const key = sessionStorage.keys[item.index];
 
         key.fav = sp_fav.classList.contains('ticked') ? true : false;
         StorageHandler.UpdateSessionStorage(sessionStorage);
@@ -127,6 +147,14 @@ function LoadListeners(component, index) {
             if (accounts[i].inSession) {
                 storage.app.accounts[i] = StorageHandler.GetSessionStorage();
                 StorageHandler.UpdateLocalStorage(storage);
+
+                const cont_read = document.querySelector('#bottom section#item-info')
+                console.log(cont_read);
+                if (cont_read) {
+                    const keys = StorageHandler.GetSessionStorage().keys;
+                    const key = keys[item.index];
+                    ReadComponent.render(key);
+                }
             }
         }
 

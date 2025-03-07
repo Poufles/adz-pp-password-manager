@@ -311,20 +311,52 @@ const CreationComponent = function () {
     const btn_create = creator_card.querySelector('#input-actions #submit')
     // Listener for create
     btn_create.addEventListener('mousedown', async () => {
-        const newItem = await CreateNewKeyItem({
-            name: input_website.value,
-            email: input_email.value,
-            key: input_pass.value,
-            website: input_website.value,
-            fav: btn_fav.classList.contains('ticked'),
-            hint: input_hint.value,
-            folder: input_folder.value
-        })
+        let name = input_website.value;
+        let email = input_email.value;
+        let key = input_pass.value;
+        let website = input_website.value;
+        let fav = btn_fav.classList.contains('ticked');
+        let hint = input_hint.value;
+        let folder = input_folder.value;
+
+        if (email === '') {
+            input_email.classList.add('invalid');
+            p_advise.classList.add('invalid');
+            p_advise.textContent = 'Missing Email !';
+
+            return;
+        }
+
+        if (key === '') {
+            input_pass.classList.add('invalid');
+            p_advise.classList.add('invalid');
+            p_advise.textContent = 'Missing Password !';
+
+            return;
+        }
+
+        if (website === '') {
+            input_website.classList.add('invalid');
+            p_advise.classList.add('invalid');
+            p_advise.textContent = 'Missing Website !';
+
+            return;
+        }
+
+        const newItem = await CreateNewKeyItem({ name, email, key, website, fav, hint, folder })
 
         // Append new item
         const cont_articles = document.querySelector('section#articles #key-items');
         cont_articles.appendChild(KeyItem(newItem));
     });
+
+    const btn_close = creator_card.querySelector('button#close');
+    btn_close.addEventListener('mouseup', () => {
+        const parent = document.querySelector('section#bottom');
+        parent.removeChild(creator_card);
+        // ADD CODE HERE FOR MISC LATER
+        resetComponent();
+    })
 
     const getComponent = () => creator_card;
     const resetComponent = () => {
