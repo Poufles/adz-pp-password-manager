@@ -16,7 +16,6 @@ export async function CreateNewKeyItem(data) {
     const encryptedKey = await Encryption.encryptData(masterkey, data.key);
     // Create new item
     const newKeyItem = {
-        name: data.name,
         email: data.email,
         key: encryptedKey,
         website: data.website,

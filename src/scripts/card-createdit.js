@@ -308,23 +308,22 @@ function LoadActionListener(component, data) {
 
     btn_submit.addEventListener('click', async () => {
         const email = input_email.value;
-        const password = input_password.value;
+        const key = input_password.value;
         const website = input_website.value;
         const fav = btn_fav.classList.contains('ticked') ? true : false;
         const hint = input_hint.value;
         const folder = input_folder.value;
         
-        if (email && password && website) {
+        if (email && key && website) {
             const newKey = await CreateNewKeyItem({
                 email,
-                password,
+                key,
                 website,
                 fav,
                 hint,
                 folder
             });
-
-            KeyItem().render(newKey);
+            KeyItem(newKey).render();
         }
     });
 };

@@ -83,10 +83,10 @@ if (cont_key_items) {
 
     if (length !== 0) {
         for (let iter = 0; iter < length; iter++) {
-            KeyItem().render({
+            KeyItem({
                 item: key[iter],
                 index: iter
-            });
+            }).render();
         }
     }
 }

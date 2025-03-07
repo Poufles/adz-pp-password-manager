@@ -347,7 +347,7 @@ const CreationComponent = function () {
 
         // Append new item
         const cont_articles = document.querySelector('section#articles #key-items');
-        cont_articles.appendChild(KeyItem(newItem));
+        KeyItem().render(newItem);
     });
 
     const btn_close = creator_card.querySelector('button#close');

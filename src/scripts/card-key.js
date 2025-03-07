@@ -65,24 +65,33 @@ const template =
         </span>
 `;
 
+
 /**
  * Creates a key item component
  * @param {Object} data - Object containing data 
  * @returns Key item component
  */
-export default function KeyItem() {
+export default function KeyItem(data) {
+    let itemData = data;
     const container = document.querySelector('#bottom #articles #key-items')
     const component = document.createElement('button');
     component.classList.add('container', 'key-item');
     component.innerHTML = template;
 
-    const render = (data) => {
-        component.setAttribute('id', `item-${data.index}`);
-        LoadInformation(component, data.item);
-        LoadListeners(component, data);
+    const getItemData = () => itemData;
+    const setItemData = (newData) => { itemData = newData };
+ 
+    const render = () => {
+        component.setAttribute('id', `item-${itemData.index}`);
+        LoadInformation(component, itemData.item);
+        LoadListeners(component, getItemData, setItemData);
 
         container.prepend(component);
     }
+
+    const updateRender = () => {
+
+    };
 
     const unrender = () => {
 
@@ -128,7 +137,7 @@ function LoadInformation(component, data) {
  * @param {Node} component - Key item component
  * @param {Object} data - Object that contains information for the key
  */
-function LoadListeners(component, data) {
+function LoadListeners(component, getItemData, setItemData) {
     const btn_fav = component.querySelector('span#favorite');
     const cont_folder = component.querySelector('.compartment-mid');
     const btn_folder = cont_folder.querySelector('span[role=button]');
@@ -137,6 +146,7 @@ function LoadListeners(component, data) {
     const btn_delete = component.querySelector('button#delete');
 
     component.addEventListener('click', () => {
+        const itemData = getItemData();
         // CHANGE LATER
         const misc = document.querySelector('#misc');
         if (misc) {
@@ -148,9 +158,9 @@ function LoadListeners(component, data) {
         }
 
         if (ReadComponent.isRendered()) {
-            ReadComponent.updateRender(data);
+            ReadComponent.updateRender(itemData);
         } else {
-            ReadComponent.render(data);
+            ReadComponent.render(itemData);
         };
     });
 
@@ -158,12 +168,13 @@ function LoadListeners(component, data) {
         // Prevent bubbling
         e.stopPropagation();
 
+        const itemData = getItemData();
         // Change item favorite status
         const sp_fav = btn_fav.querySelector('svg');
         sp_fav.classList.toggle('ticked');
 
         // Update session storage
-        const index = data.index
+        const index = itemData.index
         const sessionStorage = StorageHandler.GetSessionStorage();
         const key = sessionStorage.keys[index];
 
@@ -178,15 +189,12 @@ function LoadListeners(component, data) {
             if (accounts[i].inSession) {
                 storage.app.accounts[i] = StorageHandler.GetSessionStorage();
                 StorageHandler.UpdateLocalStorage(storage);
+                
+                const updatedItemData = { item: key, index }
+                setItemData(updatedItemData);
 
-                const cont_read = document.querySelector('#bottom section#item-info')
-                if (cont_read) {
-                    const keys = StorageHandler.GetSessionStorage().keys;
-                    const key = keys[index];
-                    ReadComponent.updateRender({
-                        item: key,
-                        index
-                    });
+                if (ReadComponent.isRendered()) {
+                    ReadComponent.updateRender(updatedItemData);
                 };
             };
         };
@@ -204,7 +212,7 @@ function LoadListeners(component, data) {
             e.stopPropagation();
 
             const masterkey = StorageHandler.GetSessionStorage().masterkey;
-            const decryptedKey = await Encryption.decryptData(masterkey, data.item.key);
+            const decryptedKey = await Encryption.decryptData(masterkey, itemData.item.key);
 
             navigator.clipboard.writeText(decryptedKey)
                 .then(() => console.log("Texte copié !"))
@@ -212,82 +220,3 @@ function LoadListeners(component, data) {
         });
     })
 };
-
-/**
- * Load listeners for the component
- * @param {Node} component - Key item component
- * @param {Object} data - Object that contains information for the key
- */
-// function LoadListeners(component, data) {
-//     // Listener for the component itself
-//     component.addEventListener('click', () => {
-//         const cont_misc = document.querySelector('#bottom #misc');
-//         const cont_card_creator = document.querySelector('#bottom #creator');
-
-//         // Verify if misc container is active
-//         if (cont_misc) {
-//             cont_misc.remove();
-//         }
-
-//         // Verify if creator component is active
-//         if (cont_card_creator) {
-//             CreationComponent.resetComponent();
-//             cont_card_creator.remove();
-//         };
-
-//         // Render read component
-//         const keys = StorageHandler.GetSessionStorage().keys;
-//         const key = keys[item.index];
-//         ReadComponent.render(key);
-//     });
-
-//     // Listener for svg button
-//     const btn_fav = component.querySelector('span#favorite');
-//     btn_fav.addEventListener('click', (e) => {
-//         // Change item favorite status
-//         const sp_fav = btn_fav.querySelector('svg');
-//         sp_fav.classList.toggle('ticked');
-
-//         // Update session storage
-//         const sessionStorage = StorageHandler.GetSessionStorage();
-//         const key = sessionStorage.keys[item.index];
-
-//         key.fav = sp_fav.classList.contains('ticked') ? true : false;
-//         StorageHandler.UpdateSessionStorage(sessionStorage);
-
-//         // Update local storage
-//         const storage = StorageHandler.GetLocalStorage();
-//         const accounts = storage.app.accounts;
-//         // Iterate over storage
-//         for (let i = 0; i < accounts.length; i++) {
-//             if (accounts[i].inSession) {
-//                 storage.app.accounts[i] = StorageHandler.GetSessionStorage();
-//                 StorageHandler.UpdateLocalStorage(storage);
-
-//                 const cont_read = document.querySelector('#bottom section#item-info')
-//                 if (cont_read) {
-//                     const keys = StorageHandler.GetSessionStorage().keys;
-//                     const key = keys[item.index];
-//                     ReadComponent.render(key);
-//                 }
-//             }
-//         }
-
-//         // Prevent bubbling
-//         e.stopPropagation();
-//     })
-
-//     // Listener for copy button
-//     const btn_copy = component.querySelector('span#copy');
-//     btn_copy.addEventListener('click', async (e) => {
-//         // Prevent bubbling
-//         e.stopPropagation();
-
-//         const masterkey = StorageHandler.GetSessionStorage().masterkey;
-//         const decryptedKey = await Encryption.decryptData(masterkey, item.item.key);
-
-//         navigator.clipboard.writeText(decryptedKey)
-//         .then(() => console.log("Texte copié !"))
-//         .catch(err => console.error("Erreur lors de la copie :", err));
-//     });
-// };

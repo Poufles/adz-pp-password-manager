@@ -201,9 +201,13 @@ async function LoadInformation(component, data) {
 
     const btn_email_copy = component.querySelector('#item-email #copy')
     const btn_password_copy = component.querySelector('#item-password #copy')
+    const btn_edit = component.querySelector('#submit');
 
     btn_email_copy.addEventListener('click', () => copyToClipboard(data.email));
     btn_password_copy.addEventListener('click', () => copyToClipboard(decryptedKey));
+    btn_edit.addEventListener('click', () => {
+        
+    });
 };
 
 // Function by ChatGPT
