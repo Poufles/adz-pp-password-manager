@@ -9,6 +9,7 @@ import StorageHandler from "./storage-handler";
 export async function CreateNewKeyItem(data) {
     const sessionStorage = StorageHandler.GetSessionStorage();
     const keys = sessionStorage.keys;
+    const index = keys.length;
 
     // Get master key
     const masterkey = sessionStorage.masterkey;
@@ -26,12 +27,35 @@ export async function CreateNewKeyItem(data) {
         openedAt: 'none'
     };
 
+    if (data.folder) {
+        const folders = sessionStorage.folders;
+        let isFolderExist = false;
+
+        for (let folder of folders) {
+            if (folder.name === data.folder) {
+                isFolderExist = true;
+                folder.keys.push(index);
+
+                break;
+            };
+        };
+
+        if (!isFolderExist) {
+            const newFolder = {
+                name: data.folder,
+                keys: [index],
+                isRecent: false,
+                openedAt: 'none'
+            };
+
+            folders.push(newFolder);
+        }
+    };
+
     // Store new item in session storage
     keys.push(newKeyItem);
     StorageHandler.UpdateSessionStorage(sessionStorage);
-    // Get index of new item
-    const index = keys.length - 1;
-    
+
     // Get local storage 
     const storage = StorageHandler.GetLocalStorage();
     const accounts = storage.app.accounts;
@@ -76,7 +100,7 @@ export async function CreateNewKeyItem(data) {
 //     StorageHandler.UpdateSessionStorage(sessionStorage);
 //     // Get index of new item
 //     const index = keys.length - 1;
-    
+
 //     // Get local storage 
 //     const storage = StorageHandler.GetLocalStorage();
 //     const accounts = storage.app.accounts;

@@ -151,6 +151,11 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    transition: var(--trans-q);
+}
+
+.creation #input-password .container.invalid {
+    border: 2px solid red;
 }
 
 .creation #input-password .container button {
@@ -207,7 +212,7 @@
 }
 
 .creation .inputs input[type=password] {
-    flex-grow: 0;
+    flex-grow: 1;
     border: 0;
     outline: none;
 }
@@ -286,6 +291,11 @@
     gap: 3px;
     align-items: center;
     position: relative;
+    transition: var(--trans-q);
+}
+
+.creation#creator .inputs .dropdown.invalid {
+    border: 2px solid red;
 }
 
 .creation#creator .inputs .dropdown input[type=text] {

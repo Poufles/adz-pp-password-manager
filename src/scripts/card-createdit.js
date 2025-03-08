@@ -190,8 +190,11 @@ async function LoadInputInfoAndListeners(component, data) {
     const form = component.querySelector('form');
     const btn_fav = component.querySelector('button#favorite');
     const input_email = form.querySelector('#email');
-    const input_password = form.querySelector('#password');
-    const input_website = form.querySelector('#website');
+    const cont_password = form.querySelector('#input-password .wrapper>.container');
+    const input_password = cont_password.querySelector('#password');
+    const cont_website = form.querySelector('#input-website');
+    const cont_dropdown = cont_website.querySelector('.dropdown');
+    const input_website = cont_dropdown.querySelector('#website');
     const input_hint = form.querySelector('#hint');
     const input_folder = form.querySelector('#folder');
     const p_required_email = component.querySelector('#required #item-1');
@@ -261,7 +264,23 @@ async function LoadInputInfoAndListeners(component, data) {
         }
     });
 
+    input_password.addEventListener('focus', () => {
+        if (cont_password.classList.contains('invalid')) {
+            cont_password.classList.remove('invalid');
+            p_advise.classList.remove('invalid');
+            p_advise.textContent = 'Be sure to double check !';
+        }
+    });
+
     input_password.addEventListener('keyup', (e) => TickRequiredOptional(input_password, p_required_password));
+
+    input_website.addEventListener('focus', () => {
+        if (cont_dropdown.classList.contains('invalid')) {
+            cont_dropdown.classList.remove('invalid');
+            p_advise.classList.remove('invalid');
+            p_advise.textContent = 'Be sure to double check !';
+        }
+    });
 
     input_website.addEventListener('keyup', (e) => TickRequiredOptional(input_website, p_required_website));
 
@@ -292,6 +311,9 @@ async function LoadInputInfoAndListeners(component, data) {
             this.classList.remove('open-eye');
         }
     });
+
+    LoadDropDownListeners(form, 'website');
+    LoadDropDownListeners(form, 'folder');
 }
 
 /**
@@ -300,11 +322,14 @@ async function LoadInputInfoAndListeners(component, data) {
  * @param {Object} data - Data object for edit
  */
 function LoadActionListener(component, data) {
+    const p_advise = component.querySelector('#advise');
     const form = component.querySelector('form');
     const btn_fav = component.querySelector('button#favorite');
     const input_email = form.querySelector('#email');
-    const input_password = form.querySelector('#password');
-    const input_website = form.querySelector('#website');
+    const cont_password = form.querySelector('#input-password .wrapper>.container');
+    const input_password = cont_password.querySelector('#password');
+    const cont_website = form.querySelector('#input-website .dropdown');
+    const input_website = cont_website.querySelector('#website');
     const input_hint = form.querySelector('#hint');
     const input_folder = form.querySelector('#folder');
     const btn_submit = form.querySelector('button#submit');
@@ -324,6 +349,15 @@ function LoadActionListener(component, data) {
         const hint = input_hint.value;
         const folder = input_folder.value;
 
+        VerifyRequired('email', email, input_email, p_advise);
+        VerifyRequired('password', key, cont_password, p_advise);
+        VerifyRequired('website', website, cont_website, p_advise);
+
+        if ((!key && !website) || (!email && !key && !website)) {
+            p_advise.textContent = 'Required Information Missing !';
+            p_advise.classList.add('invalid');
+        }
+
         if (email && key && website) {
             const newKey = await CreateNewKeyItem({
                 email,
@@ -333,6 +367,7 @@ function LoadActionListener(component, data) {
                 hint,
                 folder
             });
+
             KeyItem(newKey).render();
         }
     });
@@ -348,6 +383,7 @@ function LoadActionListener(component, data) {
                 hint: input_hint,
                 folder: input_folder
             }, {
+                fav: p_optional_fav,
                 email: p_required_email,
                 password: p_required_password,
                 website: p_required_website,
@@ -356,6 +392,107 @@ function LoadActionListener(component, data) {
             })
         }
     });
+};
+
+function LoadDropDownListeners(component, dropdownFor) {
+    const container = component.querySelector(`form #input-${dropdownFor}`);
+    const cont_dropdown = container.querySelector('.dropdown');
+    const inputField = cont_dropdown.querySelector(`#${dropdownFor}`);
+
+    inputField.addEventListener('focus', () => {
+        const storage = StorageHandler.GetLocalStorage();
+        const isDropdownItemsExist = cont_dropdown.querySelector('#dropdown-items');
+        let dataStorage;
+
+        if (dropdownFor === 'website') {
+            dataStorage = storage.app.websites;
+        } 
+
+        if (dropdownFor === 'folder') {
+            const sessionStorage = StorageHandler.GetSessionStorage();
+            dataStorage = sessionStorage.folders;
+        }
+
+        if (!isDropdownItemsExist) {
+            const cont_dropdown_items = document.createElement('div');
+            cont_dropdown_items.setAttribute('id', 'dropdown-items');
+            cont_dropdown.appendChild(cont_dropdown_items);
+
+            for (let data of dataStorage) {
+                const newItem = CreateDropdownItem(inputField, data.name);
+
+                cont_dropdown_items.appendChild(newItem);
+            };
+        };
+    });
+    
+    inputField.addEventListener('blur', () => {
+        const cont_dropdown_items = cont_dropdown.querySelector('#dropdown-items');
+
+        if (cont_dropdown_items) {
+            cont_dropdown.removeChild(cont_dropdown_items);
+        };
+    });
+
+    inputField.addEventListener('input', (e) => {
+        const storage = StorageHandler.GetLocalStorage();
+        const search = inputField.value.toLowerCase();
+        const cont_dropdown_items = cont_dropdown.querySelector('#dropdown-items');
+        let dataStorage;
+
+        if (dropdownFor === 'website') {
+            dataStorage = storage.app.websites;
+        } 
+
+        console.log(dropdownFor);
+        if (dropdownFor === 'folder') {
+            const sessionStorage = StorageHandler.GetSessionStorage();
+            dataStorage = sessionStorage.folders;
+        }
+
+        if (cont_dropdown_items) {
+            cont_dropdown_items.innerHTML = '';
+
+            for (let data of dataStorage) {
+                const name = data.name;
+
+                if (name.toLowerCase().includes(search)) {
+                    const newItem = CreateDropdownItem(inputField, name);
+                    cont_dropdown_items.appendChild(newItem);
+                }
+            };
+        }
+    });
+}
+
+/**
+ * Creates a dropdown item component
+ * @param {Node} inputField - Input element to write the item name on 
+ * @param {String} data - A text receiving the name of the item 
+ * @returns Dropdown item
+ */
+function CreateDropdownItem(inputField, data) {
+    const btn_dropdownItem = document.createElement('button');
+    const itemName = data;
+    btn_dropdownItem.setAttribute('type', 'button');
+    btn_dropdownItem.classList.add('text', 'item');
+    btn_dropdownItem.textContent = itemName;
+
+    btn_dropdownItem.addEventListener('mouseenter', (e) => {
+        inputField.value = itemName;
+    })
+    
+    btn_dropdownItem.addEventListener('mousedown', (e) => {
+        inputField.value = itemName;
+    })
+    
+    btn_dropdownItem.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            inputField.value = websiteName;
+        }
+    })
+
+    return btn_dropdownItem;
 };
 
 /**
@@ -376,8 +513,10 @@ async function LoadExistingData(data, inputObject, reqOpObject) {
 
     if (data.fav) {
         inputObject.fav.classList.add('ticked');
+        reqOpObject.fav.classList.add('ticked');
     } else {
         inputObject.fav.classList.remove('ticked');
+        reqOpObject.fav.classList.remove('ticked');
     };
 
     TickRequiredOptional(inputObject.email, reqOpObject.email);
@@ -399,6 +538,16 @@ function TickRequiredOptional(data, toTick) {
         toTick.classList.add('ticked');
     } else {
         toTick.classList.remove('ticked');
+    }
+}
+
+function VerifyRequired(infoText, input, inputContainer, pAdvise) {
+    const infoTextTitleCase = infoText.charAt(0).toUpperCase() + infoText.slice(1);
+
+    if (!input) {
+        inputContainer.classList.add('invalid');
+        pAdvise.textContent = `${infoTextTitleCase} is required !`;
+        pAdvise.classList.add('invalid');
     }
 }
 
