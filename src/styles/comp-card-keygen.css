@@ -2,6 +2,14 @@
     gap: 12px
 }
 
+.creation#generator #key-box input[type=text]:focus::placeholder {
+    color: transparent;
+}
+
+.creation#generator #key-box input[type=text]::placeholder {
+    font-size: var(--md-fn);
+}
+
 .creation#generator .inputs#input-indicator .container,
 .creation#generator .inputs#input-length .container {
     font-weight: bold;

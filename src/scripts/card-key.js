@@ -1,5 +1,6 @@
 import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
+import KeyGenComponent from "./card-keygen";
 import { DeleteKeyItem } from "./crud";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
@@ -156,11 +157,15 @@ function LoadListeners(component, getItemData, setItemData) {
         const misc = document.querySelector('#misc');
         if (misc) {
             misc.remove();
-        }
+        };
+
+        if (KeyGenComponent.isRendered()) {
+            KeyGenComponent.unrender();
+        };
 
         if (CreatEditComponent.isRendered()) {
             CreatEditComponent.unrender();
-        }
+        };
 
         if (ReadComponent.isRendered()) {
             ReadComponent.updateRender(itemData);
@@ -249,6 +254,10 @@ function LoadListeners(component, getItemData, setItemData) {
         e.stopPropagation();
 
         const itemData = getItemData();
+
+        if (KeyGenComponent.isRendered()) {
+            KeyGenComponent.unrender();
+        };
 
         if (ReadComponent.isRendered()) {
             ReadComponent.unrender();

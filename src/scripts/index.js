@@ -54,7 +54,7 @@ function App() {
 // Start app
 App();
 setTimeout(() => {
-    if (window.location.pathname === window.location.pathname) {
+    if (window.location.pathname === '/index.html') {
         App();
     }
 }, 5000);

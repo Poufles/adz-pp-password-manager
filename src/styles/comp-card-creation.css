@@ -1,11 +1,12 @@
 .creation {
+    flex-grow: 1;
     background-color: #FFF;
     border-radius: var(--b-radius-1);
     padding: 20px;
     width: 100%;
     max-width: 350px;
     min-height: 569px;
-    height: 100%;
+    height: 569px;
     display: flex;
     flex-direction: column;
     gap: 8px

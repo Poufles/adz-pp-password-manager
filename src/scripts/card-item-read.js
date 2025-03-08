@@ -113,12 +113,11 @@ const template =
         </div>
         <p class="text" id="advise">All Safe and Secure !</p>
 `;
-const container = document.querySelector('#page__dashboard #bottom');
-
-let isShown = false;
 
 const ReadComponent = function () {
+    let isShown = false;
     let itemData;
+    const container = document.querySelector('#page__dashboard #bottom');
     const component = document.createElement('section');
     component.classList.add('card', 'creation');
     component.setAttribute('id', 'item-info');

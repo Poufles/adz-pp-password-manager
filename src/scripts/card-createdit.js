@@ -153,7 +153,7 @@ const CreatEditComponent = function () {
             isShown = false;
         });
 
-        LoadInputInfoAndListeners(component, data);
+        LoadInputInfoAndListeners(component, data, unrender);
         LoadActionListener(component, data);
 
         if (!container.contains(component)) {
@@ -315,8 +315,6 @@ async function LoadInputInfoAndListeners(component, data) {
 
     LoadDropDownListeners(component, 'website');
     LoadDropDownListeners(component, 'folder');
-    // LoadDropDownListeners(form, 'website');
-    // LoadDropDownListeners(form, 'folder');
 }
 
 /**
