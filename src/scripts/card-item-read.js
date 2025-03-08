@@ -4,6 +4,7 @@
  * WHAT I WROTE IN card-creation.js
  */
 
+import CreatEditComponent from "./card-createdit";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
 import { icon_facebook } from "./svg";
@@ -117,11 +118,15 @@ const container = document.querySelector('#page__dashboard #bottom');
 let isShown = false;
 
 const ReadComponent = function () {
+    let itemData;
     const component = document.createElement('section');
     component.classList.add('card', 'creation');
     component.setAttribute('id', 'item-info');
 
+    const getItemData = () => itemData;
+
     const render = (data) => {
+        itemData = data;
         component.innerHTML = template;
 
         const btn_close = component.querySelector('#close');
@@ -131,7 +136,7 @@ const ReadComponent = function () {
             isShown = false;
         });
 
-        LoadInformation(component, data.item);
+        LoadInformation(component, getItemData);
         
         if (!container.contains(component)) {
             container.appendChild(component);
@@ -151,7 +156,8 @@ const ReadComponent = function () {
      * @param {Object} data - Object containing key information (item and index) 
      */
     const updateRender = (data) => {
-        LoadInformation(component, data.item);
+        itemData = data;
+        LoadInformation(component, getItemData);
     }
 
     const isRendered = () => isShown;
@@ -164,9 +170,10 @@ const ReadComponent = function () {
     }
 }();
 
-async function LoadInformation(component, data) {
+async function LoadInformation(component, getItemData) {
+    const data = getItemData();
     const account = StorageHandler.GetSessionStorage();
-    const decryptedKey = await Encryption.decryptData(account.masterkey, data.key);
+    const decryptedKey = await Encryption.decryptData(account.masterkey, data.item.key);
     const websites = StorageHandler.GetLocalStorage().app.websites;
     const p_title = component.querySelector('#left p#title');
     const btn_fav = component.querySelector('button#favorite');
@@ -179,31 +186,38 @@ async function LoadInformation(component, data) {
     const p_hint = component.querySelector('#item-hint p#hint');
     const p_folder = component.querySelector('#item-folder p#folder');
 
-    p_title.textContent = data.website;
-    if (data.fav == true) {
+    p_title.textContent = data.item.website;
+    if (data.item.fav == true) {
         btn_fav.classList.add('ticked')
     } else {
         btn_fav.classList.remove('ticked')
     };
     cont_icon.innerHTML = icon_facebook; // CHANGE LATER;
-    p_website.textContent = data.website;
+    p_website.textContent = data.item.website;
     for (let website of websites) {
-        if (website.name == data.website) {
+        if (website.name == data.item.website) {
             a_link.href = website.link
             span_link.textContent = `${website.name}.com`;
             break;
         }
     }
-    p_email.textContent = data.email;
+    p_email.textContent = data.item.email;
     p_password.textContent = decryptedKey.split('').map(char => '•').join('');
-    p_hint.textContent = data.hint || 'None';
-    p_folder.textContent = data.folder || 'None';
+    p_hint.textContent = data.item.hint || 'None';
+    p_folder.textContent = data.item.folder || 'None';
 
     const btn_email_copy = component.querySelector('#item-email #copy')
     const btn_password_copy = component.querySelector('#item-password #copy')
+    const btn_edit = component.querySelector('#submit');
 
-    btn_email_copy.addEventListener('click', () => copyToClipboard(data.email));
+    btn_email_copy.addEventListener('click', () => copyToClipboard(data.item.email));
     btn_password_copy.addEventListener('click', () => copyToClipboard(decryptedKey));
+    btn_edit.addEventListener('click', () => {
+        if (!CreatEditComponent.isRendered()) {
+            ReadComponent.unrender();
+            CreatEditComponent.render('edit', getItemData());
+        }
+    });
 };
 
 // Function by ChatGPT

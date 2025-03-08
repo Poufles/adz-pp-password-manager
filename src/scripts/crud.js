@@ -9,6 +9,7 @@ import StorageHandler from "./storage-handler";
 export async function CreateNewKeyItem(data) {
     const sessionStorage = StorageHandler.GetSessionStorage();
     const keys = sessionStorage.keys;
+    const index = keys.length;
 
     // Get master key
     const masterkey = sessionStorage.masterkey;
@@ -16,23 +17,45 @@ export async function CreateNewKeyItem(data) {
     const encryptedKey = await Encryption.encryptData(masterkey, data.key);
     // Create new item
     const newKeyItem = {
-        name: data.name,
         email: data.email,
         key: encryptedKey,
         website: data.website,
         fav: data.fav,
         hint: data.hint,
         folder: data.folder,
-        isRecent: true,
-        openedAt: 'none'
+        isRecent: '',
+        openedAt: ''
+    };
+
+    if (data.folder) {
+        const folders = sessionStorage.folders;
+        let isFolderExist = false;
+
+        for (let folder of folders) {
+            if (folder.name === data.folder) {
+                isFolderExist = true;
+                folder.keys.push(index);
+
+                break;
+            };
+        };
+
+        if (!isFolderExist) {
+            const newFolder = {
+                name: data.folder,
+                keys: [index],
+                isRecent: false,
+                openedAt: 'none'
+            };
+
+            folders.push(newFolder);
+        }
     };
 
     // Store new item in session storage
     keys.push(newKeyItem);
     StorageHandler.UpdateSessionStorage(sessionStorage);
-    // Get index of new item
-    const index = keys.length - 1;
-    
+
     // Get local storage 
     const storage = StorageHandler.GetLocalStorage();
     const accounts = storage.app.accounts;
@@ -49,51 +72,93 @@ export async function CreateNewKeyItem(data) {
     }
 };
 
-// export async function CreateNewKeyItem({ name, email, key, website, fav = false, hint = '', folder = '' }) {
-//     const sessionStorage = StorageHandler.GetSessionStorage();
-//     const keys = sessionStorage.keys;
+/**
+ * Updates key item and registers it to the storage
+ * @param {Object} data - Data containing updated items 
+ * @param {Number} index - Item index for update
+ * @returns An object containing updated key item and its index (Properties: item, index)
+ */
+export async function UpdateKeyItem(newData, index) {
+    const sessionStorage = StorageHandler.GetSessionStorage();
+    const keys = sessionStorage.keys;
+    const folders = sessionStorage.folders;
+    const masterkey = sessionStorage.masterkey;
+    const encryptedKey = await Encryption.encryptData(masterkey, newData.key);
+    let key = keys[index];
+    let oldfolderName = key.folder;
 
-//     // Get master key
-//     const masterkey = sessionStorage.masterkey;
-//     // Derive master key
-//     // const derivationKey = Encryption.extractKeyFromHash(masterkey);
-//     // Encrypt key
-//     const encryptedKey = await Encryption.encryptData(masterkey, key);
-//     // Create new item
-//     const newKeyItem = {
-//         name,
-//         email,
-//         key: encryptedKey,
-//         website,
-//         fav,
-//         hint,
-//         folder,
-//         isRecent: true,
-//         openedAt: 'none'
-//     };
+    // Verify folder change
+    if (oldfolderName !== newData.folder) {
+        for (let oldFolder of folders) {
+            if (oldFolder.name === oldfolderName) {
+                const itemIndexInFolder = oldFolder.keys.indexOf(index);
 
-//     // Store new item in session storage
-//     keys.push(newKeyItem);
-//     StorageHandler.UpdateSessionStorage(sessionStorage);
-//     // Get index of new item
-//     const index = keys.length - 1;
-    
-//     // Get local storage 
-//     const storage = StorageHandler.GetLocalStorage();
-//     const accounts = storage.app.accounts;
-//     // Iterate over storage
-//     for (let i = 0; i < accounts.length; i++) {
-//         if (accounts[i].inSession) {
-//             storage.app.accounts[i] = StorageHandler.GetSessionStorage();
-//             StorageHandler.UpdateLocalStorage(storage);
-//             return {
-//                 item: newKeyItem,
-//                 index
-//             };
-//         }
-//     }
-// };
+                // Remove key item from folders
+                if (itemIndexInFolder !== -1) {
+                    oldFolder.keys.splice(itemIndexInFolder, 1);
+                };
 
-export function UpdateKeyItem(index) {
+            };
+            
+            // Add key item to new folder
+            if (oldFolder.name === newData.folder) {
+                oldFolder.keys.push(index);
+            };
+        };
+    };
 
-}
+    // Create update
+    const updatedKeyItem = {
+        email: newData.email,
+        key: encryptedKey,
+        website: newData.website,
+        fav: newData.fav,
+        hint: newData.hint,
+        folder: newData.folder,
+        isRecent: newData.isRecent,
+        openedAt: newData.openedAt
+    };
+
+    // Store in session storage
+    keys[index] = updatedKeyItem;
+    StorageHandler.UpdateSessionStorage(sessionStorage);
+
+    // Get local storage 
+    const storage = StorageHandler.GetLocalStorage();
+    const accounts = storage.app.accounts;
+    // Iterate over storage
+    for (let i = 0; i < accounts.length; i++) {
+        if (accounts[i].inSession) {
+            storage.app.accounts[i] = StorageHandler.GetSessionStorage();
+            StorageHandler.UpdateLocalStorage(storage);
+            return {
+                item: updatedKeyItem,
+                index
+            };
+        };
+    };
+};
+
+/**
+ * Delete key item 
+ * @param {Number} index - Index of the key item to be removed 
+ * @returns 
+ */
+export function DeleteKeyItem(index) {
+    const sessionStorage = StorageHandler.GetSessionStorage();
+    const keys = sessionStorage.keys;
+
+    keys.splice(index, 1);
+    StorageHandler.UpdateSessionStorage(sessionStorage);
+    // Get local storage 
+    const storage = StorageHandler.GetLocalStorage();
+    const accounts = storage.app.accounts;
+    // Iterate over storage
+    for (let i = 0; i < accounts.length; i++) {
+        if (accounts[i].inSession) {
+            storage.app.accounts[i] = StorageHandler.GetSessionStorage();
+            StorageHandler.UpdateLocalStorage(storage);
+            return true;
+        };
+    };
+};

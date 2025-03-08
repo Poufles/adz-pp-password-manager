@@ -1,5 +1,6 @@
 import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
+import { DeleteKeyItem } from "./crud";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
 import { icon_facebook } from "./svg";
@@ -65,24 +66,35 @@ const template =
         </span>
 `;
 
+
 /**
  * Creates a key item component
  * @param {Object} data - Object containing data 
  * @returns Key item component
  */
-export default function KeyItem() {
+export default function KeyItem(data) {
+    let itemData = data;
     const container = document.querySelector('#bottom #articles #key-items')
     const component = document.createElement('button');
     component.classList.add('container', 'key-item');
     component.innerHTML = template;
 
-    const render = (data) => {
-        component.setAttribute('id', `item-${data.index}`);
-        LoadInformation(component, data.item);
-        LoadListeners(component, data);
+    const getItemData = () => itemData;
+    const setItemData = (newData) => { itemData = newData };
+
+    const render = () => {
+        component.dataset.item = itemData.index;
+        component.setAttribute('id', `item-${itemData.index}`);
+        // LoadInformation(component, itemData.item);
+        LoadInformation(component, itemData);
+        LoadListeners(component, getItemData, setItemData);
 
         container.prepend(component);
     }
+
+    const updateRender = () => {
+
+    };
 
     const unrender = () => {
 
@@ -107,17 +119,17 @@ function LoadInformation(component, data) {
     const cont_folder = component.querySelector('.compartment-mid');
     const span_folder = cont_folder.querySelector('#folder-name');
 
-    if (data.fav === true) {
+    if (data.item.fav === true) {
         svg_fav.classList.add('ticked')
     } else {
         svg_fav.classList.remove('ticked');
     }
     // CHANGE LATER
     cont_icon.innerHTML = icon_facebook;
-    p_name.textContent = data.website.charAt(0).toUpperCase() + data.website.slice(1);
-    p_email.textContent = data.email;
-    if (data.folder) {
-        span_folder.textContent = data.folder;
+    p_name.textContent = data.item.website.charAt(0).toUpperCase() + data.item.website.slice(1);
+    p_email.textContent = data.item.email;
+    if (data.item.folder) {
+        span_folder.textContent = data.item.folder;
     } else {
         cont_folder.setAttribute('style', 'display: none');
     }
@@ -128,15 +140,18 @@ function LoadInformation(component, data) {
  * @param {Node} component - Key item component
  * @param {Object} data - Object that contains information for the key
  */
-function LoadListeners(component, data) {
+function LoadListeners(component, getItemData, setItemData) {
     const btn_fav = component.querySelector('span#favorite');
+    const btn_email = component.querySelector('span#email');
     const cont_folder = component.querySelector('.compartment-mid');
     const btn_folder = cont_folder.querySelector('span[role=button]');
+    const btn_more = component.querySelector('#more');
     const btn_copy = component.querySelectorAll('#copy');
-    const btn_edit = component.querySelector('button#edit');
-    const btn_delete = component.querySelector('button#delete');
+    const btn_edit = component.querySelector('#tooltip #edit');
+    const btn_delete = component.querySelector('#tooltip #delete');
 
     component.addEventListener('click', () => {
+        const itemData = getItemData();
         // CHANGE LATER
         const misc = document.querySelector('#misc');
         if (misc) {
@@ -148,9 +163,9 @@ function LoadListeners(component, data) {
         }
 
         if (ReadComponent.isRendered()) {
-            ReadComponent.updateRender(data);
+            ReadComponent.updateRender(itemData);
         } else {
-            ReadComponent.render(data);
+            ReadComponent.render(itemData);
         };
     });
 
@@ -158,12 +173,13 @@ function LoadListeners(component, data) {
         // Prevent bubbling
         e.stopPropagation();
 
+        const itemData = getItemData();
         // Change item favorite status
         const sp_fav = btn_fav.querySelector('svg');
         sp_fav.classList.toggle('ticked');
 
         // Update session storage
-        const index = data.index
+        const index = itemData.index
         const sessionStorage = StorageHandler.GetSessionStorage();
         const key = sessionStorage.keys[index];
 
@@ -179,20 +195,31 @@ function LoadListeners(component, data) {
                 storage.app.accounts[i] = StorageHandler.GetSessionStorage();
                 StorageHandler.UpdateLocalStorage(storage);
 
-                const cont_read = document.querySelector('#bottom section#item-info')
-                if (cont_read) {
-                    const keys = StorageHandler.GetSessionStorage().keys;
-                    const key = keys[index];
-                    ReadComponent.updateRender({
-                        item: key,
-                        index
-                    });
+                const updatedItemData = { item: key, index }
+                setItemData(updatedItemData);
+
+                if (ReadComponent.isRendered()) {
+                    ReadComponent.updateRender(updatedItemData);
+                };
+
+                if (CreatEditComponent.isRendered()) {
+                    CreatEditComponent.render('edit', updatedItemData);
                 };
             };
         };
     });
 
-    btn_folder.addEventListener('click', () => {
+    btn_email.addEventListener('click', (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+
+        const itemData = getItemData();
+        const email = itemData.item.email;
+
+        copyToClipboard(email);
+    });
+
+    btn_folder.addEventListener('click', (e) => {
         // Prevent bubbling
         e.stopPropagation();
         console.log('CHANGE ME');
@@ -203,91 +230,48 @@ function LoadListeners(component, data) {
             // Prevent bubbling
             e.stopPropagation();
 
-            const masterkey = StorageHandler.GetSessionStorage().masterkey;
-            const decryptedKey = await Encryption.decryptData(masterkey, data.item.key);
+            const itemData = getItemData();
 
-            navigator.clipboard.writeText(decryptedKey)
-                .then(() => console.log("Texte copié !"))
-                .catch(err => console.error("Erreur lors de la copie :", err));
+            const masterkey = StorageHandler.GetSessionStorage().masterkey;
+            const decryptedKey = await Encryption.decryptData(masterkey, itemData.item.key);
+
+            copyToClipboard(decryptedKey);
         });
     })
+
+    btn_more.addEventListener('click', (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+    });
+
+    btn_edit.addEventListener('click', (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+
+        const itemData = getItemData();
+
+        if (ReadComponent.isRendered()) {
+            ReadComponent.unrender();
+        }
+
+        CreatEditComponent.render('edit', itemData);
+    });
+
+    btn_delete.addEventListener('click', (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+
+        const itemData = getItemData();
+        // ADD CONFIRMATION LATER
+        if (DeleteKeyItem(itemData.index)) {
+            location.reload();
+        };
+
+    });
 };
 
-/**
- * Load listeners for the component
- * @param {Node} component - Key item component
- * @param {Object} data - Object that contains information for the key
- */
-// function LoadListeners(component, data) {
-//     // Listener for the component itself
-//     component.addEventListener('click', () => {
-//         const cont_misc = document.querySelector('#bottom #misc');
-//         const cont_card_creator = document.querySelector('#bottom #creator');
-
-//         // Verify if misc container is active
-//         if (cont_misc) {
-//             cont_misc.remove();
-//         }
-
-//         // Verify if creator component is active
-//         if (cont_card_creator) {
-//             CreationComponent.resetComponent();
-//             cont_card_creator.remove();
-//         };
-
-//         // Render read component
-//         const keys = StorageHandler.GetSessionStorage().keys;
-//         const key = keys[item.index];
-//         ReadComponent.render(key);
-//     });
-
-//     // Listener for svg button
-//     const btn_fav = component.querySelector('span#favorite');
-//     btn_fav.addEventListener('click', (e) => {
-//         // Change item favorite status
-//         const sp_fav = btn_fav.querySelector('svg');
-//         sp_fav.classList.toggle('ticked');
-
-//         // Update session storage
-//         const sessionStorage = StorageHandler.GetSessionStorage();
-//         const key = sessionStorage.keys[item.index];
-
-//         key.fav = sp_fav.classList.contains('ticked') ? true : false;
-//         StorageHandler.UpdateSessionStorage(sessionStorage);
-
-//         // Update local storage
-//         const storage = StorageHandler.GetLocalStorage();
-//         const accounts = storage.app.accounts;
-//         // Iterate over storage
-//         for (let i = 0; i < accounts.length; i++) {
-//             if (accounts[i].inSession) {
-//                 storage.app.accounts[i] = StorageHandler.GetSessionStorage();
-//                 StorageHandler.UpdateLocalStorage(storage);
-
-//                 const cont_read = document.querySelector('#bottom section#item-info')
-//                 if (cont_read) {
-//                     const keys = StorageHandler.GetSessionStorage().keys;
-//                     const key = keys[item.index];
-//                     ReadComponent.render(key);
-//                 }
-//             }
-//         }
-
-//         // Prevent bubbling
-//         e.stopPropagation();
-//     })
-
-//     // Listener for copy button
-//     const btn_copy = component.querySelector('span#copy');
-//     btn_copy.addEventListener('click', async (e) => {
-//         // Prevent bubbling
-//         e.stopPropagation();
-
-//         const masterkey = StorageHandler.GetSessionStorage().masterkey;
-//         const decryptedKey = await Encryption.decryptData(masterkey, item.item.key);
-
-//         navigator.clipboard.writeText(decryptedKey)
-//         .then(() => console.log("Texte copié !"))
-//         .catch(err => console.error("Erreur lors de la copie :", err));
-//     });
-// };
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+        .then(() => console.log("Texte copié !"))
+        .catch(err => console.error("Erreur lors de la copie :", err));
+}

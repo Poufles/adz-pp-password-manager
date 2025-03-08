@@ -39,7 +39,7 @@
         ],
         "websites": [
             {
-                "sitename": "name",
+                "name": "name",
                 "link": "link",
             }
         ]
