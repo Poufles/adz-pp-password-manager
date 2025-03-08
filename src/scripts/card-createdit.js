@@ -1,4 +1,4 @@
-import { CreateNewKeyItem } from "./crud";
+import { CreateNewKeyItem, UpdateKeyItem } from "./crud";
 import KeyItem from "./card-key";
 import StorageHandler from "./storage-handler";
 import Encryption from "./password-encryption";
@@ -142,11 +142,11 @@ const CreatEditComponent = function () {
         component.innerHTML = component_template;
 
         const p_title = component.querySelector('#left #title')
-        const p_submit = component.querySelector('p');
+        const p_submit = component.querySelector('#submit p');
         const btn_close = component.querySelector('#close');
 
-        p_title.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
-        p_submit.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);;
+        p_title.textContent = componentMode.charAt(0).toUpperCase() + componentMode.slice(1);
+        p_submit.textContent = componentMode.charAt(0).toUpperCase() + componentMode.slice(1);;
 
         btn_close.addEventListener('click', () => {
             unrender();
@@ -206,7 +206,7 @@ async function LoadInputInfoAndListeners(component, data) {
     const btn_eye = component.querySelector('button#eye-hidden');
 
     if (data !== null) {
-        LoadExistingData(data, {
+        LoadExistingData(data.item, {
             fav: btn_fav,
             email: input_email,
             password: input_password,
@@ -214,6 +214,7 @@ async function LoadInputInfoAndListeners(component, data) {
             hint: input_hint,
             folder: input_folder
         }, {
+            fav: p_optional_fav,
             email: p_required_email,
             password: p_required_password,
             website: p_required_website,
@@ -312,8 +313,10 @@ async function LoadInputInfoAndListeners(component, data) {
         }
     });
 
-    LoadDropDownListeners(form, 'website');
-    LoadDropDownListeners(form, 'folder');
+    LoadDropDownListeners(component, 'website');
+    LoadDropDownListeners(component, 'folder');
+    // LoadDropDownListeners(form, 'website');
+    // LoadDropDownListeners(form, 'folder');
 }
 
 /**
@@ -353,29 +356,43 @@ function LoadActionListener(component, data) {
         VerifyRequired('password', key, cont_password, p_advise);
         VerifyRequired('website', website, cont_website, p_advise);
 
-        if ((!key && !website) || (!email && !key && !website)) {
+        if ((!email && !key) || (!email && !website) || (!key && !website) || (!email && !key && !website)) {
             p_advise.textContent = 'Required Information Missing !';
             p_advise.classList.add('invalid');
         }
 
-        if (email && key && website) {
-            const newKey = await CreateNewKeyItem({
+        if (data !== null) {
+            const newKey = await UpdateKeyItem({
                 email,
                 key,
                 website,
                 fav,
                 hint,
-                folder
-            });
+                folder,
+            }, data.index);
 
-            KeyItem(newKey).render();
+            CreatEditComponent.unrender();
+
+            return;
         }
+
+        const newKey = await CreateNewKeyItem({
+            email,
+            key,
+            website,
+            fav,
+            hint,
+            folder
+        });
+
+        KeyItem(newKey).render();
+        CreatEditComponent.unrender();
     });
 
     btn_reset.addEventListener('click', (e) => {
-        if (data != null) {
+        if (data.item != null) {
             e.preventDefault();
-            LoadExistingData(data, {
+            LoadExistingData(data.item, {
                 fav: btn_fav,
                 email: input_email,
                 password: input_password,
@@ -389,8 +406,13 @@ function LoadActionListener(component, data) {
                 website: p_required_website,
                 hint: p_optional_hint,
                 folder: p_optional_folder,
-            })
-        }
+            });
+        };
+
+        // DONT REMOVE 
+        input_email.classList.remove('invalid');
+        p_advise.classList.remove('invalid');
+        p_advise.textContent = 'Be sure to double check !';
     });
 };
 
@@ -398,6 +420,9 @@ function LoadDropDownListeners(component, dropdownFor) {
     const container = component.querySelector(`form #input-${dropdownFor}`);
     const cont_dropdown = container.querySelector('.dropdown');
     const inputField = cont_dropdown.querySelector(`#${dropdownFor}`);
+    const reqOp = dropdownFor === 'website' ?
+        component.querySelector('#required #item-3') :
+        component.querySelector('#optional #item-3');
 
     inputField.addEventListener('focus', () => {
         const storage = StorageHandler.GetLocalStorage();
@@ -406,7 +431,7 @@ function LoadDropDownListeners(component, dropdownFor) {
 
         if (dropdownFor === 'website') {
             dataStorage = storage.app.websites;
-        } 
+        }
 
         if (dropdownFor === 'folder') {
             const sessionStorage = StorageHandler.GetSessionStorage();
@@ -419,13 +444,13 @@ function LoadDropDownListeners(component, dropdownFor) {
             cont_dropdown.appendChild(cont_dropdown_items);
 
             for (let data of dataStorage) {
-                const newItem = CreateDropdownItem(inputField, data.name);
+                const newItem = CreateDropdownItem(inputField, reqOp, data.name);
 
                 cont_dropdown_items.appendChild(newItem);
             };
         };
     });
-    
+
     inputField.addEventListener('blur', () => {
         const cont_dropdown_items = cont_dropdown.querySelector('#dropdown-items');
 
@@ -442,9 +467,8 @@ function LoadDropDownListeners(component, dropdownFor) {
 
         if (dropdownFor === 'website') {
             dataStorage = storage.app.websites;
-        } 
+        }
 
-        console.log(dropdownFor);
         if (dropdownFor === 'folder') {
             const sessionStorage = StorageHandler.GetSessionStorage();
             dataStorage = sessionStorage.folders;
@@ -457,7 +481,7 @@ function LoadDropDownListeners(component, dropdownFor) {
                 const name = data.name;
 
                 if (name.toLowerCase().includes(search)) {
-                    const newItem = CreateDropdownItem(inputField, name);
+                    const newItem = CreateDropdownItem(inputField, reqOp, name);
                     cont_dropdown_items.appendChild(newItem);
                 }
             };
@@ -471,7 +495,7 @@ function LoadDropDownListeners(component, dropdownFor) {
  * @param {String} data - A text receiving the name of the item 
  * @returns Dropdown item
  */
-function CreateDropdownItem(inputField, data) {
+function CreateDropdownItem(inputField, reqOpText, data) {
     const btn_dropdownItem = document.createElement('button');
     const itemName = data;
     btn_dropdownItem.setAttribute('type', 'button');
@@ -481,14 +505,16 @@ function CreateDropdownItem(inputField, data) {
     btn_dropdownItem.addEventListener('mouseenter', (e) => {
         inputField.value = itemName;
     })
-    
+
     btn_dropdownItem.addEventListener('mousedown', (e) => {
         inputField.value = itemName;
+        reqOpText.classList.add('ticked');
     })
-    
+
     btn_dropdownItem.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             inputField.value = websiteName;
+            reqOpText.classList.add('ticked');
         }
     })
 

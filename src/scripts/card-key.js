@@ -82,8 +82,10 @@ export default function KeyItem(data) {
     const setItemData = (newData) => { itemData = newData };
 
     const render = () => {
+        component.dataset.item = itemData.index;
         component.setAttribute('id', `item-${itemData.index}`);
-        LoadInformation(component, itemData.item);
+        // LoadInformation(component, itemData.item);
+        LoadInformation(component, itemData);
         LoadListeners(component, getItemData, setItemData);
 
         container.prepend(component);
@@ -116,17 +118,17 @@ function LoadInformation(component, data) {
     const cont_folder = component.querySelector('.compartment-mid');
     const span_folder = cont_folder.querySelector('#folder-name');
 
-    if (data.fav === true) {
+    if (data.item.fav === true) {
         svg_fav.classList.add('ticked')
     } else {
         svg_fav.classList.remove('ticked');
     }
     // CHANGE LATER
     cont_icon.innerHTML = icon_facebook;
-    p_name.textContent = data.website.charAt(0).toUpperCase() + data.website.slice(1);
-    p_email.textContent = data.email;
-    if (data.folder) {
-        span_folder.textContent = data.folder;
+    p_name.textContent = data.item.website.charAt(0).toUpperCase() + data.item.website.slice(1);
+    p_email.textContent = data.item.email;
+    if (data.item.folder) {
+        span_folder.textContent = data.item.folder;
     } else {
         cont_folder.setAttribute('style', 'display: none');
     }
@@ -142,9 +144,10 @@ function LoadListeners(component, getItemData, setItemData) {
     const btn_email = component.querySelector('span#email');
     const cont_folder = component.querySelector('.compartment-mid');
     const btn_folder = cont_folder.querySelector('span[role=button]');
+    const btn_more = component.querySelector('#more');
     const btn_copy = component.querySelectorAll('#copy');
-    const btn_edit = component.querySelector('button#edit');
-    const btn_delete = component.querySelector('button#delete');
+    const btn_edit = component.querySelector('#tooltip #edit');
+    const btn_delete = component.querySelector('#tooltip #delete');
 
     component.addEventListener('click', () => {
         const itemData = getItemData();
@@ -197,6 +200,10 @@ function LoadListeners(component, getItemData, setItemData) {
                 if (ReadComponent.isRendered()) {
                     ReadComponent.updateRender(updatedItemData);
                 };
+
+                if (CreatEditComponent.isRendered()) {
+                    CreatEditComponent.render('edit', updatedItemData);
+                };
             };
         };
     });
@@ -206,9 +213,8 @@ function LoadListeners(component, getItemData, setItemData) {
         e.stopPropagation();
 
         const itemData = getItemData();
-        console.log(itemData);
         const email = itemData.item.email;
-        
+
         copyToClipboard(email);
     });
 
@@ -231,6 +237,30 @@ function LoadListeners(component, getItemData, setItemData) {
             copyToClipboard(decryptedKey);
         });
     })
+
+    btn_more.addEventListener('click', (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+    });
+
+    btn_edit.addEventListener('click', (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+
+        const itemData = getItemData();
+
+        if (ReadComponent.isRendered()) {
+            ReadComponent.unrender();
+        }
+
+        CreatEditComponent.render('edit', itemData);
+    });
+
+    btn_delete.addEventListener('click', (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+        console.log('What');
+    });
 };
 
 function copyToClipboard(text) {

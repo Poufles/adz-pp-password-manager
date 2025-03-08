@@ -5,7 +5,6 @@ import "../styles/comp-card-creation.css";
 import "../styles/comp-card-iteminfo.css";
 import StorageHandler from "./storage-handler.js";
 import { CurrentTimeToday, DateDifference } from "./date";
-import CreationComponent from "./card-creation.js";
 import KeyItem from "./card-key.js";
 import CreatEditComponent from "./card-createdit.js";
 import ReadComponent from "./card-item-read.js";
@@ -79,7 +78,6 @@ if (cont_key_items) {
     const session = StorageHandler.GetSessionStorage();
     const key = session.keys;
     const length = session.keys.length;
-    const cont_articles = dashboard.querySelector('section#articles #key-items');
 
     if (length !== 0) {
         for (let iter = 0; iter < length; iter++) {

@@ -53,6 +53,11 @@ function App() {
 
 // Start app
 App();
+setTimeout(() => {
+    if (window.location.pathname === window.location.pathname) {
+        App();
+    }
+}, 5000);
 
 function LoadWebsites() {
     const websites = [
