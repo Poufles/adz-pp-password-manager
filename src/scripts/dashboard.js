@@ -106,26 +106,13 @@ if (btn_create) {
 
         if (!CreatEditComponent.isRendered()) {
             CreatEditComponent.render('create');
+            return;
+        };
+
+        if (CreatEditComponent.getMode() === 'edit') {
+            CreatEditComponent.render('create');
         } else {
             CreatEditComponent.unrender();
-        };
+        }
     });
-    // btn_create.addEventListener('mouseup', () => {
-    //     const cont_bottom = dashboard.querySelector('section#bottom');
-
-    //     // Verify if card component exists
-    //     let card = CreationComponent.getComponent(cont_misc);
-    //     if (cont_bottom.querySelector(`#${card.id}`)) {
-    //         CreationComponent.resetComponent();
-    //         cont_bottom.removeChild(card);
-    //         // Add left section (misc section)
-    //         cont_bottom.prepend(cont_misc);
-    //         return;
-    //     }
-
-    //     // Add creator card
-    //     cont_bottom.appendChild(card);
-    //     // Remove left section (misc section)
-    //     cont_misc.remove();
-    // });
 }

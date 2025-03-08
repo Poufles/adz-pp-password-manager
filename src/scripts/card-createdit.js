@@ -1,8 +1,11 @@
 import { CreateNewKeyItem } from "./crud";
 import KeyItem from "./card-key";
+import StorageHandler from "./storage-handler";
+import Encryption from "./password-encryption";
+import { hidden_eye, open_eye } from "./svg";
 
 const component_template =
-        `
+    `
         <div class="container" id="top">
             <div id="left">
                 <p class="text color" id="title">New Key Item</p>
@@ -119,27 +122,31 @@ const component_template =
         <p class="text" id="advise">Be sure to double check !</p>
     `;
 
-let isShown = false;
 
-const CreatEditComponent = function(){
+const CreatEditComponent = function () {
+    let isShown = false;
+    let componentMode;
     // Create component
     const container = document.querySelector('#bottom');
     const component = document.createElement('section');
     component.classList.add('card', 'creation');
     component.setAttribute('id', 'creator');
-    
+
     /**
      * Renders component
      * @param {String} mode - Mode to be rendered (create || edit) 
      * @param {Object} data - (Optional) Object to be passed when in edit mode
      */
     const render = (mode, data = null) => {
+        componentMode = mode;
         component.innerHTML = component_template;
 
-        const btn_submit = component.querySelector('button#submit');
+        const p_title = component.querySelector('#left #title')
+        const p_submit = component.querySelector('p');
         const btn_close = component.querySelector('#close');
 
-        btn_submit.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+        p_title.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+        p_submit.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);;
 
         btn_close.addEventListener('click', () => {
             unrender();
@@ -148,13 +155,13 @@ const CreatEditComponent = function(){
 
         LoadInputInfoAndListeners(component, data);
         LoadActionListener(component, data);
-        
+
         if (!container.contains(component)) {
             container.appendChild(component);
             isShown = true;
         }
     };
-    
+
     const unrender = () => {
         if (container.contains(component)) {
             container.removeChild(component);
@@ -163,11 +170,13 @@ const CreatEditComponent = function(){
     }
 
     const isRendered = () => isShown;
-    
+    const getMode = () => componentMode;
+
     return {
         render,
         unrender,
-        isRendered
+        isRendered,
+        getMode
     }
 }();
 
@@ -176,7 +185,7 @@ const CreatEditComponent = function(){
  * @param {Node} component - CreatEdit component
  * @param {Object} data - Data object for edit
  */
-function LoadInputInfoAndListeners(component, data) {
+async function LoadInputInfoAndListeners(component, data) {
     const p_advise = component.querySelector('#advise');
     const form = component.querySelector('form');
     const btn_fav = component.querySelector('button#favorite');
@@ -191,10 +200,24 @@ function LoadInputInfoAndListeners(component, data) {
     const p_optional_fav = component.querySelector('#optional #item-1');
     const p_optional_hint = component.querySelector('#optional #item-2');
     const p_optional_folder = component.querySelector('#optional #item-3');
-    
+    const btn_eye = component.querySelector('button#eye-hidden');
+
     if (data !== null) {
-        // input_email.value = 
-    }
+        LoadExistingData(data, {
+            fav: btn_fav,
+            email: input_email,
+            password: input_password,
+            website: input_website,
+            hint: input_hint,
+            folder: input_folder
+        }, {
+            email: p_required_email,
+            password: p_required_password,
+            website: p_required_website,
+            hint: p_optional_hint,
+            folder: p_optional_folder,
+        })
+    };
 
     input_email.addEventListener('keyup', (e) => {
         const input = input_email.value;
@@ -208,7 +231,13 @@ function LoadInputInfoAndListeners(component, data) {
 
     input_email.addEventListener('focus', (e) => {
         const input = input_email.value;
-        
+
+        if (input == '') {
+            input_email.classList.remove('invalid');
+            p_advise.classList.remove('invalid');
+            p_advise.textContent = 'Be sure to double check !';
+        }
+
         if (input != '') {
             input_email.classList.remove('invalid');
             p_advise.classList.remove('invalid');
@@ -218,13 +247,13 @@ function LoadInputInfoAndListeners(component, data) {
 
     input_email.addEventListener('blur', (e) => {
         const input = input_email.value;
-        
+
         if (input == '') {
             input_email.classList.remove('invalid');
             p_advise.classList.remove('invalid');
             p_advise.textContent = 'Be sure to double check !';
         }
-        
+
         if (input != '' && !isValidEmail(input)) {
             input_email.classList.add('invalid');
             p_advise.classList.add('invalid');
@@ -232,55 +261,35 @@ function LoadInputInfoAndListeners(component, data) {
         }
     });
 
-    input_password.addEventListener('keyup', (e) => {
-        const input = input_password.value;
+    input_password.addEventListener('keyup', (e) => TickRequiredOptional(input_password, p_required_password));
 
-        if (input != '') {
-            p_required_password.classList.add('ticked');
-        } else {
-            p_required_password.classList.remove('ticked');
-        }
-    });
-    
-    input_website.addEventListener('keyup', (e) => {
-        const input = input_website.value;
+    input_website.addEventListener('keyup', (e) => TickRequiredOptional(input_website, p_required_website));
 
-        if (input != '') {
-            p_required_website.classList.add('ticked');
-        } else {
-            p_required_website.classList.remove('ticked');
-        }
-    });
-    
-    input_hint.addEventListener('keyup', (e) => {
-        const input = input_hint.value;
+    input_hint.addEventListener('keyup', (e) => TickRequiredOptional(input_hint, p_optional_hint));
 
-        if (input != '') {
-            p_optional_hint.classList.add('ticked');
-        } else {
-            p_optional_hint.classList.remove('ticked');
-        }
-    });
-    
-    input_folder.addEventListener('keyup', (e) => {
-        const input = input_folder.value;
-
-        if (input != '') {
-            p_optional_folder.classList.add('ticked');
-        } else {
-            p_optional_folder.classList.remove('ticked');
-        }
-    });
+    input_folder.addEventListener('keyup', (e) => TickRequiredOptional(input_folder, p_optional_folder));
 
     btn_fav.addEventListener('click', (e) => {
         const input = btn_fav.classList.contains('ticked') ? true : false;
-        
+
         if (input) {
             btn_fav.classList.remove('ticked');
             p_optional_fav.classList.remove('ticked');
         } else {
             btn_fav.classList.add('ticked');
             p_optional_fav.classList.add('ticked');
+        }
+    });
+
+    btn_eye.addEventListener('mouseup', function () {
+        let isHidden = !this.classList.contains('open-eye');
+        this.innerHTML = isHidden ? open_eye : hidden_eye;
+        if (isHidden) {
+            input_password.setAttribute('type', 'text');
+            this.classList.add('open-eye');
+        } else {
+            input_password.setAttribute('type', 'password');
+            this.classList.remove('open-eye');
         }
     });
 }
@@ -300,11 +309,12 @@ function LoadActionListener(component, data) {
     const input_folder = form.querySelector('#folder');
     const btn_submit = form.querySelector('button#submit');
     const btn_reset = form.querySelector('button#reset');
-
-    if (data !== null) {
-        const p_text = btn_submit.querySelector('p');
-        p_text.textContent = 'Edit';
-    }
+    const p_required_email = component.querySelector('#required #item-1');
+    const p_required_password = component.querySelector('#required #item-2');
+    const p_required_website = component.querySelector('#required #item-3');
+    const p_optional_fav = component.querySelector('#optional #item-1');
+    const p_optional_hint = component.querySelector('#optional #item-2');
+    const p_optional_folder = component.querySelector('#optional #item-3');
 
     btn_submit.addEventListener('click', async () => {
         const email = input_email.value;
@@ -313,7 +323,7 @@ function LoadActionListener(component, data) {
         const fav = btn_fav.classList.contains('ticked') ? true : false;
         const hint = input_hint.value;
         const folder = input_folder.value;
-        
+
         if (email && key && website) {
             const newKey = await CreateNewKeyItem({
                 email,
@@ -326,7 +336,71 @@ function LoadActionListener(component, data) {
             KeyItem(newKey).render();
         }
     });
+
+    btn_reset.addEventListener('click', (e) => {
+        if (data != null) {
+            e.preventDefault();
+            LoadExistingData(data, {
+                fav: btn_fav,
+                email: input_email,
+                password: input_password,
+                website: input_website,
+                hint: input_hint,
+                folder: input_folder
+            }, {
+                email: p_required_email,
+                password: p_required_password,
+                website: p_required_website,
+                hint: p_optional_hint,
+                folder: p_optional_folder,
+            })
+        }
+    });
 };
+
+/**
+ * Loads existing data for editing
+ * @param {Object} data - Object that contains information about key
+ * @param {Object} inputObject - Object containing nodes of input elements
+ * @param {Object} reqOpObject - Object containing nodes of required and optional elements
+ */
+async function LoadExistingData(data, inputObject, reqOpObject) {
+    const account = StorageHandler.GetSessionStorage();
+    const decryptedKey = await Encryption.decryptData(account.masterkey, data.key);
+
+    inputObject.email.value = data.email;
+    inputObject.password.value = decryptedKey;
+    inputObject.website.value = data.website;
+    inputObject.hint.value = data.hint;
+    inputObject.folder.value = data.folder;
+
+    if (data.fav) {
+        inputObject.fav.classList.add('ticked');
+    } else {
+        inputObject.fav.classList.remove('ticked');
+    };
+
+    TickRequiredOptional(inputObject.email, reqOpObject.email);
+    TickRequiredOptional(inputObject.password, reqOpObject.password);
+    TickRequiredOptional(inputObject.website, reqOpObject.website);
+    TickRequiredOptional(inputObject.hint, reqOpObject.hint);
+    TickRequiredOptional(inputObject.folder, reqOpObject.folder);
+}
+
+/**
+ * Tick Required/Optional when conditions are met
+ * @param {Node} data - Input element containing information 
+ * @param {Node} toTick - Element to be ticked 
+ */
+function TickRequiredOptional(data, toTick) {
+    const input = data.value;
+
+    if (input != '') {
+        toTick.classList.add('ticked');
+    } else {
+        toTick.classList.remove('ticked');
+    }
+}
 
 /**
  * Validates email (From ChatGPT)

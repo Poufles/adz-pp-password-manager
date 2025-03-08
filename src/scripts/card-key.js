@@ -80,7 +80,7 @@ export default function KeyItem(data) {
 
     const getItemData = () => itemData;
     const setItemData = (newData) => { itemData = newData };
- 
+
     const render = () => {
         component.setAttribute('id', `item-${itemData.index}`);
         LoadInformation(component, itemData.item);
@@ -139,6 +139,7 @@ function LoadInformation(component, data) {
  */
 function LoadListeners(component, getItemData, setItemData) {
     const btn_fav = component.querySelector('span#favorite');
+    const btn_email = component.querySelector('span#email');
     const cont_folder = component.querySelector('.compartment-mid');
     const btn_folder = cont_folder.querySelector('span[role=button]');
     const btn_copy = component.querySelectorAll('#copy');
@@ -189,7 +190,7 @@ function LoadListeners(component, getItemData, setItemData) {
             if (accounts[i].inSession) {
                 storage.app.accounts[i] = StorageHandler.GetSessionStorage();
                 StorageHandler.UpdateLocalStorage(storage);
-                
+
                 const updatedItemData = { item: key, index }
                 setItemData(updatedItemData);
 
@@ -200,7 +201,18 @@ function LoadListeners(component, getItemData, setItemData) {
         };
     });
 
-    btn_folder.addEventListener('click', () => {
+    btn_email.addEventListener('click', (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+
+        const itemData = getItemData();
+        console.log(itemData);
+        const email = itemData.item.email;
+        
+        copyToClipboard(email);
+    });
+
+    btn_folder.addEventListener('click', (e) => {
         // Prevent bubbling
         e.stopPropagation();
         console.log('CHANGE ME');
@@ -211,12 +223,18 @@ function LoadListeners(component, getItemData, setItemData) {
             // Prevent bubbling
             e.stopPropagation();
 
+            const itemData = getItemData();
+
             const masterkey = StorageHandler.GetSessionStorage().masterkey;
             const decryptedKey = await Encryption.decryptData(masterkey, itemData.item.key);
 
-            navigator.clipboard.writeText(decryptedKey)
-                .then(() => console.log("Texte copié !"))
-                .catch(err => console.error("Erreur lors de la copie :", err));
+            copyToClipboard(decryptedKey);
         });
     })
 };
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+        .then(() => console.log("Texte copié !"))
+        .catch(err => console.error("Erreur lors de la copie :", err));
+}

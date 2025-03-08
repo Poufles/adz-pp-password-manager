@@ -4,6 +4,7 @@
  * WHAT I WROTE IN card-creation.js
  */
 
+import CreatEditComponent from "./card-createdit";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
 import { icon_facebook } from "./svg";
@@ -206,7 +207,10 @@ async function LoadInformation(component, data) {
     btn_email_copy.addEventListener('click', () => copyToClipboard(data.email));
     btn_password_copy.addEventListener('click', () => copyToClipboard(decryptedKey));
     btn_edit.addEventListener('click', () => {
-        
+        if (!CreatEditComponent.isRendered()) {
+            ReadComponent.unrender();
+            CreatEditComponent.render('edit', data);
+        }
     });
 };
 
