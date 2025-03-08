@@ -1,5 +1,6 @@
 import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
+import { DeleteKeyItem } from "./crud";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
 import { icon_facebook } from "./svg";
@@ -259,7 +260,13 @@ function LoadListeners(component, getItemData, setItemData) {
     btn_delete.addEventListener('click', (e) => {
         // Prevent bubbling
         e.stopPropagation();
-        console.log('What');
+
+        const itemData = getItemData();
+        // ADD CONFIRMATION LATER
+        if (DeleteKeyItem(itemData.index)) {
+            location.reload();
+        };
+
     });
 };
 

@@ -138,3 +138,27 @@ export async function UpdateKeyItem(newData, index) {
         };
     };
 };
+
+/**
+ * Delete key item 
+ * @param {Number} index - Index of the key item to be removed 
+ * @returns 
+ */
+export function DeleteKeyItem(index) {
+    const sessionStorage = StorageHandler.GetSessionStorage();
+    const keys = sessionStorage.keys;
+
+    keys.splice(index, 1);
+    StorageHandler.UpdateSessionStorage(sessionStorage);
+    // Get local storage 
+    const storage = StorageHandler.GetLocalStorage();
+    const accounts = storage.app.accounts;
+    // Iterate over storage
+    for (let i = 0; i < accounts.length; i++) {
+        if (accounts[i].inSession) {
+            storage.app.accounts[i] = StorageHandler.GetSessionStorage();
+            StorageHandler.UpdateLocalStorage(storage);
+            return true;
+        };
+    };
+};

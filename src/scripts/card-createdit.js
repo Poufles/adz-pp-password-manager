@@ -371,7 +371,9 @@ function LoadActionListener(component, data) {
                 folder,
             }, data.index);
 
-            CreatEditComponent.unrender();
+            // CHANGE THIS LATER
+            // CreatEditComponent.unrender();
+            location.reload();
 
             return;
         }
@@ -420,9 +422,14 @@ function LoadDropDownListeners(component, dropdownFor) {
     const container = component.querySelector(`form #input-${dropdownFor}`);
     const cont_dropdown = container.querySelector('.dropdown');
     const inputField = cont_dropdown.querySelector(`#${dropdownFor}`);
+    const btn_svg = cont_dropdown.querySelector(`#arrow-${dropdownFor}`);
     const reqOp = dropdownFor === 'website' ?
         component.querySelector('#required #item-3') :
         component.querySelector('#optional #item-3');
+
+    btn_svg.addEventListener('click', () => {
+        inputField.focus();
+    });
 
     inputField.addEventListener('focus', () => {
         const storage = StorageHandler.GetLocalStorage();
@@ -498,6 +505,9 @@ function LoadDropDownListeners(component, dropdownFor) {
 function CreateDropdownItem(inputField, reqOpText, data) {
     const btn_dropdownItem = document.createElement('button');
     const itemName = data;
+
+    let hasInput = inputField.value ? true : false;
+
     btn_dropdownItem.setAttribute('type', 'button');
     btn_dropdownItem.classList.add('text', 'item');
     btn_dropdownItem.textContent = itemName;
@@ -506,15 +516,23 @@ function CreateDropdownItem(inputField, reqOpText, data) {
         inputField.value = itemName;
     })
 
+    btn_dropdownItem.addEventListener('mouseleave', (e) => {
+        if (!hasInput) {
+            inputField.value = '';
+        }
+    })
+
     btn_dropdownItem.addEventListener('mousedown', (e) => {
         inputField.value = itemName;
         reqOpText.classList.add('ticked');
+        hasInput = true;
     })
 
     btn_dropdownItem.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             inputField.value = websiteName;
             reqOpText.classList.add('ticked');
+            hasInput = true;
         }
     })
 
