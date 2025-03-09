@@ -3,6 +3,7 @@ import KeyItem from "./card-key";
 import StorageHandler from "./storage-handler";
 import Encryption from "./password-encryption";
 import { hidden_eye, open_eye } from "./svg";
+import KeyGenComponent from "./card-keygen";
 
 const component_template =
     `
@@ -125,9 +126,10 @@ const component_template =
 
 const CreatEditComponent = function () {
     let isShown = false;
+    let isCollapsed = false;
     let componentMode;
     // Create component
-    const container = document.querySelector('#bottom');
+    const container = document.querySelector('#bottom #crud');
     const component = document.createElement('section');
     component.classList.add('card', 'creation');
     component.setAttribute('id', 'creator');
@@ -149,8 +151,9 @@ const CreatEditComponent = function () {
         p_submit.textContent = componentMode.charAt(0).toUpperCase() + componentMode.slice(1);;
 
         btn_close.addEventListener('click', () => {
-            unrender();
             isShown = false;
+            container.classList.remove('open');
+            unrender();
         });
 
         LoadInputInfoAndListeners(component, data, unrender);
@@ -169,6 +172,28 @@ const CreatEditComponent = function () {
         }
     }
 
+    const collapseRender = () => {
+        if (isCollapsed) return;
+
+        isCollapsed = true;
+        component.classList.add('collapsed');
+        component.setAttribute('role', 'button');
+        component.tabIndex = 0;
+
+        component.addEventListener('click', uncollapseRender, { once: true });
+    };
+
+    const uncollapseRender = () => {
+        if (KeyGenComponent.isRendered()) {
+            KeyGenComponent.unrender();
+        }
+
+        isCollapsed = false;
+        component.classList.remove('collapsed');
+        component.removeAttribute('role');
+        component.removeAttribute('tabindex');
+    }
+
     const isRendered = () => isShown;
     const getMode = () => componentMode;
 
@@ -176,6 +201,8 @@ const CreatEditComponent = function () {
         render,
         unrender,
         isRendered,
+        collapseRender,
+        uncollapseRender,
         getMode
     }
 }();
@@ -192,6 +219,7 @@ async function LoadInputInfoAndListeners(component, data) {
     const input_email = form.querySelector('#email');
     const cont_password = form.querySelector('#input-password .wrapper>.container');
     const input_password = cont_password.querySelector('#password');
+    const btn_keygen = form.querySelector('#keygen')
     const cont_website = form.querySelector('#input-website');
     const cont_dropdown = cont_website.querySelector('.dropdown');
     const input_website = cont_dropdown.querySelector('#website');
@@ -313,6 +341,14 @@ async function LoadInputInfoAndListeners(component, data) {
         }
     });
 
+    btn_keygen.addEventListener('click', (e) => {
+        // Prevent bubbling
+        e.stopPropagation();
+
+        CreatEditComponent.collapseRender();
+        KeyGenComponent.render();
+    });
+
     LoadDropDownListeners(component, 'website');
     LoadDropDownListeners(component, 'folder');
 }
@@ -357,6 +393,8 @@ function LoadActionListener(component, data) {
         if ((!email && !key) || (!email && !website) || (!key && !website) || (!email && !key && !website)) {
             p_advise.textContent = 'Required Information Missing !';
             p_advise.classList.add('invalid');
+
+            return;
         }
 
         if (data !== null) {

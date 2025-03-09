@@ -117,7 +117,7 @@ const template =
 const ReadComponent = function () {
     let isShown = false;
     let itemData;
-    const container = document.querySelector('#page__dashboard #bottom');
+    const container = document.querySelector('#bottom #crud');
     const component = document.createElement('section');
     component.classList.add('card', 'creation');
     component.setAttribute('id', 'item-info');
@@ -131,6 +131,7 @@ const ReadComponent = function () {
         const btn_close = component.querySelector('#close');
 
         btn_close.addEventListener('click', () => {
+            container.classList.remove('open');
             unrender();
             isShown = false;
         });
@@ -138,6 +139,7 @@ const ReadComponent = function () {
         LoadInformation(component, getItemData);
         
         if (!container.contains(component)) {
+            container.classList.add('open');
             container.appendChild(component);
             isShown = true;
         }

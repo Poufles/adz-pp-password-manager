@@ -1,3 +1,5 @@
+import CreatEditComponent from "./card-createdit";
+
 const template =
     `
         <div class="container" id="top">
@@ -37,7 +39,7 @@ const template =
             <div class="container inputs" id="input-length">
                 <div class="container">
                     <p class="text color">Password Length</p>
-                    <p class="text color" id="text-indicator">16</p>
+                    <p class="text color" id="text-indicator">14</p>
                 </div>
                 <input class="text-sub color" type="range" min="8" max="20" id="length-range">
             </div>
@@ -46,28 +48,28 @@ const template =
                 <label tabindex="0" role="button" class="text color" for="major-alphabet">
                     <div id="thumb"></div>
                 </label>
-                <input class="text color" type="checkbox" id="major-alphabet">
+                <input class="text color" type="checkbox" id="major-alphabet" checked>
             </div>
             <div class="container inputs" id="input-minor-alphabet">
                 <p class="text-sub color">a-z</p>
                 <label tabindex="0" role="button" class="text color" for="minor-alphabet">
                     <div id="thumb"></div>
                 </label>
-                <input class="text color" type="checkbox" id="minor-alphabet">
+                <input class="text color" type="checkbox" id="minor-alphabet" checked>
             </div>
             <div class="container inputs" id="input-num">
                 <p class="text color">0-9</p>
                 <label tabindex="0" role="button" class="text color" for="num">
                     <div id="thumb"></div>
                 </label>
-                <input class="text color" type="checkbox" id="num">
+                <input class="text color" type="checkbox" id="num" checked>
             </div>
             <div class="container inputs" id="input-sign">
                 <p class="text color">!@#$%^&*()</p>
                 <label tabindex="0" role="button" class="text color" for="sign">
                     <div id="thumb"></div>
                 </label>
-                <input class="text color" type="checkbox" id="sign">
+                <input class="text color" type="checkbox" id="sign" checked>
             </div>
             <div class="container inputs" id="input-actions">
                 <button class="text color" id="copy">
@@ -93,7 +95,7 @@ const template =
 const KeyGenComponent = function () {
     let isShown = false;
 
-    const container = document.querySelector('#page__dashboard #bottom');
+    const container = document.querySelector('#bottom #crud');
     const component = document.createElement('section');
     component.classList.add('card', 'creation');
     component.setAttribute('id', 'generator');
@@ -105,9 +107,15 @@ const KeyGenComponent = function () {
 
         btn_close.addEventListener('click', () => {
             unrender();
+            container.classList.remove('open');
+
+            if (CreatEditComponent.isRendered()) {
+                container.classList.add('open');
+                CreatEditComponent.uncollapseRender();
+            };
         });
 
-        LoadInputListeners(component);
+        LoadActionListeners(component);
 
         if (!container.contains(component)) {
             container.appendChild(component);
@@ -132,19 +140,148 @@ const KeyGenComponent = function () {
 }();
 
 /**
- * Load listeners for input elements
+ * Load listeners for action elements
  * @param {Node} component - KeyGen component 
  */
-function LoadInputListeners(component) {
+function LoadActionListeners(component) {
+    const btn_generate = component.querySelector('#generate')
+    const p_showGenerated = component.querySelector('#password-test');
+    const p_strength = component.querySelector('#input-indicator #text-indicator');
+    const indicator_strength = component.querySelector('#input-indicator #indicator');
+    const p_length = component.querySelector('#input-length #text-indicator');
+    const input_length = component.querySelector('#length-range');
+    const cb_uppercase = component.querySelector('#major-alphabet');
+    const cb_lowercase = component.querySelector('#minor-alphabet');
+    const cb_numbers = component.querySelector('#num');
+    const cb_symbols = component.querySelector('#sign');
 
+    input_length.addEventListener('input', () => {
+        p_length.textContent = input_length.value;
+    })
+
+    p_showGenerated.addEventListener('input', () => {
+        const key = p_showGenerated.value;
+        const keyStrength = VerifyStrength(key);
+
+        indicator_strength.setAttribute('style', `--value: ${String(keyStrength) == 'NaN' ? 0 : keyStrength}%`);
+        p_strength.textContent = String(keyStrength) === 'NaN' ? 'No Input' : `${keyStrength}%`;
+    });
+
+    btn_generate.addEventListener('click', () => {
+        const length = input_length.value;
+        const uppercase = cb_uppercase.checked;
+        const lowercase = cb_lowercase.checked;
+        const numbers = cb_numbers.checked;
+        const symbols = cb_symbols.checked;
+
+        if (uppercase || lowercase || numbers || symbols) {
+            const key = GenerateKey(length, uppercase, lowercase, numbers, symbols);
+            const keyStrength = VerifyStrength(key);
+
+            indicator_strength.setAttribute('style', `--value: ${keyStrength}%`);
+            p_strength.textContent = `${keyStrength}%`;
+
+            p_showGenerated.value = key;
+        } else {
+            p_showGenerated.value = '';
+            p_showGenerated.placeholder = 'Tick at least one option !';
+
+            setTimeout(() => {
+                p_showGenerated.placeholder = 'Key Will Appear Here !'
+            }, 5000);
+        };
+    });
 };
 
-function LoadActionListeners() {
+/**
+ * Do I really need to explain
+ * @param {Number} length 
+ * @param {boolean} uppercase 
+ * @param {boolean} lowercase 
+ * @param {boolean} numbers 
+ * @param {boolean} symbols 
+ * @returns Generated key
+ */
+function GenerateKey(length, uppercase, lowercase, numbers, symbols) {
+    const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const NUMS = '0123456789';
+    const SYMBOLS = '!@#$%^&*()-_=+[]{}|;:,.<>?/~`';
+    let pool = '';
 
+    if (uppercase) pool += LETTERS;
+    if (lowercase) pool += LETTERS.toLowerCase();
+    if (numbers) pool += NUMS;
+    if (symbols) pool += SYMBOLS;
+
+    let generatedKey = '';
+    const array = new Uint32Array(length);
+    crypto.getRandomValues(array);
+
+    for (let iter = 0; iter < length; iter++) {
+        generatedKey += pool[array[iter] % pool.length];
+    }
+
+    return generatedKey;
+};
+
+/**
+ * Verify the strength of the password passed
+ * @param {String} password 
+ * @returns Returns strength of the password in string (0 to 100);
+ */
+function VerifyStrength(password) {
+    const length = password.length;
+
+    let upperCount = 0, lowerCount = 0, numCount = 0, symbolCount = 0;
+    let uniqueChars = new Set();
+    let consecutiveChars = 0;
+    let lastChar = '';
+
+    const SYMBOLS = '!@#$%^&*()-_=+[]{}|;:,.<>?/~`';
+    const NUMS = '0123456789';
+    const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    for (let char of password) {
+        uniqueChars.add(char);
+
+        if (LETTERS.includes(char)) upperCount++;
+        else if (LETTERS.toLowerCase().includes(char)) lowerCount++;
+        else if (NUMS.includes(char)) numCount++;
+        else if (SYMBOLS.includes(char)) symbolCount++;
+
+        if (char === lastChar) {
+            consecutiveChars++;
+        } else {
+            consecutiveChars = 0;
+        }
+        lastChar = char;
+    }
+
+    let score = 0;
+
+    if (length >= 8) score += 20;
+    if (length >= 12) score += 10;
+    if (length >= 16) score += 10;
+
+    if (upperCount > 0) score += 10;
+    if (lowerCount > 0) score += 10;
+    if (numCount > 0) score += 15;
+    if (symbolCount > 0) score += 20;
+
+    let uniqueRatio = uniqueChars.size / length;
+    score += Math.min(20, uniqueRatio * 20);
+
+    if (consecutiveChars > 2) score -= 10;
+
+    let categoryCount = (upperCount > 0) + (lowerCount > 0) + (numCount > 0) + (symbolCount > 0);
+    if (categoryCount === 1) score -= 30;
+
+    if (numCount === 0) score -= 10;
+    if (symbolCount === 0) score -= 10;
+
+    score = Math.max(0, Math.min(100, score));
+
+    return score.toFixed(2);
 }
-
-function GenerateKey() {
-
-};
 
 export default KeyGenComponent;

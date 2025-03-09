@@ -42,6 +42,7 @@ const cont_key_items = dashboard.querySelector('#articles #key-items');
 const btn_create = dashboard.querySelector('#articles #actions button#create')
 const btn_keygen = dashboard.querySelector('#articles #actions button#keygen')
 const cont_misc = dashboard.querySelector('section#misc');
+const cont_crud = dashboard.querySelector('section#crud');
 
 // Load username on header
 if (p_username) {
@@ -100,23 +101,33 @@ if (btn_create) {
         if (cont_misc) {
             cont_misc.remove(); // CHANGE LATER
         };
-        
+
         if (ReadComponent.isRendered()) {
+            cont_crud.classList.remove('open')
             ReadComponent.unrender();
         };
 
         if (KeyGenComponent.isRendered()) {
             KeyGenComponent.unrender();
+
+            if (CreatEditComponent.isRendered()) {
+                CreatEditComponent.uncollapseRender();
+                
+                return;
+            }
         }
 
         if (!CreatEditComponent.isRendered()) {
+            cont_crud.classList.add('open')
             CreatEditComponent.render('create');
             return;
         };
 
         if (CreatEditComponent.getMode() === 'edit') {
+            cont_crud.classList.add('open')
             CreatEditComponent.render('create');
         } else {
+            cont_crud.classList.remove('open')
             CreatEditComponent.unrender();
         }
     });
@@ -126,16 +137,25 @@ if (btn_create) {
 if (btn_keygen) {
     btn_keygen.addEventListener('click', () => {
         if (ReadComponent.isRendered()) {
+            cont_crud.classList.remove('open')
             ReadComponent.unrender();
         };
 
+        if (KeyGenComponent.isRendered() && CreatEditComponent.isRendered()) {
+            CreatEditComponent.uncollapseRender();
+            KeyGenComponent.unrender();
+            return;
+        }
+
         if (CreatEditComponent.isRendered()) {
-            CreatEditComponent.unrender();
+            CreatEditComponent.collapseRender();
         };
 
         if (!KeyGenComponent.isRendered()) {
+            cont_crud.classList.add('open')
             KeyGenComponent.render();
         } else {
+            cont_crud.classList.remove('open')
             KeyGenComponent.unrender();
         };
     });

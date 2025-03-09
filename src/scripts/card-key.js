@@ -142,6 +142,7 @@ function LoadInformation(component, data) {
  * @param {Object} data - Object that contains information for the key
  */
 function LoadListeners(component, getItemData, setItemData) {
+    const cont_crud = document.querySelector('#bottom #crud');
     const btn_fav = component.querySelector('span#favorite');
     const btn_email = component.querySelector('span#email');
     const cont_folder = component.querySelector('.compartment-mid');
@@ -153,6 +154,7 @@ function LoadListeners(component, getItemData, setItemData) {
 
     component.addEventListener('click', () => {
         const itemData = getItemData();
+        const cont_crud = document.querySelector('#bottom #crud');
         // CHANGE LATER
         const misc = document.querySelector('#misc');
         if (misc) {
@@ -164,12 +166,15 @@ function LoadListeners(component, getItemData, setItemData) {
         };
 
         if (CreatEditComponent.isRendered()) {
+            CreatEditComponent.uncollapseRender();
             CreatEditComponent.unrender();
         };
 
         if (ReadComponent.isRendered()) {
+            cont_crud.classList.add('open');
             ReadComponent.updateRender(itemData);
         } else {
+            cont_crud.classList.add('open');
             ReadComponent.render(itemData);
         };
     });
@@ -254,15 +259,17 @@ function LoadListeners(component, getItemData, setItemData) {
         e.stopPropagation();
 
         const itemData = getItemData();
+        const cont_crud = document.querySelector('#bottom #crud');
 
         if (KeyGenComponent.isRendered()) {
             KeyGenComponent.unrender();
         };
-
+        
         if (ReadComponent.isRendered()) {
             ReadComponent.unrender();
         }
-
+        
+        cont_crud.classList.add('open');
         CreatEditComponent.render('edit', itemData);
     });
 
