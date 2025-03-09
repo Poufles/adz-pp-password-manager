@@ -39,6 +39,8 @@ const p_date = dashboard.querySelector('#clock');
 const cont_recent_folders = dashboard.querySelector('#header #recent-folders');
 const cont_recent_items = dashboard.querySelector('#recent-files #items');
 const cont_key_items = dashboard.querySelector('#articles #key-items');
+const btn_all = dashboard.querySelector('#tags #all');
+const btn_favs = dashboard.querySelector('#tags #favs');
 const btn_create = dashboard.querySelector('#articles #actions button#create')
 const btn_keygen = dashboard.querySelector('#articles #actions button#keygen')
 const cont_misc = dashboard.querySelector('section#misc');
@@ -79,19 +81,51 @@ if (cont_recent_items) {
 
 // Load keys on main article
 if (cont_key_items) {
-    const session = StorageHandler.GetSessionStorage();
-    const key = session.keys;
-    const length = session.keys.length;
-
-    if (length !== 0) {
-        for (let iter = 0; iter < length; iter++) {
-            KeyItem({
-                item: key[iter],
-                index: iter
-            }).render();
-        }
-    }
+    LoadAllKeys();
 }
+
+// Listener for all button
+if (btn_all) {
+    btn_all.addEventListener('click', () => {
+        if (btn_favs.classList.contains('checked')) {
+            btn_favs.classList.remove('checked');
+        }
+
+        btn_all.classList.add('checked');
+        cont_key_items.innerHTML = '';
+
+        LoadAllKeys();
+    });
+};
+
+// Listener for favs button
+if (btn_favs) {
+    btn_favs.addEventListener('click', () => {
+        if (btn_all.classList.contains('checked')) {
+            btn_all.classList.remove('checked');
+        }
+
+        btn_favs.classList.add('checked');
+        cont_key_items.innerHTML = '';
+
+        const session = StorageHandler.GetSessionStorage();
+        const keys = session.keys;
+        const length = session.keys.length;
+
+        if (length !== 0) {
+            for (let iter = 0; iter < length; iter++) {
+                const key = keys[iter];
+
+                if (key.fav) {
+                    KeyItem({
+                        item: key,
+                        index: iter
+                    }).render();
+                };
+            };
+        };
+    });
+};
 
 // Listener for create button 
 if (btn_create) {
@@ -112,7 +146,7 @@ if (btn_create) {
 
             if (CreatEditComponent.isRendered()) {
                 CreatEditComponent.uncollapseRender();
-                
+
                 return;
             }
         }
@@ -159,4 +193,22 @@ if (btn_keygen) {
             KeyGenComponent.unrender();
         };
     });
+};
+
+/**
+ * Loads all keys in account in session
+ */
+function LoadAllKeys() {
+    const session = StorageHandler.GetSessionStorage();
+    const key = session.keys;
+    const length = session.keys.length;
+
+    if (length !== 0) {
+        for (let iter = 0; iter < length; iter++) {
+            KeyItem({
+                item: key[iter],
+                index: iter
+            }).render();
+        }
+    }
 }

@@ -428,7 +428,7 @@ function LoadActionListener(component, data) {
     });
 
     btn_reset.addEventListener('click', (e) => {
-        if (data.item != null) {
+        if (data != null) {
             e.preventDefault();
             LoadExistingData(data.item, {
                 fav: btn_fav,
