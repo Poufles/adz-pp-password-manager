@@ -169,6 +169,7 @@
 }
 
 #page__dashboard #bottom {
+    height: 578px;
     width: 100%;
     display: flex;
     gap: 12px;
@@ -360,6 +361,24 @@
 
 #page__dashboard #articles>#key-items>#item-example {
     width: 100%;
+}
+
+#page__dashboard #bottom #crud {
+    flex-grow: 1;
+    width: 0px;
+    display: none;
+}
+
+#page__dashboard #bottom #crud.open.animated {
+    transition-duration: var(--trans-q);
+}
+
+
+#page__dashboard #bottom #crud.open {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 /* CHANGE LATER (REMOVE) */

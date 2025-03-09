@@ -1,5 +1,38 @@
+@import './root.css';
+
 .creation#generator #generate-form {
     gap: 12px
+}
+
+.creation#generator #key-box button#visibility {
+    border-radius: var(--b-radius-3);
+    height: 20px;
+    width: 20px;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.creation#generator #key-box button#visibility svg {
+    fill: var(--primary-color);
+    height: 12px;
+    width: 12px;
+}
+
+.creation#generator #key-box input[type=text] {
+    width: 100%;
+}
+
+.creation#generator #key-box input[type=text]:focus::placeholder {
+    color: transparent;
+}
+
+.creation#generator #key-box input::placeholder {
+    font-size: var(--md-fn);
 }
 
 .creation#generator .inputs#input-indicator .container,
@@ -19,6 +52,7 @@
     background-color: var(--accent-color);
     border-radius: inherit;
     width: var(--value);
+    transition: var(--trans-q);
 }
 
 .creation#generator .inputs#input-length input[type=range] {

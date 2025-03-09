@@ -3,11 +3,13 @@ import "../styles/dashboard-responsiveness.css";
 import "../styles/comp-circular-percentage.css";
 import "../styles/comp-card-creation.css";
 import "../styles/comp-card-iteminfo.css";
+import "../styles/comp-card-keygen.css";
 import StorageHandler from "./storage-handler.js";
 import { CurrentTimeToday, DateDifference } from "./date";
 import KeyItem from "./card-key.js";
 import CreatEditComponent from "./card-createdit.js";
 import ReadComponent from "./card-item-read.js";
+import KeyGenComponent from "./card-keygen.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
@@ -38,7 +40,9 @@ const cont_recent_folders = dashboard.querySelector('#header #recent-folders');
 const cont_recent_items = dashboard.querySelector('#recent-files #items');
 const cont_key_items = dashboard.querySelector('#articles #key-items');
 const btn_create = dashboard.querySelector('#articles #actions button#create')
+const btn_keygen = dashboard.querySelector('#articles #actions button#keygen')
 const cont_misc = dashboard.querySelector('section#misc');
+const cont_crud = dashboard.querySelector('section#crud');
 
 // Load username on header
 if (p_username) {
@@ -96,21 +100,63 @@ if (btn_create) {
         const cont_misc = document.querySelector('#bottom #misc');
         if (cont_misc) {
             cont_misc.remove(); // CHANGE LATER
-        }
-        
+        };
+
         if (ReadComponent.isRendered()) {
+            cont_crud.classList.remove('open')
             ReadComponent.unrender();
         };
 
+        if (KeyGenComponent.isRendered()) {
+            KeyGenComponent.unrender();
+
+            if (CreatEditComponent.isRendered()) {
+                CreatEditComponent.uncollapseRender();
+                
+                return;
+            }
+        }
+
         if (!CreatEditComponent.isRendered()) {
+            cont_crud.classList.add('open')
             CreatEditComponent.render('create');
             return;
         };
 
         if (CreatEditComponent.getMode() === 'edit') {
+            cont_crud.classList.add('open')
             CreatEditComponent.render('create');
         } else {
+            cont_crud.classList.remove('open')
             CreatEditComponent.unrender();
         }
+    });
+}
+
+// Listener for key generator button
+if (btn_keygen) {
+    btn_keygen.addEventListener('click', () => {
+        if (ReadComponent.isRendered()) {
+            cont_crud.classList.remove('open')
+            ReadComponent.unrender();
+        };
+
+        if (KeyGenComponent.isRendered() && CreatEditComponent.isRendered()) {
+            CreatEditComponent.uncollapseRender();
+            KeyGenComponent.unrender();
+            return;
+        }
+
+        if (CreatEditComponent.isRendered()) {
+            CreatEditComponent.collapseRender();
+        };
+
+        if (!KeyGenComponent.isRendered()) {
+            cont_crud.classList.add('open')
+            KeyGenComponent.render();
+        } else {
+            cont_crud.classList.remove('open')
+            KeyGenComponent.unrender();
+        };
     });
 }
