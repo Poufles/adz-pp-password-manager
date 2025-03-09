@@ -1,4 +1,5 @@
 import CreatEditComponent from "./card-createdit";
+import { hidden_eye, open_eye } from "./svg";
 
 const template =
     `
@@ -11,7 +12,7 @@ const template =
                 </svg>
             </div>
             <div id="right">
-                <button type="circle" class="circle" id="close">
+                <button class="circle" id="close">
                     <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M8.83331 31.1667C9.16665 31.5 9.49998 31.6667 9.99998 31.6667C10.5 31.6667 10.8333 31.5 11.1666 31.1667L20 22.3333L28.8333 31.1667C29.1666 31.5 29.6666 31.6667 30 31.6667C30.3333 31.6667 30.8333 31.5 31.1666 31.1667C31.8333 30.5 31.8333 29.5 31.1666 28.8333L22.3333 20L31.1666 11.1667C31.8333 10.5 31.8333 9.5 31.1666 8.83333C30.5 8.16667 29.5 8.16667 28.8333 8.83333L20 17.6667L11.1666 8.83333C10.5 8.16667 9.49998 8.16667 8.83331 8.83333C8.16665 9.5 8.16665 10.5 8.83331 11.1667L17.6666 20L8.83331 28.8333C8.16665 29.5 8.16665 30.5 8.83331 31.1667Z" />
@@ -23,7 +24,10 @@ const template =
             <div class="container" id="box">
                 <div class="circle" id="circle-1"></div>
                 <div class="circle" id="circle-2"></div>
-                <input type="text" class="text-sub color" id="password-test" placeholder="Key Will Appear Here !">
+                <button class="" id="visibility">
+                        <?xml version="1.0" ?><svg enable-background="new 0 0 32 32" id="Glyph" version="1.1" viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M20.722,24.964c0.096,0.096,0.057,0.264-0.073,0.306c-7.7,2.466-16.032-1.503-18.594-8.942  c-0.072-0.21-0.072-0.444,0-0.655c0.743-2.157,1.99-4.047,3.588-5.573c0.061-0.058,0.158-0.056,0.217,0.003l4.302,4.302  c0.03,0.03,0.041,0.072,0.031,0.113c-1.116,4.345,2.948,8.395,7.276,7.294c0.049-0.013,0.095-0.004,0.131,0.032  C17.958,22.201,20.045,24.287,20.722,24.964z" id="XMLID_323_"/><path d="M24.68,23.266c2.406-1.692,4.281-4.079,5.266-6.941c0.072-0.21,0.072-0.44,0-0.65  C27.954,9.888,22.35,6,16,6c-2.479,0-4.841,0.597-6.921,1.665L3.707,2.293c-0.391-0.391-1.023-0.391-1.414,0s-0.391,1.023,0,1.414  l26,26c0.391,0.391,1.023,0.391,1.414,0c0.391-0.391,0.391-1.023,0-1.414L24.68,23.266z M16,10c3.309,0,6,2.691,6,6  c0,1.294-0.416,2.49-1.115,3.471l-8.356-8.356C13.51,10.416,14.706,10,16,10z" id="XMLID_325_"/></svg>
+                    </button>
+                <input type="password" class="text-sub color" id="password-test" placeholder="Key Will Appear Here !">
             </div>
         </div>
         <div id="generate-form">
@@ -115,7 +119,7 @@ const KeyGenComponent = function () {
             };
         });
 
-        LoadActionListeners(component);
+        LoadListeners(component);
 
         if (!container.contains(component)) {
             container.appendChild(component);
@@ -140,11 +144,13 @@ const KeyGenComponent = function () {
 }();
 
 /**
- * Load listeners for action elements
+ * Load listeners for elements
  * @param {Node} component - KeyGen component 
  */
-function LoadActionListeners(component) {
+function LoadListeners(component) {
+    const btn_visibility = component.querySelector('#visibility');
     const btn_generate = component.querySelector('#generate')
+    const btn_copy = component.querySelector('#copy');
     const p_showGenerated = component.querySelector('#password-test');
     const p_strength = component.querySelector('#input-indicator #text-indicator');
     const indicator_strength = component.querySelector('#input-indicator #indicator');
@@ -165,6 +171,18 @@ function LoadActionListeners(component) {
 
         indicator_strength.setAttribute('style', `--value: ${String(keyStrength) == 'NaN' ? 0 : keyStrength}%`);
         p_strength.textContent = String(keyStrength) === 'NaN' ? 'No Input' : `${keyStrength}%`;
+    });
+
+    btn_visibility.addEventListener('click', function() {
+        let isHidden = !this.classList.contains('open-eye');
+        this.innerHTML = isHidden ? open_eye : hidden_eye;
+        if (isHidden) {
+            p_showGenerated.setAttribute('type', 'text');
+            this.classList.add('open-eye');
+        } else {
+            p_showGenerated.setAttribute('type', 'password');
+            this.classList.remove('open-eye');
+        }
     });
 
     btn_generate.addEventListener('click', () => {
@@ -190,6 +208,12 @@ function LoadActionListeners(component) {
                 p_showGenerated.placeholder = 'Key Will Appear Here !'
             }, 5000);
         };
+    });
+
+    btn_copy.addEventListener('click', () => {
+        const generatedKey = p_showGenerated.value;
+
+        copyToClipboard(generatedKey);
     });
 };
 
@@ -282,6 +306,12 @@ function VerifyStrength(password) {
     score = Math.max(0, Math.min(100, score));
 
     return score.toFixed(2);
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+        .then(() => console.log("Texte copié !"))
+        .catch(err => console.error("Erreur lors de la copie :", err));
 }
 
 export default KeyGenComponent;
