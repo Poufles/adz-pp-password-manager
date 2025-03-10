@@ -44,6 +44,7 @@ export async function CreateNewKeyItem(data) {
             const newFolder = {
                 name: data.folder,
                 keys: [index],
+                favorite: false,
                 isRecent: false,
                 openedAt: 'none'
             };

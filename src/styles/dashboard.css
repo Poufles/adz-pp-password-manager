@@ -293,11 +293,15 @@
     grid-area: search;
 }
 
-#page__dashboard #articles>#tags,
-#page__dashboard #articles>#actions,
-#page__dashboard #articles>#types {
+#page__dashboard #articles>#actions {
     display: flex;
     gap: 12px;
+}
+
+#page__dashboard #articles>#tags,
+#page__dashboard #articles>#types {
+    display: flex;
+    gap: 3px;
 }
 
 #page__dashboard #articles>#tags {

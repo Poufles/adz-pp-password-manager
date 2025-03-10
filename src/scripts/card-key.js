@@ -77,7 +77,7 @@ export default function KeyItem(data) {
     let itemData = data;
     const container = document.querySelector('#bottom #articles #key-items')
     const component = document.createElement('button');
-    component.classList.add('container', 'key-item');
+    component.classList.add('container', 'article-item');
     component.innerHTML = template;
 
     const getItemData = () => itemData;
@@ -129,6 +129,7 @@ function LoadInformation(component, data) {
     cont_icon.innerHTML = icon_facebook;
     p_name.textContent = data.item.website.charAt(0).toUpperCase() + data.item.website.slice(1);
     p_email.textContent = data.item.email;
+    
     if (data.item.folder) {
         span_folder.textContent = data.item.folder;
     } else {
@@ -142,7 +143,6 @@ function LoadInformation(component, data) {
  * @param {Object} data - Object that contains information for the key
  */
 function LoadListeners(component, getItemData, setItemData) {
-    const cont_crud = document.querySelector('#bottom #crud');
     const btn_fav = component.querySelector('span#favorite');
     const btn_email = component.querySelector('span#email');
     const cont_folder = component.querySelector('.compartment-mid');
@@ -215,6 +215,19 @@ function LoadListeners(component, getItemData, setItemData) {
                 if (CreatEditComponent.isRendered()) {
                     CreatEditComponent.render('edit', updatedItemData);
                 };
+
+                const dashboard__btn_favs = document.querySelector('#tags #favs')
+
+                if (dashboard__btn_favs.classList.contains('checked')) {
+                    const keyItems = document.querySelectorAll('#key-items .article-item');
+
+                    for (let keyItem of keyItems) {
+                        if (keyItem.dataset.item == index) {
+                            keyItem.remove();
+                            break;
+                        };
+                    };
+                };
             };
         };
     });
@@ -264,11 +277,11 @@ function LoadListeners(component, getItemData, setItemData) {
         if (KeyGenComponent.isRendered()) {
             KeyGenComponent.unrender();
         };
-        
+
         if (ReadComponent.isRendered()) {
             ReadComponent.unrender();
         }
-        
+
         cont_crud.classList.add('open');
         CreatEditComponent.render('edit', itemData);
     });
