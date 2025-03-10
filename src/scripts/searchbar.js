@@ -46,6 +46,9 @@ const Searchbar = function () {
      * @param {*} param1 - (Optional) Additional queries for searching. Acccepts boolean for the following properties: fav && folder
      */
     const refresh = (query, { fav = false, folder = false } = {}) => {
+        const cont_key_items = document.querySelector('#page__dashboard section#articles #key-items');
+        
+        cont_key_items.innerHTML = ''
         SearchAlgorithm(query, { fav, folder });
     };
 
@@ -134,7 +137,7 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
 
                 if (folderName.toLowerCase().includes(query.toLowerCase()) && isFav) {
                     const item = FolderItem({
-                        item: folderName,
+                        item: folderItem,
                         index: index
                     });
 
@@ -163,7 +166,7 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
 
         if (fav) {
             const isFav = key.fav;
-
+            
             if (keyName.toLowerCase().includes(query.toLowerCase()) && isFav) {
                 const item = KeyItem({
                     item: key,

@@ -41,6 +41,7 @@ const p_date = dashboard.querySelector('#clock');
 const cont_recent_folders = dashboard.querySelector('#header #recent-folders');
 const cont_recent_items = dashboard.querySelector('#recent-files #items');
 const cont_key_items = dashboard.querySelector('#articles #key-items');
+const p_title = dashboard.querySelector('#articles p#title');
 const btn_all = dashboard.querySelector('#tags #all');
 const btn_favs = dashboard.querySelector('#tags #favs');
 const btn_files = dashboard.querySelector('#types #files');
@@ -107,17 +108,6 @@ if (btn_all) {
         Searchbar.refresh(searchStatus.query, {
             folder: isFolders
         });
-
-        // const searchStatus = Searchbar.hasSearchItem();
-        // if (searchStatus.status) {
-        //     Searchbar.refresh(searchStatus.query, {
-        //         folder: isFolders
-        //     });
-
-        //     return;
-        // };
-
-        // LoadAllKeys();
     });
 };
 
@@ -129,7 +119,7 @@ if (btn_favs) {
             btn_favs.classList.add('checked');
         };
 
-        cont_key_items.innerHTML = '';
+        // cont_key_items.innerHTML = '';
 
         const btn_folders = dashboard.querySelector('#types #folders');
         let isFolders = btn_folders.classList.contains('checked');
@@ -139,34 +129,6 @@ if (btn_favs) {
             fav: true,
             folder: isFolders
         });
-
-
-        // const searchStatus = Searchbar.hasSearchItem();
-        // if (searchStatus.status) {
-        //     Searchbar.refresh(searchStatus.query, {
-        //         fav: true,
-        //         folder: isFolders
-        //     });
-
-        //     return;
-        // };
-
-        // const session = StorageHandler.GetSessionStorage();
-        // const keys = session.keys;
-        // const length = session.keys.length;
-
-        // if (length !== 0) {
-        //     for (let iter = 0; iter < length; iter++) {
-        //         const key = keys[iter];
-
-        //         if (key.fav) {
-        //             KeyItem({
-        //                 item: key,
-        //                 index: iter
-        //             }).render();
-        //         };
-        //     };
-        // };
     });
 };
 
@@ -178,26 +140,16 @@ if (btn_files) {
             btn_files.classList.add('checked');
         };
 
-        cont_key_items.innerHTML = '';
+        p_title.textContent = 'Your Keys';
+        // cont_key_items.innerHTML = '';
 
         const btn_favs = dashboard.querySelector('#tags #favs');
         let isFavs = btn_favs.classList.contains('checked');
 
         const searchStatus = Searchbar.hasSearchItem();
         Searchbar.refresh(searchStatus.query, {
-            favs: isFavs
+            fav: isFavs
         });
-
-        // const searchStatus = Searchbar.hasSearchItem();
-        // if (searchStatus.status) {
-        //     Searchbar.refresh(searchStatus.query, {
-        //         favs: isFavs
-        //     });
-
-        //     return;
-        // };
-
-        // LoadAllKeys();
     });
 };
 
@@ -209,7 +161,8 @@ if (btn_folder) {
             btn_folder.classList.add('checked');
         };
 
-        cont_key_items.innerHTML = '';
+        p_title.textContent = 'Your Folders';
+        // cont_key_items.innerHTML = '';
 
         const btn_favs = dashboard.querySelector('#tags #favs');
         let isFavs = btn_favs.classList.contains('checked');
@@ -219,19 +172,6 @@ if (btn_folder) {
             fav: isFavs,
             folder: true
         });
-
-        // const session = StorageHandler.GetSessionStorage();
-        // const folders = session.folders;
-        // const length = session.folders.length;
-
-        // if (length !== 0) {
-        //     for (let index = 0; index < length; index++) {
-        //         FolderItem({
-        //             item: folders[index],
-        //             index
-        //         }).render();
-        //     }
-        // }
     });
 };
 

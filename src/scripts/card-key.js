@@ -129,7 +129,7 @@ function LoadInformation(component, data) {
     cont_icon.innerHTML = icon_facebook;
     p_name.textContent = data.item.website.charAt(0).toUpperCase() + data.item.website.slice(1);
     p_email.textContent = data.item.email;
-    
+
     if (data.item.folder) {
         span_folder.textContent = data.item.folder;
     } else {
@@ -195,6 +195,7 @@ function LoadListeners(component, getItemData, setItemData) {
 
         key.fav = sp_fav.classList.contains('ticked') ? true : false;
         StorageHandler.UpdateSessionStorage(sessionStorage);
+        setItemData(sessionStorage);
 
         // Update local storage 
         const storage = StorageHandler.GetLocalStorage();
@@ -293,9 +294,12 @@ function LoadListeners(component, getItemData, setItemData) {
         const itemData = getItemData();
         // ADD CONFIRMATION LATER
         if (DeleteKeyItem(itemData.index)) {
-            location.reload();
-        };
+            const container = document.querySelector('#page__dashboard section#articles #key-items');
 
+            if (container.contains(component)) {
+                container.removeChild(component);
+            };
+        };
     });
 };
 

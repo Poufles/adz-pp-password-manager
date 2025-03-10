@@ -379,12 +379,12 @@ function LoadActionListener(component, data) {
     const p_optional_folder = component.querySelector('#optional #item-3');
 
     btn_submit.addEventListener('click', async () => {
-        const email = input_email.value;
-        const key = input_password.value;
-        const website = input_website.value;
+        const email = input_email.value.trim();
+        const key = input_password.value.trim();
+        const website = input_website.value.trim();
         const fav = btn_fav.classList.contains('ticked') ? true : false;
-        const hint = input_hint.value;
-        const folder = input_folder.value;
+        const hint = input_hint.value.trim();
+        const folder = input_folder.value.trim();
 
         VerifyRequired('email', email, input_email, p_advise);
         VerifyRequired('password', key, cont_password, p_advise);
