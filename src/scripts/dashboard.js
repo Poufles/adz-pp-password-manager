@@ -11,6 +11,7 @@ import CreatEditComponent from "./card-createdit.js";
 import ReadComponent from "./card-item-read.js";
 import KeyGenComponent from "./card-keygen.js";
 import Searchbar from "./searchbar.js";
+import { FolderItem } from "./card-folder.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
@@ -42,6 +43,8 @@ const cont_recent_items = dashboard.querySelector('#recent-files #items');
 const cont_key_items = dashboard.querySelector('#articles #key-items');
 const btn_all = dashboard.querySelector('#tags #all');
 const btn_favs = dashboard.querySelector('#tags #favs');
+const btn_files = dashboard.querySelector('#types #files');
+const btn_folder = dashboard.querySelector('#types #folders');
 const btn_create = dashboard.querySelector('#articles #actions button#create')
 const btn_keygen = dashboard.querySelector('#articles #actions button#keygen')
 const cont_misc = dashboard.querySelector('section#misc');
@@ -97,14 +100,24 @@ if (btn_all) {
 
         cont_key_items.innerHTML = '';
 
+        const btn_folders = dashboard.querySelector('#types #folders');
+        let isFolders = btn_folders.classList.contains('checked');
+
         const searchStatus = Searchbar.hasSearchItem();
-        if (searchStatus.status) {
-            Searchbar.refresh(searchStatus.query);
+        Searchbar.refresh(searchStatus.query, {
+            folder: isFolders
+        });
 
-            return;
-        };
+        // const searchStatus = Searchbar.hasSearchItem();
+        // if (searchStatus.status) {
+        //     Searchbar.refresh(searchStatus.query, {
+        //         folder: isFolders
+        //     });
 
-        LoadAllKeys();
+        //     return;
+        // };
+
+        // LoadAllKeys();
     });
 };
 
@@ -118,31 +131,107 @@ if (btn_favs) {
 
         cont_key_items.innerHTML = '';
 
+        const btn_folders = dashboard.querySelector('#types #folders');
+        let isFolders = btn_folders.classList.contains('checked');
+
         const searchStatus = Searchbar.hasSearchItem();
-        if (searchStatus.status) {
-            Searchbar.refresh(searchStatus.query, { 
-                fav: searchStatus.status 
-            });
+        Searchbar.refresh(searchStatus.query, {
+            fav: true,
+            folder: isFolders
+        });
 
-            return;
+
+        // const searchStatus = Searchbar.hasSearchItem();
+        // if (searchStatus.status) {
+        //     Searchbar.refresh(searchStatus.query, {
+        //         fav: true,
+        //         folder: isFolders
+        //     });
+
+        //     return;
+        // };
+
+        // const session = StorageHandler.GetSessionStorage();
+        // const keys = session.keys;
+        // const length = session.keys.length;
+
+        // if (length !== 0) {
+        //     for (let iter = 0; iter < length; iter++) {
+        //         const key = keys[iter];
+
+        //         if (key.fav) {
+        //             KeyItem({
+        //                 item: key,
+        //                 index: iter
+        //             }).render();
+        //         };
+        //     };
+        // };
+    });
+};
+
+//Listener for files button
+if (btn_files) {
+    btn_files.addEventListener('click', () => {
+        if (btn_folder.classList.contains('checked')) {
+            btn_folder.classList.remove('checked');
+            btn_files.classList.add('checked');
         };
 
-        const session = StorageHandler.GetSessionStorage();
-        const keys = session.keys;
-        const length = session.keys.length;
+        cont_key_items.innerHTML = '';
 
-        if (length !== 0) {
-            for (let iter = 0; iter < length; iter++) {
-                const key = keys[iter];
+        const btn_favs = dashboard.querySelector('#tags #favs');
+        let isFavs = btn_favs.classList.contains('checked');
 
-                if (key.fav) {
-                    KeyItem({
-                        item: key,
-                        index: iter
-                    }).render();
-                };
-            };
+        const searchStatus = Searchbar.hasSearchItem();
+        Searchbar.refresh(searchStatus.query, {
+            favs: isFavs
+        });
+
+        // const searchStatus = Searchbar.hasSearchItem();
+        // if (searchStatus.status) {
+        //     Searchbar.refresh(searchStatus.query, {
+        //         favs: isFavs
+        //     });
+
+        //     return;
+        // };
+
+        // LoadAllKeys();
+    });
+};
+
+//Listener for folders button
+if (btn_folder) {
+    btn_folder.addEventListener('click', () => {
+        if (btn_files.classList.contains('checked')) {
+            btn_files.classList.remove('checked');
+            btn_folder.classList.add('checked');
         };
+
+        cont_key_items.innerHTML = '';
+
+        const btn_favs = dashboard.querySelector('#tags #favs');
+        let isFavs = btn_favs.classList.contains('checked');
+
+        const searchStatus = Searchbar.hasSearchItem();
+        Searchbar.refresh(searchStatus.query, {
+            fav: isFavs,
+            folder: true
+        });
+
+        // const session = StorageHandler.GetSessionStorage();
+        // const folders = session.folders;
+        // const length = session.folders.length;
+
+        // if (length !== 0) {
+        //     for (let index = 0; index < length; index++) {
+        //         FolderItem({
+        //             item: folders[index],
+        //             index
+        //         }).render();
+        //     }
+        // }
     });
 };
 

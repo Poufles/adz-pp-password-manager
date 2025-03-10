@@ -1,4 +1,4 @@
-.key-item {
+.article-item {
     background-color: #fff;
     border-radius: var(--b-radius-1);
     border: 0;
@@ -13,63 +13,71 @@
     justify-content: space-between;
 }
 
-.key-item .button {
+.article-item .button {
     cursor: pointer;
 }
 
-.key-item .compartment-left {
+.article-item .compartment-left {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
 }
 
-.key-item .compartment-left #item-icon {
+.article-item .compartment-left #item-icon {
     border-left: 3px solid var(--accent-color);
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 10px;
 }
 
-.key-item .compartment-left #item-icon svg {
+.article-item .compartment-left #item-icon svg {
     width: 35px;
     height: 35px;
 }
 
-.key-item .compartment-left #favorite svg.ticked {
+.article-item .compartment-left #favorite svg.ticked {
     fill: var(--accent-color);
 }
 
-.key-item .compartment-left #item-info {
+.article-item .compartment-left #item-info {
+    min-width: 0;
+    max-width: 130px;
     text-align: left;
 
     & p {
         font-size: var(--lr-fn);
         font-weight: bold;
+        text-wrap: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 
     & span {
         color: rgb(50, 50, 50);
         margin-top: -10px;
+        text-wrap: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
         display: block;
     }
 }
 
-.key-item .compartment-mid {
+.article-item .compartment-mid {
     color: rgba(95, 47, 117, 0.5);
 }
 
-.key-item #actions {
+.article-item #actions {
     display: flex;
     gap: 5px;
     align-items: center;
 }
 
-.key-item #actions>span.button {
+.article-item #actions>span.button {
     position: relative;
 }
 
-.key-item #actions #tooltip {
+.article-item #actions #tooltip {
     background-color: var(--accent-color);
     border-radius: 50px;
     cursor: default;
@@ -85,7 +93,7 @@
     transition-duration: var(--trans-q);
 }
 
-.key-item #actions #tooltip>#tip {
+.article-item #actions #tooltip>#tip {
     font-weight: bold;
     padding: 5px 20px;
     display: flex;
@@ -93,7 +101,7 @@
     position: relative;
 }
 
-.key-item #actions #tip::after {
+.article-item #actions #tip::after {
     content: '';
     border-top: 10px solid transparent;
     border-right: 10px solid transparent;
@@ -105,7 +113,7 @@
     left: 50%;
 }
 
-.key-item #actions>span:hover>#tooltip {
+.article-item #actions>span:hover>#tooltip {
     display: block;
     opacity: 1;
 
@@ -114,26 +122,26 @@
     }
 }
 
-.key-item #actions>#copy>#tooltip:hover {
+.article-item #actions>#copy>#tooltip:hover {
     cursor: default;
     display: none;
 }
 
-.key-item #actions #more>#tooltip {
+.article-item #actions #more>#tooltip {
     border-radius: var(--b-radius-1);
     left: -20%
 }
 
-.key-item #actions #more>#tooltip>#tip {
+.article-item #actions #more>#tooltip>#tip {
     text-align: left;
     padding: 0;
 }
 
-.key-item #actions #more #tip::after {
+.article-item #actions #more #tip::after {
     left: 70%;
 }
 
-.key-item #actions #more>#tooltip>#tip>.button {
+.article-item #actions #more>#tooltip>#tip>.button {
     font-weight: bold;
     padding: 10px 20px;
     display: flex;
@@ -141,20 +149,30 @@
     align-items: center;
 }
 
+.article-item.folder #delete>svg {
+    fill: red;
+    opacity: 0.5;
+    transition: var(--trans-q);
+}
+
+.article-item.folder #delete:hover>svg {
+    opacity: 1;
+}
+
 @media screen and (min-width: 430px) {
-    .key-item #actions #more>#tooltip>#tip>.button#copy {
+    .article-item #actions #more>#tooltip>#tip>.button#copy {
         display: none;
     }
 }
 
 @media screen and (max-width: 429px) {
-    .key-item #actions>span#copy {
+    .article-item #actions>span#copy {
         display: none;
     }
 }
 
 @media screen and (max-width: 569px) {
-    .key-item .compartment-mid {
+    .article-item .compartment-mid {
         display: none;
     }
 }

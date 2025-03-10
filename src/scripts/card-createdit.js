@@ -390,10 +390,10 @@ function LoadActionListener(component, data) {
         VerifyRequired('password', key, cont_password, p_advise);
         VerifyRequired('website', website, cont_website, p_advise);
 
-        if ((!email && !key) || (!email && !website) || (!key && !website) || (!email && !key && !website)) {
+        if (!email || !key || !website) {
             p_advise.textContent = 'Required Information Missing !';
             p_advise.classList.add('invalid');
-
+            
             return;
         }
 

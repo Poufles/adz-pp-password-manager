@@ -1,3 +1,4 @@
+import { FolderItem } from "./card-folder";
 import KeyItem from "./card-key";
 import StorageHandler from "./storage-handler";
 
@@ -81,25 +82,26 @@ const Searchbar = function () {
 function LoadListeners(component) {
     const cont_keys = document.querySelector('#page__dashboard #articles #key-items')
     const tags = document.querySelector('#page__dashboard #articles #tags');
+    const types = document.querySelector('#page__dashboard #articles #types');
     const input_search = component.querySelector('input#search-item');
     const btn_search = component.querySelector('button#search');
 
     if (input_search) {
         input_search.addEventListener('input', () => {
-            const btn_all = tags.querySelector('#all');
             const btn_favs = tags.querySelector('#favs');
-            const search_value = input_search.value;
+            const btn_folders = types.querySelector('#folders');
+            const query = input_search.value;
+
+            let isFavs = btn_favs.classList.contains('checked');
+            let isFolders = btn_folders.classList.contains('checked');
 
             // Reset keys shown
             cont_keys.innerHTML = '';
 
-            if (btn_all.classList.contains('checked')) {
-                SearchAlgorithm(search_value);
-            };
-
-            if (btn_favs.classList.contains('checked')) {
-                SearchAlgorithm(search_value, { fav: true });
-            };
+            SearchAlgorithm(query, {
+                fav: isFavs,
+                folder: isFolders
+            });
         });
     };
 
@@ -112,45 +114,75 @@ function LoadListeners(component) {
 
 /**
  * Searching algorithm
- * @param {String} searchItem - String of text for searching 
+ * @param {String} query - String of text for searching 
  * @param {*} param1 - (Optional) Additional queries for searching. Acccepts boolean for the following properties: fav && folder
  */
-function SearchAlgorithm(searchItem, { fav = false, folder = false} = {}) {
+function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
     const sessionStorage = StorageHandler.GetSessionStorage();
     const keys = sessionStorage.keys;
-    const length = keys.length;
+    const keyLength = keys.length;
+    const folders = sessionStorage.folders;
+    const folderLength = folders.length;
 
-    for (let index = 0; index < length; index++) {
+    if (folder) {
+        for (let index = 0; index < folderLength; index++) {
+            const folderItem = folders[index];
+            const folderName = folderItem.name;
+
+            if (fav) {
+                const isFav = folderItem.favorite;
+
+                if (folderName.toLowerCase().includes(query.toLowerCase()) && isFav) {
+                    const item = FolderItem({
+                        item: folderName,
+                        index: index
+                    });
+
+                    item.render();
+                };
+
+                continue;
+            }
+
+            if (folderName.toLowerCase().includes(query.toLowerCase())) {
+                const item = FolderItem({
+                    item: folderItem,
+                    index: index
+                });
+
+                item.render();
+            };
+        };
+
+        return;
+    };
+
+    for (let index = 0; index < keyLength; index++) {
         const key = keys[index];
         const keyName = key.website;
 
-        if (folder) {
-            continue;
-        }
-        
         if (fav) {
-            console.log(searchItem);
             const isFav = key.fav;
 
-            if (keyName.toLowerCase().includes(searchItem.toLowerCase()) && isFav) {
-                const keyItem = KeyItem({
+            if (keyName.toLowerCase().includes(query.toLowerCase()) && isFav) {
+                const item = KeyItem({
                     item: key,
                     index: index
                 });
-    
-                keyItem.render();
+
+                item.render();
             };
 
             continue;
         }
 
-        if (keyName.toLowerCase().includes(searchItem.toLowerCase())) {
-            const keyItem = KeyItem({
+        if (keyName.toLowerCase().includes(query.toLowerCase())) {
+            const item = KeyItem({
                 item: key,
                 index: index
             });
 
-            keyItem.render();
+            item.render();
         };
     };
 }

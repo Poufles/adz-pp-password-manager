@@ -77,7 +77,7 @@ export default function KeyItem(data) {
     let itemData = data;
     const container = document.querySelector('#bottom #articles #key-items')
     const component = document.createElement('button');
-    component.classList.add('container', 'key-item');
+    component.classList.add('container', 'article-item');
     component.innerHTML = template;
 
     const getItemData = () => itemData;
@@ -129,6 +129,7 @@ function LoadInformation(component, data) {
     cont_icon.innerHTML = icon_facebook;
     p_name.textContent = data.item.website.charAt(0).toUpperCase() + data.item.website.slice(1);
     p_email.textContent = data.item.email;
+    
     if (data.item.folder) {
         span_folder.textContent = data.item.folder;
     } else {
@@ -218,7 +219,7 @@ function LoadListeners(component, getItemData, setItemData) {
                 const dashboard__btn_favs = document.querySelector('#tags #favs')
 
                 if (dashboard__btn_favs.classList.contains('checked')) {
-                    const keyItems = document.querySelectorAll('#key-items .key-item');
+                    const keyItems = document.querySelectorAll('#key-items .article-item');
 
                     for (let keyItem of keyItems) {
                         if (keyItem.dataset.item == index) {
