@@ -10,6 +10,7 @@ import KeyItem from "./card-key.js";
 import CreatEditComponent from "./card-createdit.js";
 import ReadComponent from "./card-item-read.js";
 import KeyGenComponent from "./card-keygen.js";
+import Searchbar from "./searchbar.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
@@ -45,6 +46,8 @@ const btn_create = dashboard.querySelector('#articles #actions button#create')
 const btn_keygen = dashboard.querySelector('#articles #actions button#keygen')
 const cont_misc = dashboard.querySelector('section#misc');
 const cont_crud = dashboard.querySelector('section#crud');
+
+Searchbar.render();
 
 // Load username on header
 if (p_username) {
@@ -89,10 +92,17 @@ if (btn_all) {
     btn_all.addEventListener('click', () => {
         if (btn_favs.classList.contains('checked')) {
             btn_favs.classList.remove('checked');
-        }
+            btn_all.classList.add('checked');
+        };
 
-        btn_all.classList.add('checked');
         cont_key_items.innerHTML = '';
+
+        const searchStatus = Searchbar.hasSearchItem();
+        if (searchStatus.status) {
+            Searchbar.refresh(searchStatus.query);
+
+            return;
+        };
 
         LoadAllKeys();
     });
@@ -103,10 +113,19 @@ if (btn_favs) {
     btn_favs.addEventListener('click', () => {
         if (btn_all.classList.contains('checked')) {
             btn_all.classList.remove('checked');
-        }
+            btn_favs.classList.add('checked');
+        };
 
-        btn_favs.classList.add('checked');
         cont_key_items.innerHTML = '';
+
+        const searchStatus = Searchbar.hasSearchItem();
+        if (searchStatus.status) {
+            Searchbar.refresh(searchStatus.query, { 
+                fav: searchStatus.status 
+            });
+
+            return;
+        };
 
         const session = StorageHandler.GetSessionStorage();
         const keys = session.keys;
