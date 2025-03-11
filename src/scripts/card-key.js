@@ -3,6 +3,7 @@ import ReadComponent from "./card-item-read";
 import KeyGenComponent from "./card-keygen";
 import { DeleteKeyItem, UpdateKeyItem } from "./crud";
 import MiscContainer from "./misc-container";
+import MiscRecentKeys from "./misc-recent-keys";
 import Encryption from "./password-encryption";
 import RecentKeyItem from "./recent-key";
 import Searchbar from "./searchbar";
@@ -89,11 +90,10 @@ export default function KeyItem(data) {
     const render = () => {
         component.dataset.item = itemData.index;
         component.setAttribute('id', `item-${itemData.index}`);
-        // LoadInformation(component, itemData.item);
+
         LoadInformation(component, itemData);
         LoadListeners(component, getItemData, setItemData);
 
-        // container.prepend(component);
         return component;
     }
 
@@ -159,13 +159,13 @@ function LoadListeners(component, getItemData, setItemData) {
     const btn_edit = component.querySelector('#tooltip #edit');
     const btn_delete = component.querySelector('#tooltip #delete');
 
-    component.addEventListener('click', () => {
+    component.addEventListener('click', async () => {
         const itemData = getItemData();
-        console.log(itemData);
         const cont_crud = document.querySelector('#bottom #crud');
-        const recentKeyItem = RecentKeyItem();
+        const recentKeyItem = await RecentKeyItem(itemData, true);
 
-        recentKeyItem.render(itemData);
+        MiscRecentKeys.insert(recentKeyItem);
+        MiscRecentKeys.filter();
 
         if (KeyGenComponent.isRendered()) {
             KeyGenComponent.unrender();

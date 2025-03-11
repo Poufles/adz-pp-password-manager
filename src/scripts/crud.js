@@ -140,7 +140,7 @@ export async function UpdateKeyItem(newData, index, { isPassword = false, isOpen
         fav: newData.fav,
         hint: newData.hint,
         folder: newData.folder,
-        openedAt: timeOpened
+        openedAt: timeOpened || newData.openedAt
     };
 
     // Store in session storage

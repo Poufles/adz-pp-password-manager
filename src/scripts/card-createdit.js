@@ -160,8 +160,6 @@ const CreatEditComponent = function () {
             MiscContainer.render();
         });
 
-        console.log(data);
-
         LoadInputInfoAndListeners(component, data);
         LoadActionListener(component, data);
 
@@ -219,7 +217,6 @@ const CreatEditComponent = function () {
  * @param {Object} data - Data object for edit
  */
 async function LoadInputInfoAndListeners(component, data) {
-    console.log(data);
     const p_advise = component.querySelector('#advise');
     const form = component.querySelector('form');
     const btn_fav = component.querySelector('button#favorite');
@@ -405,15 +402,6 @@ function LoadActionListener(component, data) {
         }
 
         if (data !== null) {
-            console.log({
-                email,
-                key,
-                website,
-                fav,
-                hint,
-                folder,
-            })
-
             const newKey = await UpdateKeyItem({
                 email,
                 key,
@@ -428,40 +416,11 @@ function LoadActionListener(component, data) {
 
             articleKey.updateRender(newKey);
 
-            // CHANGE THIS LATER
             CreatEditComponent.unrender();
             MiscContainer.render();
-            // location.reload();
 
             return;
         }
-
-        // if (data !== null) {
-        //     console.log({
-        //         email,
-        //         key,
-        //         website,
-        //         fav,
-        //         hint,
-        //         folder,
-        //     })
-
-        //     const newKey = await UpdateKeyItem({
-        //         email,
-        //         key,
-        //         website,
-        //         fav,
-        //         hint,
-        //         folder,
-        //     }, data.index, { isPassword: true });
-
-        //     // CHANGE THIS LATER
-        //     CreatEditComponent.unrender();
-        //     MiscContainer.render();
-        //     // location.reload();
-
-        //     return;
-        // }
 
         const newData = await CreateNewKeyItem({
             email,
@@ -479,11 +438,6 @@ function LoadActionListener(component, data) {
             object: newKey
         });
 
-        // ArticleKeysContainer.insert(
-        //     KeyItem(newKey).create()
-        // );
-
-        // KeyItem(newKey).render();
         CreatEditComponent.unrender();
         MiscContainer.render();
     });

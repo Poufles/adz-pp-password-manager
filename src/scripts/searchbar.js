@@ -185,14 +185,6 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
                     childNode: item.render(),
                     object: item
                 });
-                
-                // const item = KeyItem({
-                //     item: key,
-                //     index: index
-                // }).create();
-
-                // ArticleKeysContainer.insert(item);
-                // item.render();
             };
 
             continue;
@@ -208,15 +200,6 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
                 childNode: item.render(),
                 object: item
             });
-            
-            // const item = KeyItem({
-            //     item: key,
-            //     index: index
-            // }).create();
-
-            // ArticleKeysContainer.insert(item);
-
-            // item.render();
         };
     };
 }

@@ -36,6 +36,7 @@
 }
 
 .card-folder>#folder-info svg {
+    margin-bottom: 3px;
     width: 35px;
     height: 35px;
 }

@@ -11,11 +11,11 @@ import CreatEditComponent from "./card-createdit.js";
 import ReadComponent from "./card-item-read.js";
 import KeyGenComponent from "./card-keygen.js";
 import Searchbar from "./searchbar.js";
-import { FolderItem } from "./card-folder.js";
 import MiscRecentKeys from "./misc-recent-keys.js";
 import MiscKeysSecurity from "./misc-keys-security.js";
 import ArticleKeysContainer from "./article-keys.js";
 import MiscContainer from "./misc-container.js";
+import RecentKeyItem from "./recent-key.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
@@ -74,7 +74,22 @@ if (cont_bottom) {
     MiscContainer.render();
     MiscRecentKeys.render(cont_misc)
     MiscKeysSecurity.render(cont_misc);
-}
+
+    const session = StorageHandler.GetSessionStorage();
+    const keys = session.keys;
+    const length = keys.length
+
+    for (let index = 0; index < length; index++) {
+        const recentKeyItem = await RecentKeyItem({
+            item: keys[index],
+            index
+        });
+
+        MiscRecentKeys.insert(recentKeyItem);
+    };
+
+    MiscRecentKeys.filter();
+};
 
 // Load recent folders on header
 if (cont_recent_folders) {
@@ -87,17 +102,7 @@ if (cont_recent_folders) {
     // }
 }
 
-// Load recent keys on misc
-if (cont_recent_items) {
-    // const session = StorageHandler.GetSessionStorage();
-
-    // for (let key of session.keys) {
-    //     if (key.isRecent) {
-    //         console.log('Recent Key');
-    //     }
-    // } 
-}
-
+// Load article items
 if (cont_articles) {
     ArticleKeysContainer.render();
 
@@ -116,13 +121,6 @@ if (cont_articles) {
                 childNode: keyItem.render(),
                 object: keyItem
             });
-
-            // ArticleKeysContainer.insert(
-            //     KeyItem({
-            //         item: key[iter],
-            //         index: iter
-            //     }).create()
-            // );
         };
     };
 };

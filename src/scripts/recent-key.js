@@ -1,14 +1,14 @@
 import ReadComponent from "./card-item-read";
 import { UpdateKeyItem } from "./crud";
+import MiscContainer from "./misc-container";
 import MiscRecentKeys from "./misc-recent-keys";
 
 const template =
-`
-    <button class="container card-folder type-2" id="folder-1">
+    `
         <div class="container" id="folder-info">
             <svg class="fill" width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_30_757)">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 0H4C1.8 0 0 1.8 0 4V28C0 30.2 1.8 32 4 32H36C38.2 32 40 30.2 40 28V8C40 5.8 38.2 4 36 4H20L16 0Z" fill="black" />
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 0H4C1.8 0 0 1.8 0 4V28C0 30.2 1.8 32 4 32H36C38.2 32 40 30.2 40 28V8C40 5.8 38.2 4 36 4H20L16 0Z" fill="" />
                 </g>
                 <defs>
                     <clipPath id="clip0_30_757">
@@ -34,26 +34,43 @@ const template =
 
             <p class="text color" id="key-name">Facebook</p>
         </div>
-    </button>
 `;
 
-export default function RecentKeyItem() {
-    let itemData;
+/**
+ * Creates a component for recently opened key items
+ * @param {Object} data - Contains information to be treated for a recent key item (Properties: item for data from storage, index for index of data)
+ * @param {boolean} isOpened - (Optional) To see if it's an initial load or newly opened
+ * @returns Recent key item component
+ */
+export default async function RecentKeyItem(data, isOpened = false) {
     const component = document.createElement('button');
     component.classList.add('container', 'card-folder', 'type-2');
+    component.setAttribute('id', `recent-key-${data.index}`);
 
-    const render = async (data) => {
-        itemData = await UpdateKeyItem(data.item, data.index, { isOpened: true });
+    let index = data.index;
+    let itemData = await UpdateKeyItem(data.item, data.index, { isOpened });
 
+    const getItemData = () => itemData;
+    const setItemData = (newData) => { itemData = newData };
+    const getItemIndex = () => index;
+
+    const render = () => {
+        component.dataset.value = getItemIndex();
         component.innerHTML = template;
 
-        component.addEventListener('click', () => {
+        component.addEventListener('click', async function () {
+            MiscContainer.unrender();
             ReadComponent.render(itemData);
+
+            const recentKeyItem = await RecentKeyItem(itemData, true);
+            
+            MiscRecentKeys.insert(recentKeyItem);
+            MiscRecentKeys.filter();
         });
 
         LoadInfo(component, itemData.item);
 
-        MiscRecentKeys.insert(component);
+        return component;
     };
 
     const unrender = () => {
@@ -62,7 +79,10 @@ export default function RecentKeyItem() {
 
     return {
         render,
-        unrender
+        unrender,
+        getItemData,
+        setItemData,
+        getItemIndex
     }
 };
 
@@ -78,6 +98,6 @@ function LoadInfo(component, data) {
     const p_keyName = cont_keyItem.querySelector('#key-name');
 
     // ADD SVG LATER
-    p_folderName.textContent = data.folder;
+    p_folderName.textContent = data.folder || 'None';
     p_keyName.textContent = data.website;
 };
