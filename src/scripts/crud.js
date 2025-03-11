@@ -126,7 +126,7 @@ export async function UpdateKeyItem(newData, index, { isPassword = false, isOpen
     if (isPassword) {
         encryptedKey = await Encryption.encryptData(masterkey, newData.key);
     };
-
+    
     let timeOpened;
     if (isOpened) {
         timeOpened = new Date();

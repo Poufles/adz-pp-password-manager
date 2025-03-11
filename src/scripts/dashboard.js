@@ -107,12 +107,22 @@ if (cont_articles) {
 
     if (length !== 0) {
         for (let iter = 0; iter < length; iter++) {
-            ArticleKeysContainer.insert(
-                KeyItem({
-                    item: key[iter],
-                    index: iter
-                }).create()
-            );
+            const keyItem = KeyItem({
+                item: key[iter],
+                index: iter
+            });
+
+            ArticleKeysContainer.insert({
+                childNode: keyItem.render(),
+                object: keyItem
+            });
+
+            // ArticleKeysContainer.insert(
+            //     KeyItem({
+            //         item: key[iter],
+            //         index: iter
+            //     }).create()
+            // );
         };
     };
 };

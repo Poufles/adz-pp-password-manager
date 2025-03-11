@@ -86,7 +86,7 @@ export default function KeyItem(data) {
     const getItemData = () => itemData;
     const setItemData = (newData) => { itemData = newData };
 
-    const create = () => {
+    const render = () => {
         component.dataset.item = itemData.index;
         component.setAttribute('id', `item-${itemData.index}`);
         // LoadInformation(component, itemData.item);
@@ -98,18 +98,19 @@ export default function KeyItem(data) {
     }
 
     const updateRender = (newData) => {
+        console.log(`Update render card eky: ${newData.item.key}`);
         setItemData(newData);
-        LoadInformation(component, newData)
+        LoadInformation(component, itemData)
     };
 
-    const remove = () => {
+    const unrender = () => {
 
     }
 
     return {
-        create,
+        render,
         updateRender,
-        remove
+        unrender
     };
 };
 
@@ -160,6 +161,7 @@ function LoadListeners(component, getItemData, setItemData) {
 
     component.addEventListener('click', () => {
         const itemData = getItemData();
+        console.log(itemData);
         const cont_crud = document.querySelector('#bottom #crud');
         const recentKeyItem = RecentKeyItem();
 
@@ -269,6 +271,7 @@ function LoadListeners(component, getItemData, setItemData) {
         }
 
         cont_crud.classList.add('open');
+        console.log(itemData);
         CreatEditComponent.render('edit', itemData);
         MiscContainer.unrender();
     });

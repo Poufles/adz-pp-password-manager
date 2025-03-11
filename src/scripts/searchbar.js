@@ -179,9 +179,19 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
                 const item = KeyItem({
                     item: key,
                     index: index
-                }).create();
+                });
 
-                ArticleKeysContainer.insert(item);
+                ArticleKeysContainer.insert({
+                    childNode: item.render(),
+                    object: item
+                });
+                
+                // const item = KeyItem({
+                //     item: key,
+                //     index: index
+                // }).create();
+
+                // ArticleKeysContainer.insert(item);
                 // item.render();
             };
 
@@ -192,9 +202,19 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
             const item = KeyItem({
                 item: key,
                 index: index
-            }).create();
+            });
 
-            ArticleKeysContainer.insert(item);
+            ArticleKeysContainer.insert({
+                childNode: item.render(),
+                object: item
+            });
+            
+            // const item = KeyItem({
+            //     item: key,
+            //     index: index
+            // }).create();
+
+            // ArticleKeysContainer.insert(item);
 
             // item.render();
         };

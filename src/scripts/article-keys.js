@@ -19,9 +19,9 @@ const ArticleKeysContainer = function(){
         }
     }
 
-    const insert = (childNode) => {
+    const insert = ({ childNode, object }) => {
         if (!component.contains(childNode)) {
-            keys.push(childNode);
+            keys.push(object);
             component.prepend(childNode);
         };
 
@@ -34,6 +34,7 @@ const ArticleKeysContainer = function(){
 
         const keyItem = keys[index];
         if (component.contains(keyItem)) {
+            keys.splice(index, 1);
             component.removeChild(keyItem);
         };
     };

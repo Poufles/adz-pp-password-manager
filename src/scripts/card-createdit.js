@@ -5,6 +5,7 @@ import Encryption from "./password-encryption";
 import { hidden_eye, open_eye } from "./svg";
 import KeyGenComponent from "./card-keygen";
 import MiscContainer from "./misc-container";
+import ArticleKeysContainer from "./article-keys";
 
 const component_template =
     `
@@ -159,7 +160,9 @@ const CreatEditComponent = function () {
             MiscContainer.render();
         });
 
-        LoadInputInfoAndListeners(component, data, unrender);
+        console.log(data);
+
+        LoadInputInfoAndListeners(component, data);
         LoadActionListener(component, data);
 
         if (!container.contains(component)) {
@@ -216,6 +219,7 @@ const CreatEditComponent = function () {
  * @param {Object} data - Data object for edit
  */
 async function LoadInputInfoAndListeners(component, data) {
+    console.log(data);
     const p_advise = component.querySelector('#advise');
     const form = component.querySelector('form');
     const btn_fav = component.querySelector('button#favorite');
@@ -401,6 +405,15 @@ function LoadActionListener(component, data) {
         }
 
         if (data !== null) {
+            console.log({
+                email,
+                key,
+                website,
+                fav,
+                hint,
+                folder,
+            })
+
             const newKey = await UpdateKeyItem({
                 email,
                 key,
@@ -410,6 +423,11 @@ function LoadActionListener(component, data) {
                 folder,
             }, data.index, { isPassword: true });
 
+            const articleKeys = ArticleKeysContainer.getKeys();
+            const articleKey = articleKeys[newKey.index];
+
+            articleKey.updateRender(newKey);
+
             // CHANGE THIS LATER
             CreatEditComponent.unrender();
             MiscContainer.render();
@@ -418,7 +436,34 @@ function LoadActionListener(component, data) {
             return;
         }
 
-        const newKey = await CreateNewKeyItem({
+        // if (data !== null) {
+        //     console.log({
+        //         email,
+        //         key,
+        //         website,
+        //         fav,
+        //         hint,
+        //         folder,
+        //     })
+
+        //     const newKey = await UpdateKeyItem({
+        //         email,
+        //         key,
+        //         website,
+        //         fav,
+        //         hint,
+        //         folder,
+        //     }, data.index, { isPassword: true });
+
+        //     // CHANGE THIS LATER
+        //     CreatEditComponent.unrender();
+        //     MiscContainer.render();
+        //     // location.reload();
+
+        //     return;
+        // }
+
+        const newData = await CreateNewKeyItem({
             email,
             key,
             website,
@@ -427,7 +472,18 @@ function LoadActionListener(component, data) {
             folder
         });
 
-        KeyItem(newKey).render();
+        const newKey = KeyItem(newData);
+
+        ArticleKeysContainer.insert({
+            childNode: newKey.render(),
+            object: newKey
+        });
+
+        // ArticleKeysContainer.insert(
+        //     KeyItem(newKey).create()
+        // );
+
+        // KeyItem(newKey).render();
         CreatEditComponent.unrender();
         MiscContainer.render();
     });
