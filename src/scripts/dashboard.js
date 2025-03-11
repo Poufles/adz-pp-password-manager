@@ -99,8 +99,6 @@ if (btn_all) {
             btn_all.classList.add('checked');
         };
 
-        cont_key_items.innerHTML = '';
-
         const btn_folders = dashboard.querySelector('#types #folders');
         let isFolders = btn_folders.classList.contains('checked');
 
@@ -118,8 +116,6 @@ if (btn_favs) {
             btn_all.classList.remove('checked');
             btn_favs.classList.add('checked');
         };
-
-        // cont_key_items.innerHTML = '';
 
         const btn_folders = dashboard.querySelector('#types #folders');
         let isFolders = btn_folders.classList.contains('checked');
@@ -141,7 +137,6 @@ if (btn_files) {
         };
 
         p_title.textContent = 'Your Keys';
-        // cont_key_items.innerHTML = '';
 
         const btn_favs = dashboard.querySelector('#tags #favs');
         let isFavs = btn_favs.classList.contains('checked');
@@ -162,7 +157,6 @@ if (btn_folder) {
         };
 
         p_title.textContent = 'Your Folders';
-        // cont_key_items.innerHTML = '';
 
         const btn_favs = dashboard.querySelector('#tags #favs');
         let isFavs = btn_favs.classList.contains('checked');

@@ -43,12 +43,12 @@ const Searchbar = function () {
     /**
      * Refreshes the articles shown when theres a change in tags and types
      * @param {String} query - String text of search input 
-     * @param {*} param1 - (Optional) Additional queries for searching. Acccepts boolean for the following properties: fav && folder
+     * @param {*} options - (Optional) Additional queries for searching. Acccepts boolean for the following properties: fav && folder
      */
     const refresh = (query, { fav = false, folder = false } = {}) => {
         const cont_key_items = document.querySelector('#page__dashboard section#articles #key-items');
         
-        cont_key_items.innerHTML = ''
+        cont_key_items.innerHTML = '';
         SearchAlgorithm(query, { fav, folder });
     };
 
@@ -118,7 +118,7 @@ function LoadListeners(component) {
 /**
  * Searching algorithm
  * @param {String} query - String of text for searching 
- * @param {*} param1 - (Optional) Additional queries for searching. Acccepts boolean for the following properties: fav && folder
+ * @param {*} options - (Optional) Additional queries for searching. Acccepts boolean for the following properties: fav && folder
  */
 function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
     const sessionStorage = StorageHandler.GetSessionStorage();

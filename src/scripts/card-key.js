@@ -1,8 +1,9 @@
 import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
 import KeyGenComponent from "./card-keygen";
-import { DeleteKeyItem } from "./crud";
+import { DeleteKeyItem, UpdateKeyItem } from "./crud";
 import Encryption from "./password-encryption";
+import Searchbar from "./searchbar";
 import StorageHandler from "./storage-handler";
 import { icon_facebook } from "./svg";
 
@@ -189,48 +190,28 @@ function LoadListeners(component, getItemData, setItemData) {
         sp_fav.classList.toggle('ticked');
 
         // Update session storage
-        const index = itemData.index
-        const sessionStorage = StorageHandler.GetSessionStorage();
-        const key = sessionStorage.keys[index];
+        const newData = itemData.item;
+        newData.fav = sp_fav.classList.contains('ticked');
 
-        key.fav = sp_fav.classList.contains('ticked') ? true : false;
-        StorageHandler.UpdateSessionStorage(sessionStorage);
-        setItemData(sessionStorage);
+        setItemData(itemData);
+        UpdateKeyItem(itemData.item, itemData.index);
 
-        // Update local storage 
-        const storage = StorageHandler.GetLocalStorage();
-        const accounts = storage.app.accounts;
-        // Iterate over storage
-        for (let i = 0; i < accounts.length; i++) {
-            if (accounts[i].inSession) {
-                storage.app.accounts[i] = StorageHandler.GetSessionStorage();
-                StorageHandler.UpdateLocalStorage(storage);
-
-                const updatedItemData = { item: key, index }
-                setItemData(updatedItemData);
-
-                if (ReadComponent.isRendered()) {
-                    ReadComponent.updateRender(updatedItemData);
-                };
-
-                if (CreatEditComponent.isRendered()) {
-                    CreatEditComponent.render('edit', updatedItemData);
-                };
-
-                const dashboard__btn_favs = document.querySelector('#tags #favs')
-
-                if (dashboard__btn_favs.classList.contains('checked')) {
-                    const keyItems = document.querySelectorAll('#key-items .article-item');
-
-                    for (let keyItem of keyItems) {
-                        if (keyItem.dataset.item == index) {
-                            keyItem.remove();
-                            break;
-                        };
-                    };
-                };
-            };
+        if (ReadComponent.isRendered()) {
+            ReadComponent.updateRender(itemData);
         };
+
+        if (CreatEditComponent.isRendered()) {
+            CreatEditComponent.render('edit', itemData);
+        };
+
+        // Update query
+        const btn_favs = document.querySelector('#page__dashboard #tags #favs');
+        let isFavs = btn_favs.classList.contains('checked');
+
+        const searchStatus = Searchbar.hasSearchItem();
+        Searchbar.refresh(searchStatus.query, {
+            fav: isFavs,
+        });
     });
 
     btn_email.addEventListener('click', (e) => {

@@ -1,4 +1,4 @@
-import { DeleteFolderItem, UpdateFolderItemFav } from "./crud";
+import { DeleteFolderItem, UpdateFolderItem } from "./crud";
 import Searchbar from "./searchbar";
 
 const template =
@@ -121,7 +121,7 @@ function LoadListeners(component, getItemData, setItemData) {
             newData.favorite = sp_fav.classList.contains('ticked');
 
             setItemData(itemData);
-            UpdateFolderItemFav(itemData.item, itemData.index);
+            UpdateFolderItem(itemData.item, itemData.index);
 
             // Update query
             const btn_favs = document.querySelector('#page__dashboard #tags #favs');

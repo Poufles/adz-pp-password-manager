@@ -405,7 +405,7 @@ function LoadActionListener(component, data) {
                 fav,
                 hint,
                 folder,
-            }, data.index);
+            }, data.index, { isPassword: true });
 
             // CHANGE THIS LATER
             // CreatEditComponent.unrender();

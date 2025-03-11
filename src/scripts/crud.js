@@ -77,14 +77,14 @@ export async function CreateNewKeyItem(data) {
  * Updates key item and registers it to the storage
  * @param {Object} data - Data containing updated items 
  * @param {Number} index - Item index for update
+ * @param {Object} options - (Optional) Arguments to know if its a basic update or not
  * @returns An object containing updated key item and its index (Properties: item, index)
  */
-export async function UpdateKeyItem(newData, index) {
+export async function UpdateKeyItem(newData, index, { isPassword = false } = {}) {
     const sessionStorage = StorageHandler.GetSessionStorage();
     const keys = sessionStorage.keys;
     const folders = sessionStorage.folders;
     const masterkey = sessionStorage.masterkey;
-    const encryptedKey = await Encryption.encryptData(masterkey, newData.key);
     let key = keys[index];
     let oldKeyfolderName = key.folder;
 
@@ -120,15 +120,20 @@ export async function UpdateKeyItem(newData, index) {
                 isRecent: false,
                 openedAt: 'none'
             };
-    
+
             folders.push(newFolder);
         }
+    };
+
+    let encryptedKey;
+    if (isPassword) {
+        encryptedKey = await Encryption.encryptData(masterkey, newData.key);
     };
 
     // Create update
     const updatedKeyItem = {
         email: newData.email,
-        key: encryptedKey,
+        key: encryptedKey || newData.key,
         website: newData.website,
         fav: newData.fav,
         hint: newData.hint,
@@ -166,7 +171,7 @@ export function DeleteKeyItem(index) {
     const sessionStorage = StorageHandler.GetSessionStorage();
     const keys = sessionStorage.keys;
     const key = keys[index];
-    
+
     // Verify if key is in a folder
     if (keys.folder !== '') {
         const folders = sessionStorage.folders;
@@ -201,15 +206,20 @@ export function DeleteKeyItem(index) {
     };
 };
 
-
-export function UpdateFolderItemFav(data, index) {
+/**
+ * Update article folder item
+ * @param {*} data - Object containing information about folder
+ * @param {*} index - Folder's index
+ * @returns true if item is updated
+ */
+export function UpdateFolderItem(data, index) {
     const sessionStorage = StorageHandler.GetSessionStorage();
     const folders = sessionStorage.folders;
 
     if (folders.length === 0) {
         return;
     };
-    
+
     folders.splice(index, 1, data)
     StorageHandler.UpdateSessionStorage(sessionStorage)
     // Get local storage 
