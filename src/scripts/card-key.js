@@ -1,7 +1,8 @@
+import ArticleKeysContainer from "./article-keys";
 import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
 import KeyGenComponent from "./card-keygen";
-import { DeleteKeyItem, UpdateKeyItem } from "./crud";
+import { DeleteKeyItem, UpdateFolderItem, UpdateKeyItem } from "./crud";
 import MiscContainer from "./misc-container";
 import MiscRecentKeys from "./misc-recent-keys";
 import Encryption from "./password-encryption";
@@ -98,9 +99,8 @@ export default function KeyItem(data) {
     }
 
     const updateRender = (newData) => {
-        console.log(`Update render card eky: ${newData.item.key}`);
         setItemData(newData);
-        LoadInformation(component, itemData)
+        LoadInformation(component, itemData);
     };
 
     const unrender = () => {
@@ -139,6 +139,7 @@ function LoadInformation(component, data) {
 
     if (data.item.folder) {
         span_folder.textContent = data.item.folder;
+        cont_folder.removeAttribute('style');
     } else {
         cont_folder.setAttribute('style', 'display: none');
     }
@@ -162,6 +163,13 @@ function LoadListeners(component, getItemData, setItemData) {
     component.addEventListener('click', async () => {
         const itemData = getItemData();
         const cont_crud = document.querySelector('#bottom #crud');
+
+        const updatedData = await UpdateKeyItem(itemData.item, itemData.index, {
+            isOpened: true
+        });
+
+        setItemData(updatedData);
+
         const recentKeyItem = await RecentKeyItem(itemData, true);
 
         MiscRecentKeys.insert(recentKeyItem);
@@ -271,7 +279,6 @@ function LoadListeners(component, getItemData, setItemData) {
         }
 
         cont_crud.classList.add('open');
-        console.log(itemData);
         CreatEditComponent.render('edit', itemData);
         MiscContainer.unrender();
     });
@@ -281,14 +288,10 @@ function LoadListeners(component, getItemData, setItemData) {
         e.stopPropagation();
 
         const itemData = getItemData();
+        
+        ArticleKeysContainer.pull(itemData.index);
         // ADD CONFIRMATION LATER
-        if (DeleteKeyItem(itemData.index)) {
-            const container = document.querySelector('#page__dashboard section#articles #key-items');
-
-            if (container.contains(component)) {
-                container.removeChild(component);
-            };
-        };
+        DeleteKeyItem(itemData.index);
     });
 };
 

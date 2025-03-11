@@ -383,6 +383,7 @@ function LoadActionListener(component, data) {
     const p_optional_folder = component.querySelector('#optional #item-3');
 
     btn_submit.addEventListener('click', async () => {
+        const container = document.querySelector('#bottom #crud');
         const email = input_email.value.trim();
         const key = input_password.value.trim();
         const website = input_website.value.trim();
@@ -409,14 +410,15 @@ function LoadActionListener(component, data) {
                 fav,
                 hint,
                 folder,
+                openedAt: data.item.openedAt
             }, data.index, { isPassword: true });
 
             const articleKeys = ArticleKeysContainer.getKeys();
             const articleKey = articleKeys[newKey.index];
-
             articleKey.updateRender(newKey);
 
             CreatEditComponent.unrender();
+            container.classList.remove('open')
             MiscContainer.render();
 
             return;
@@ -439,6 +441,7 @@ function LoadActionListener(component, data) {
         });
 
         CreatEditComponent.unrender();
+        container.classList.remove('open')
         MiscContainer.render();
     });
 

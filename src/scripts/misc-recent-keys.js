@@ -71,13 +71,23 @@ const MiscRecentKeys = function () {
         cont_items.innerHTML = '';
         recentKeys = FilterRecent.sortItems(recentKeys);
 
-        for (let recentKey of recentKeys) {
-            cont_items.appendChild(await recentKey.render())
-        };
+        const length = recentKeys.length;
+        let recentCount = 0;
 
-        // for (let i = 0; i < recentKeys.length; i++) {
-        //     console.log(recentKeys[i].getItemIndex());
-        // }
+        for (let index = 0; index < length; index++) {
+            if (recentCount === 5) {
+                break;
+            }
+
+            if (recentKeys[index].getItemIndex() === -1) {
+                continue;
+            }
+
+            let recentKey = recentKeys[index];
+            cont_items.appendChild(await recentKey.render()); 
+
+            recentCount++;
+        }
     };
 
     return {

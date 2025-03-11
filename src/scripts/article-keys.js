@@ -33,9 +33,9 @@ const ArticleKeysContainer = function(){
         };
 
         const keyItem = keys[index];
-        if (component.contains(keyItem)) {
+        if (component.contains(keyItem.render())) {
             keys.splice(index, 1);
-            component.removeChild(keyItem);
+            component.removeChild(keyItem.render());
         };
     };
 
