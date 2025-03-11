@@ -1,3 +1,4 @@
+import ArticleKeysContainer from "./article-keys";
 import { FolderItem } from "./card-folder";
 import KeyItem from "./card-key";
 import StorageHandler from "./storage-handler";
@@ -41,11 +42,11 @@ const Searchbar = function () {
     }
 
     /**
-     * Refreshes the articles shown when theres a change in tags and types
+     * Queries the text input in search
      * @param {String} query - String text of search input 
      * @param {*} options - (Optional) Additional queries for searching. Acccepts boolean for the following properties: fav && folder
      */
-    const refresh = (query, { fav = false, folder = false } = {}) => {
+    const query = (query, { fav = false, folder = false } = {}) => {
         const cont_key_items = document.querySelector('#page__dashboard section#articles #key-items');
         
         cont_key_items.innerHTML = '';
@@ -73,7 +74,7 @@ const Searchbar = function () {
 
     return {
         render,
-        refresh,
+        query,
         hasSearchItem
     }
 }();
@@ -98,10 +99,7 @@ function LoadListeners(component) {
             let isFavs = btn_favs.classList.contains('checked');
             let isFolders = btn_folders.classList.contains('checked');
 
-            // Reset keys shown
-            cont_keys.innerHTML = '';
-
-            SearchAlgorithm(query, {
+            Searchbar.query(query, {
                 fav: isFavs,
                 folder: isFolders
             });
@@ -110,7 +108,17 @@ function LoadListeners(component) {
 
     if (btn_search) {
         btn_search.addEventListener('click', () => {
-            console.log(input_search.value);
+            const btn_favs = tags.querySelector('#favs');
+            const btn_folders = types.querySelector('#folders');
+            const query = input_search.value;
+
+            let isFavs = btn_favs.classList.contains('checked');
+            let isFolders = btn_folders.classList.contains('checked');
+
+            Searchbar.query(query, {
+                fav: isFavs,
+                folder: isFolders
+            });
         });
     };
 }
@@ -171,9 +179,10 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
                 const item = KeyItem({
                     item: key,
                     index: index
-                });
+                }).create();
 
-                item.render();
+                ArticleKeysContainer.insert(item);
+                // item.render();
             };
 
             continue;
@@ -183,9 +192,11 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
             const item = KeyItem({
                 item: key,
                 index: index
-            });
+            }).create();
 
-            item.render();
+            ArticleKeysContainer.insert(item);
+
+            // item.render();
         };
     };
 }

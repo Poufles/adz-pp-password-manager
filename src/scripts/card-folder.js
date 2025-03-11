@@ -128,7 +128,7 @@ function LoadListeners(component, getItemData, setItemData) {
             let isFavs = btn_favs.classList.contains('checked');
 
             const searchStatus = Searchbar.hasSearchItem();
-            Searchbar.refresh(searchStatus.query, {
+            Searchbar.query(searchStatus.query, {
                 fav: isFavs,
                 folder: true
             });

@@ -74,18 +74,18 @@
     height: 20px;
 }
 
-.card-folder.type-2>#folder-item {
+.card-folder.type-2>#key-item {
     flex-grow: 1;
     align-content: center;
     justify-items: center;
 }
 
-.card-folder.type-2>#folder-item svg {
+.card-folder.type-2>#key-item svg {
     width: 35px;
     height: 35px;
 }
 
-.card-folder.type-2>#folder-item p {
+.card-folder.type-2>#key-item p {
     font-weight: bold;
     width: 100%;
     text-wrap: nowrap;

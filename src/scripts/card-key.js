@@ -2,7 +2,9 @@ import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
 import KeyGenComponent from "./card-keygen";
 import { DeleteKeyItem, UpdateKeyItem } from "./crud";
+import MiscContainer from "./misc-container";
 import Encryption from "./password-encryption";
+import RecentKeyItem from "./recent-key";
 import Searchbar from "./searchbar";
 import StorageHandler from "./storage-handler";
 import { icon_facebook } from "./svg";
@@ -76,7 +78,7 @@ const template =
  */
 export default function KeyItem(data) {
     let itemData = data;
-    const container = document.querySelector('#bottom #articles #key-items')
+    // const container = document.querySelector('#bottom #articles #key-items')
     const component = document.createElement('button');
     component.classList.add('container', 'article-item');
     component.innerHTML = template;
@@ -84,27 +86,30 @@ export default function KeyItem(data) {
     const getItemData = () => itemData;
     const setItemData = (newData) => { itemData = newData };
 
-    const render = () => {
+    const create = () => {
         component.dataset.item = itemData.index;
         component.setAttribute('id', `item-${itemData.index}`);
         // LoadInformation(component, itemData.item);
         LoadInformation(component, itemData);
         LoadListeners(component, getItemData, setItemData);
 
-        container.prepend(component);
+        // container.prepend(component);
+        return component;
     }
 
-    const updateRender = () => {
-
+    const updateRender = (newData) => {
+        setItemData(newData);
+        LoadInformation(component, newData)
     };
 
-    const unrender = () => {
+    const remove = () => {
 
     }
 
     return {
-        render,
-        unrender
+        create,
+        updateRender,
+        remove
     };
 };
 
@@ -156,11 +161,9 @@ function LoadListeners(component, getItemData, setItemData) {
     component.addEventListener('click', () => {
         const itemData = getItemData();
         const cont_crud = document.querySelector('#bottom #crud');
-        // CHANGE LATER
-        const misc = document.querySelector('#misc');
-        if (misc) {
-            misc.remove();
-        };
+        const recentKeyItem = RecentKeyItem();
+
+        recentKeyItem.render(itemData);
 
         if (KeyGenComponent.isRendered()) {
             KeyGenComponent.unrender();
@@ -177,10 +180,11 @@ function LoadListeners(component, getItemData, setItemData) {
         } else {
             cont_crud.classList.add('open');
             ReadComponent.render(itemData);
+            MiscContainer.unrender();
         };
     });
 
-    btn_fav.addEventListener('click', (e) => {
+    btn_fav.addEventListener('click', async (e) => {
         // Prevent bubbling
         e.stopPropagation();
 
@@ -194,7 +198,7 @@ function LoadListeners(component, getItemData, setItemData) {
         newData.fav = sp_fav.classList.contains('ticked');
 
         setItemData(itemData);
-        UpdateKeyItem(itemData.item, itemData.index);
+        await UpdateKeyItem(itemData.item, itemData.index);
 
         if (ReadComponent.isRendered()) {
             ReadComponent.updateRender(itemData);
@@ -209,7 +213,7 @@ function LoadListeners(component, getItemData, setItemData) {
         let isFavs = btn_favs.classList.contains('checked');
 
         const searchStatus = Searchbar.hasSearchItem();
-        Searchbar.refresh(searchStatus.query, {
+        Searchbar.query(searchStatus.query, {
             fav: isFavs,
         });
     });
@@ -266,6 +270,7 @@ function LoadListeners(component, getItemData, setItemData) {
 
         cont_crud.classList.add('open');
         CreatEditComponent.render('edit', itemData);
+        MiscContainer.unrender();
     });
 
     btn_delete.addEventListener('click', (e) => {

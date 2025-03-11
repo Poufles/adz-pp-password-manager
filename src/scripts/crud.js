@@ -23,7 +23,6 @@ export async function CreateNewKeyItem(data) {
         fav: data.fav,
         hint: data.hint,
         folder: data.folder,
-        isRecent: '',
         openedAt: ''
     };
 
@@ -45,7 +44,6 @@ export async function CreateNewKeyItem(data) {
                 name: data.folder,
                 keys: [index],
                 favorite: false,
-                isRecent: false,
                 openedAt: 'none'
             };
 
@@ -80,7 +78,7 @@ export async function CreateNewKeyItem(data) {
  * @param {Object} options - (Optional) Arguments to know if its a basic update or not
  * @returns An object containing updated key item and its index (Properties: item, index)
  */
-export async function UpdateKeyItem(newData, index, { isPassword = false } = {}) {
+export async function UpdateKeyItem(newData, index, { isPassword = false, isOpened = false } = {}) {
     const sessionStorage = StorageHandler.GetSessionStorage();
     const keys = sessionStorage.keys;
     const folders = sessionStorage.folders;
@@ -117,7 +115,6 @@ export async function UpdateKeyItem(newData, index, { isPassword = false } = {})
                 name: newData.folder,
                 keys: [index],
                 favorite: false,
-                isRecent: false,
                 openedAt: 'none'
             };
 
@@ -130,6 +127,11 @@ export async function UpdateKeyItem(newData, index, { isPassword = false } = {})
         encryptedKey = await Encryption.encryptData(masterkey, newData.key);
     };
 
+    let timeOpened;
+    if (isOpened) {
+        timeOpened = new Date();
+    };
+
     // Create update
     const updatedKeyItem = {
         email: newData.email,
@@ -138,8 +140,7 @@ export async function UpdateKeyItem(newData, index, { isPassword = false } = {})
         fav: newData.fav,
         hint: newData.hint,
         folder: newData.folder,
-        isRecent: newData.isRecent,
-        openedAt: newData.openedAt
+        openedAt: timeOpened
     };
 
     // Store in session storage

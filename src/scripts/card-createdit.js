@@ -4,6 +4,7 @@ import StorageHandler from "./storage-handler";
 import Encryption from "./password-encryption";
 import { hidden_eye, open_eye } from "./svg";
 import KeyGenComponent from "./card-keygen";
+import MiscContainer from "./misc-container";
 
 const component_template =
     `
@@ -154,6 +155,8 @@ const CreatEditComponent = function () {
             isShown = false;
             container.classList.remove('open');
             unrender();
+
+            MiscContainer.render();
         });
 
         LoadInputInfoAndListeners(component, data, unrender);
@@ -393,7 +396,7 @@ function LoadActionListener(component, data) {
         if (!email || !key || !website) {
             p_advise.textContent = 'Required Information Missing !';
             p_advise.classList.add('invalid');
-            
+
             return;
         }
 
@@ -408,8 +411,9 @@ function LoadActionListener(component, data) {
             }, data.index, { isPassword: true });
 
             // CHANGE THIS LATER
-            // CreatEditComponent.unrender();
-            location.reload();
+            CreatEditComponent.unrender();
+            MiscContainer.render();
+            // location.reload();
 
             return;
         }
@@ -425,6 +429,7 @@ function LoadActionListener(component, data) {
 
         KeyItem(newKey).render();
         CreatEditComponent.unrender();
+        MiscContainer.render();
     });
 
     btn_reset.addEventListener('click', (e) => {
