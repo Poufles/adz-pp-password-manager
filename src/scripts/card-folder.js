@@ -1,5 +1,8 @@
-const template = 
-`
+import { DeleteFolderItem, UpdateFolderItem } from "./crud";
+import Searchbar from "./searchbar";
+
+const template =
+    `
         <span class="compartment-left">
             <span tabindex="0" role="button" class="container button" id="favorite">
                 <svg class="stroke" width="40" height="40" viewBox="0 0 40 40" fill="none"
@@ -52,7 +55,7 @@ export function FolderItem(data) {
     const container = document.querySelector('#bottom #articles #key-items')
     const component = document.createElement('button');
     component.classList.add('container', 'article-item', 'folder');
-    component.innerHTML = template; 
+    component.innerHTML = template;
 
     const getItemData = () => itemData;
     const setItemData = (newData) => { itemData = newData };
@@ -60,9 +63,9 @@ export function FolderItem(data) {
     const render = () => {
         component.dataset.item = itemData.index;
         component.setAttribute('id', `item-${itemData.index}`);
-        // LoadInformation(component, itemData.item);
+
         LoadInformation(component, itemData);
-        // LoadListeners(component, getItemData, setItemData);
+        LoadListeners(component, getItemData, setItemData);
 
         container.prepend(component);
     }
@@ -82,7 +85,7 @@ function LoadInformation(component, data) {
     const p_name = component.querySelector('#name');
     const cont_key_count = component.querySelector('.compartment-mid');
     const span_key_count = cont_key_count.querySelector('#key-count');
-    const isFav = data.item.fav;
+    const isFav = data.item.favorite;
     const itemName = data.item.name;
     const keys = data.item.keys;
 
@@ -95,3 +98,57 @@ function LoadInformation(component, data) {
     p_name.textContent = itemName.charAt(0).toUpperCase() + itemName.slice(1);
     span_key_count.textContent = keys.length;
 }
+
+function LoadListeners(component, getItemData, setItemData) {
+    const btn_fav = component.querySelector('span#favorite');
+    const btn_delete = component.querySelector('#delete');
+
+    component.addEventListener('click', () => {
+        console.log('Component');
+    });
+
+    if (btn_fav) {
+        btn_fav.addEventListener('click', (e) => {
+            // Prevent bubbling
+            e.stopPropagation();
+
+            const itemData = getItemData();
+            // Change item favorite status
+            const sp_fav = btn_fav.querySelector('svg');
+            sp_fav.classList.toggle('ticked');
+
+            const newData = itemData.item;
+            newData.favorite = sp_fav.classList.contains('ticked');
+
+            setItemData(itemData);
+            UpdateFolderItem(itemData.item, itemData.index);
+
+            // Update query
+            const btn_favs = document.querySelector('#page__dashboard #tags #favs');
+            let isFavs = btn_favs.classList.contains('checked');
+
+            const searchStatus = Searchbar.hasSearchItem();
+            Searchbar.query(searchStatus.query, {
+                fav: isFavs,
+                folder: true
+            });
+        });
+    }
+
+    if (btn_delete) {
+        btn_delete.addEventListener('click', (e) => {
+            // Prevent bubbling
+            e.stopPropagation();
+
+            const itemData = getItemData();
+
+            if (DeleteFolderItem(itemData.index)) {
+                const container = document.querySelector('#page__dashboard section#articles #key-items');
+
+                if (container.contains(component)) {
+                    container.removeChild(component);
+                };
+            };
+        });
+    };
+};

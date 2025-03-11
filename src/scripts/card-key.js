@@ -1,8 +1,12 @@
 import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
 import KeyGenComponent from "./card-keygen";
-import { DeleteKeyItem } from "./crud";
+import { DeleteKeyItem, UpdateKeyItem } from "./crud";
+import MiscContainer from "./misc-container";
+import MiscRecentKeys from "./misc-recent-keys";
 import Encryption from "./password-encryption";
+import RecentKeyItem from "./recent-key";
+import Searchbar from "./searchbar";
 import StorageHandler from "./storage-handler";
 import { icon_facebook } from "./svg";
 
@@ -75,7 +79,7 @@ const template =
  */
 export default function KeyItem(data) {
     let itemData = data;
-    const container = document.querySelector('#bottom #articles #key-items')
+    // const container = document.querySelector('#bottom #articles #key-items')
     const component = document.createElement('button');
     component.classList.add('container', 'article-item');
     component.innerHTML = template;
@@ -86,15 +90,17 @@ export default function KeyItem(data) {
     const render = () => {
         component.dataset.item = itemData.index;
         component.setAttribute('id', `item-${itemData.index}`);
-        // LoadInformation(component, itemData.item);
+
         LoadInformation(component, itemData);
         LoadListeners(component, getItemData, setItemData);
 
-        container.prepend(component);
+        return component;
     }
 
-    const updateRender = () => {
-
+    const updateRender = (newData) => {
+        console.log(`Update render card eky: ${newData.item.key}`);
+        setItemData(newData);
+        LoadInformation(component, itemData)
     };
 
     const unrender = () => {
@@ -103,6 +109,7 @@ export default function KeyItem(data) {
 
     return {
         render,
+        updateRender,
         unrender
     };
 };
@@ -129,7 +136,7 @@ function LoadInformation(component, data) {
     cont_icon.innerHTML = icon_facebook;
     p_name.textContent = data.item.website.charAt(0).toUpperCase() + data.item.website.slice(1);
     p_email.textContent = data.item.email;
-    
+
     if (data.item.folder) {
         span_folder.textContent = data.item.folder;
     } else {
@@ -152,14 +159,13 @@ function LoadListeners(component, getItemData, setItemData) {
     const btn_edit = component.querySelector('#tooltip #edit');
     const btn_delete = component.querySelector('#tooltip #delete');
 
-    component.addEventListener('click', () => {
+    component.addEventListener('click', async () => {
         const itemData = getItemData();
         const cont_crud = document.querySelector('#bottom #crud');
-        // CHANGE LATER
-        const misc = document.querySelector('#misc');
-        if (misc) {
-            misc.remove();
-        };
+        const recentKeyItem = await RecentKeyItem(itemData, true);
+
+        MiscRecentKeys.insert(recentKeyItem);
+        MiscRecentKeys.filter();
 
         if (KeyGenComponent.isRendered()) {
             KeyGenComponent.unrender();
@@ -176,10 +182,11 @@ function LoadListeners(component, getItemData, setItemData) {
         } else {
             cont_crud.classList.add('open');
             ReadComponent.render(itemData);
+            MiscContainer.unrender();
         };
     });
 
-    btn_fav.addEventListener('click', (e) => {
+    btn_fav.addEventListener('click', async (e) => {
         // Prevent bubbling
         e.stopPropagation();
 
@@ -189,47 +196,28 @@ function LoadListeners(component, getItemData, setItemData) {
         sp_fav.classList.toggle('ticked');
 
         // Update session storage
-        const index = itemData.index
-        const sessionStorage = StorageHandler.GetSessionStorage();
-        const key = sessionStorage.keys[index];
+        const newData = itemData.item;
+        newData.fav = sp_fav.classList.contains('ticked');
 
-        key.fav = sp_fav.classList.contains('ticked') ? true : false;
-        StorageHandler.UpdateSessionStorage(sessionStorage);
+        setItemData(itemData);
+        await UpdateKeyItem(itemData.item, itemData.index);
 
-        // Update local storage 
-        const storage = StorageHandler.GetLocalStorage();
-        const accounts = storage.app.accounts;
-        // Iterate over storage
-        for (let i = 0; i < accounts.length; i++) {
-            if (accounts[i].inSession) {
-                storage.app.accounts[i] = StorageHandler.GetSessionStorage();
-                StorageHandler.UpdateLocalStorage(storage);
-
-                const updatedItemData = { item: key, index }
-                setItemData(updatedItemData);
-
-                if (ReadComponent.isRendered()) {
-                    ReadComponent.updateRender(updatedItemData);
-                };
-
-                if (CreatEditComponent.isRendered()) {
-                    CreatEditComponent.render('edit', updatedItemData);
-                };
-
-                const dashboard__btn_favs = document.querySelector('#tags #favs')
-
-                if (dashboard__btn_favs.classList.contains('checked')) {
-                    const keyItems = document.querySelectorAll('#key-items .article-item');
-
-                    for (let keyItem of keyItems) {
-                        if (keyItem.dataset.item == index) {
-                            keyItem.remove();
-                            break;
-                        };
-                    };
-                };
-            };
+        if (ReadComponent.isRendered()) {
+            ReadComponent.updateRender(itemData);
         };
+
+        if (CreatEditComponent.isRendered()) {
+            CreatEditComponent.render('edit', itemData);
+        };
+
+        // Update query
+        const btn_favs = document.querySelector('#page__dashboard #tags #favs');
+        let isFavs = btn_favs.classList.contains('checked');
+
+        const searchStatus = Searchbar.hasSearchItem();
+        Searchbar.query(searchStatus.query, {
+            fav: isFavs,
+        });
     });
 
     btn_email.addEventListener('click', (e) => {
@@ -283,7 +271,9 @@ function LoadListeners(component, getItemData, setItemData) {
         }
 
         cont_crud.classList.add('open');
+        console.log(itemData);
         CreatEditComponent.render('edit', itemData);
+        MiscContainer.unrender();
     });
 
     btn_delete.addEventListener('click', (e) => {
@@ -293,9 +283,12 @@ function LoadListeners(component, getItemData, setItemData) {
         const itemData = getItemData();
         // ADD CONFIRMATION LATER
         if (DeleteKeyItem(itemData.index)) {
-            location.reload();
-        };
+            const container = document.querySelector('#page__dashboard section#articles #key-items');
 
+            if (container.contains(component)) {
+                container.removeChild(component);
+            };
+        };
     });
 };
 

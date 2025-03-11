@@ -6,3 +6,6 @@ dist
 
 # Ignore logic-tests folder
 logic-tests
+
+# Ignore non git templates folder
+non-git-templates

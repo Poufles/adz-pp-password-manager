@@ -11,7 +11,11 @@ import CreatEditComponent from "./card-createdit.js";
 import ReadComponent from "./card-item-read.js";
 import KeyGenComponent from "./card-keygen.js";
 import Searchbar from "./searchbar.js";
-import { FolderItem } from "./card-folder.js";
+import MiscRecentKeys from "./misc-recent-keys.js";
+import MiscKeysSecurity from "./misc-keys-security.js";
+import ArticleKeysContainer from "./article-keys.js";
+import MiscContainer from "./misc-container.js";
+import RecentKeyItem from "./recent-key.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
@@ -40,14 +44,15 @@ const p_username = dashboard.querySelector('#header #username');
 const p_date = dashboard.querySelector('#clock');
 const cont_recent_folders = dashboard.querySelector('#header #recent-folders');
 const cont_recent_items = dashboard.querySelector('#recent-files #items');
-const cont_key_items = dashboard.querySelector('#articles #key-items');
+const cont_articles = dashboard.querySelector('#articles');
+const p_title = dashboard.querySelector('#articles p#title');
 const btn_all = dashboard.querySelector('#tags #all');
 const btn_favs = dashboard.querySelector('#tags #favs');
 const btn_files = dashboard.querySelector('#types #files');
 const btn_folder = dashboard.querySelector('#types #folders');
 const btn_create = dashboard.querySelector('#articles #actions button#create')
 const btn_keygen = dashboard.querySelector('#articles #actions button#keygen')
-const cont_misc = dashboard.querySelector('section#misc');
+const cont_bottom = dashboard.querySelector('#bottom');
 const cont_crud = dashboard.querySelector('section#crud');
 
 Searchbar.render();
@@ -63,6 +68,29 @@ setInterval(() => {
     p_date.textContent = CurrentTimeToday();
 }, 1000);
 
+if (cont_bottom) {
+    const cont_misc = MiscContainer.getComponent();
+
+    MiscContainer.render();
+    MiscRecentKeys.render(cont_misc)
+    MiscKeysSecurity.render(cont_misc);
+
+    const session = StorageHandler.GetSessionStorage();
+    const keys = session.keys;
+    const length = keys.length
+
+    for (let index = 0; index < length; index++) {
+        const recentKeyItem = await RecentKeyItem({
+            item: keys[index],
+            index
+        });
+
+        MiscRecentKeys.insert(recentKeyItem);
+    };
+
+    MiscRecentKeys.filter();
+};
+
 // Load recent folders on header
 if (cont_recent_folders) {
     // const session = StorageHandler.GetSessionStorage();
@@ -74,21 +102,28 @@ if (cont_recent_folders) {
     // }
 }
 
-// Load recent keys on misc
-if (cont_recent_items) {
-    // const session = StorageHandler.GetSessionStorage();
+// Load article items
+if (cont_articles) {
+    ArticleKeysContainer.render();
 
-    // for (let key of session.keys) {
-    //     if (key.isRecent) {
-    //         console.log('Recent Key');
-    //     }
-    // } 
-}
+    const session = StorageHandler.GetSessionStorage();
+    const key = session.keys;
+    const length = session.keys.length;
 
-// Load keys on main article
-if (cont_key_items) {
-    LoadAllKeys();
-}
+    if (length !== 0) {
+        for (let iter = 0; iter < length; iter++) {
+            const keyItem = KeyItem({
+                item: key[iter],
+                index: iter
+            });
+
+            ArticleKeysContainer.insert({
+                childNode: keyItem.render(),
+                object: keyItem
+            });
+        };
+    };
+};
 
 // Listener for all button
 if (btn_all) {
@@ -98,26 +133,13 @@ if (btn_all) {
             btn_all.classList.add('checked');
         };
 
-        cont_key_items.innerHTML = '';
-
         const btn_folders = dashboard.querySelector('#types #folders');
         let isFolders = btn_folders.classList.contains('checked');
 
         const searchStatus = Searchbar.hasSearchItem();
-        Searchbar.refresh(searchStatus.query, {
+        Searchbar.query(searchStatus.query, {
             folder: isFolders
         });
-
-        // const searchStatus = Searchbar.hasSearchItem();
-        // if (searchStatus.status) {
-        //     Searchbar.refresh(searchStatus.query, {
-        //         folder: isFolders
-        //     });
-
-        //     return;
-        // };
-
-        // LoadAllKeys();
     });
 };
 
@@ -129,44 +151,14 @@ if (btn_favs) {
             btn_favs.classList.add('checked');
         };
 
-        cont_key_items.innerHTML = '';
-
         const btn_folders = dashboard.querySelector('#types #folders');
         let isFolders = btn_folders.classList.contains('checked');
 
         const searchStatus = Searchbar.hasSearchItem();
-        Searchbar.refresh(searchStatus.query, {
+        Searchbar.query(searchStatus.query, {
             fav: true,
             folder: isFolders
         });
-
-
-        // const searchStatus = Searchbar.hasSearchItem();
-        // if (searchStatus.status) {
-        //     Searchbar.refresh(searchStatus.query, {
-        //         fav: true,
-        //         folder: isFolders
-        //     });
-
-        //     return;
-        // };
-
-        // const session = StorageHandler.GetSessionStorage();
-        // const keys = session.keys;
-        // const length = session.keys.length;
-
-        // if (length !== 0) {
-        //     for (let iter = 0; iter < length; iter++) {
-        //         const key = keys[iter];
-
-        //         if (key.fav) {
-        //             KeyItem({
-        //                 item: key,
-        //                 index: iter
-        //             }).render();
-        //         };
-        //     };
-        // };
     });
 };
 
@@ -178,26 +170,15 @@ if (btn_files) {
             btn_files.classList.add('checked');
         };
 
-        cont_key_items.innerHTML = '';
+        p_title.textContent = 'Your Keys';
 
         const btn_favs = dashboard.querySelector('#tags #favs');
         let isFavs = btn_favs.classList.contains('checked');
 
         const searchStatus = Searchbar.hasSearchItem();
-        Searchbar.refresh(searchStatus.query, {
-            favs: isFavs
+        Searchbar.query(searchStatus.query, {
+            fav: isFavs
         });
-
-        // const searchStatus = Searchbar.hasSearchItem();
-        // if (searchStatus.status) {
-        //     Searchbar.refresh(searchStatus.query, {
-        //         favs: isFavs
-        //     });
-
-        //     return;
-        // };
-
-        // LoadAllKeys();
     });
 };
 
@@ -209,29 +190,16 @@ if (btn_folder) {
             btn_folder.classList.add('checked');
         };
 
-        cont_key_items.innerHTML = '';
+        p_title.textContent = 'Your Folders';
 
         const btn_favs = dashboard.querySelector('#tags #favs');
         let isFavs = btn_favs.classList.contains('checked');
 
         const searchStatus = Searchbar.hasSearchItem();
-        Searchbar.refresh(searchStatus.query, {
+        Searchbar.query(searchStatus.query, {
             fav: isFavs,
             folder: true
         });
-
-        // const session = StorageHandler.GetSessionStorage();
-        // const folders = session.folders;
-        // const length = session.folders.length;
-
-        // if (length !== 0) {
-        //     for (let index = 0; index < length; index++) {
-        //         FolderItem({
-        //             item: folders[index],
-        //             index
-        //         }).render();
-        //     }
-        // }
     });
 };
 
@@ -239,11 +207,6 @@ if (btn_folder) {
 if (btn_create) {
     // CHANGE THIS LATER
     btn_create.addEventListener('click', () => {
-        const cont_misc = document.querySelector('#bottom #misc');
-        if (cont_misc) {
-            cont_misc.remove(); // CHANGE LATER
-        };
-
         if (ReadComponent.isRendered()) {
             cont_crud.classList.remove('open')
             ReadComponent.unrender();
@@ -262,6 +225,11 @@ if (btn_create) {
         if (!CreatEditComponent.isRendered()) {
             cont_crud.classList.add('open')
             CreatEditComponent.render('create');
+
+            if (MiscContainer.getComponent()) {
+                MiscContainer.unrender()
+            };
+
             return;
         };
 
@@ -271,6 +239,11 @@ if (btn_create) {
         } else {
             cont_crud.classList.remove('open')
             CreatEditComponent.unrender();
+
+            if (MiscContainer.getComponent()) {
+                MiscContainer.render()
+
+            };
         }
     });
 }
@@ -296,27 +269,18 @@ if (btn_keygen) {
         if (!KeyGenComponent.isRendered()) {
             cont_crud.classList.add('open')
             KeyGenComponent.render();
+
+            if (MiscContainer.getComponent()) {
+                MiscContainer.unrender()
+            };
+
         } else {
             cont_crud.classList.remove('open')
             KeyGenComponent.unrender();
+
+            if (MiscContainer.getComponent()) {
+                MiscContainer.render()
+            };
         };
     });
 };
-
-/**
- * Loads all keys in account in session
- */
-function LoadAllKeys() {
-    const session = StorageHandler.GetSessionStorage();
-    const key = session.keys;
-    const length = session.keys.length;
-
-    if (length !== 0) {
-        for (let iter = 0; iter < length; iter++) {
-            KeyItem({
-                item: key[iter],
-                index: iter
-            }).render();
-        }
-    }
-}

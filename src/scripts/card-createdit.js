@@ -4,6 +4,8 @@ import StorageHandler from "./storage-handler";
 import Encryption from "./password-encryption";
 import { hidden_eye, open_eye } from "./svg";
 import KeyGenComponent from "./card-keygen";
+import MiscContainer from "./misc-container";
+import ArticleKeysContainer from "./article-keys";
 
 const component_template =
     `
@@ -154,9 +156,11 @@ const CreatEditComponent = function () {
             isShown = false;
             container.classList.remove('open');
             unrender();
+
+            MiscContainer.render();
         });
 
-        LoadInputInfoAndListeners(component, data, unrender);
+        LoadInputInfoAndListeners(component, data);
         LoadActionListener(component, data);
 
         if (!container.contains(component)) {
@@ -379,12 +383,12 @@ function LoadActionListener(component, data) {
     const p_optional_folder = component.querySelector('#optional #item-3');
 
     btn_submit.addEventListener('click', async () => {
-        const email = input_email.value;
-        const key = input_password.value;
-        const website = input_website.value;
+        const email = input_email.value.trim();
+        const key = input_password.value.trim();
+        const website = input_website.value.trim();
         const fav = btn_fav.classList.contains('ticked') ? true : false;
-        const hint = input_hint.value;
-        const folder = input_folder.value;
+        const hint = input_hint.value.trim();
+        const folder = input_folder.value.trim();
 
         VerifyRequired('email', email, input_email, p_advise);
         VerifyRequired('password', key, cont_password, p_advise);
@@ -393,7 +397,7 @@ function LoadActionListener(component, data) {
         if (!email || !key || !website) {
             p_advise.textContent = 'Required Information Missing !';
             p_advise.classList.add('invalid');
-            
+
             return;
         }
 
@@ -405,16 +409,20 @@ function LoadActionListener(component, data) {
                 fav,
                 hint,
                 folder,
-            }, data.index);
+            }, data.index, { isPassword: true });
 
-            // CHANGE THIS LATER
-            // CreatEditComponent.unrender();
-            location.reload();
+            const articleKeys = ArticleKeysContainer.getKeys();
+            const articleKey = articleKeys[newKey.index];
+
+            articleKey.updateRender(newKey);
+
+            CreatEditComponent.unrender();
+            MiscContainer.render();
 
             return;
         }
 
-        const newKey = await CreateNewKeyItem({
+        const newData = await CreateNewKeyItem({
             email,
             key,
             website,
@@ -423,8 +431,15 @@ function LoadActionListener(component, data) {
             folder
         });
 
-        KeyItem(newKey).render();
+        const newKey = KeyItem(newData);
+
+        ArticleKeysContainer.insert({
+            childNode: newKey.render(),
+            object: newKey
+        });
+
         CreatEditComponent.unrender();
+        MiscContainer.render();
     });
 
     btn_reset.addEventListener('click', (e) => {

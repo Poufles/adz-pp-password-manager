@@ -5,6 +5,7 @@
  */
 
 import CreatEditComponent from "./card-createdit";
+import MiscContainer from "./misc-container";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
 import { icon_facebook } from "./svg";
@@ -131,9 +132,10 @@ const ReadComponent = function () {
         const btn_close = component.querySelector('#close');
 
         btn_close.addEventListener('click', () => {
-            container.classList.remove('open');
-            unrender();
             isShown = false;
+            container.classList.remove('open');
+            MiscContainer.render();
+            unrender();
         });
 
         LoadInformation(component, getItemData);

@@ -17,14 +17,15 @@ export function DateDifference({ date, type }) {
         month: (currentDate.getFullYear() - dateToDiffer.getFullYear()) * 12 + (currentDate.getMonth() - dateToDiffer.getMonth()),
         day: Math.floor(differInMilliseconds / (1000 * 60 * 60 * 24)),
         hour: Math.floor(differInMilliseconds / (1000 * 60 * 60)),
-        minute: Math.floor(differInMilliseconds / (1000 * 60))
-    }
+        minute: Math.floor(differInMilliseconds / (1000 * 60)),
+        millisecond: differInMilliseconds
+    };
 
     // Validate type argument
     if (!Object.hasOwn(typeList, type)) {
         console.error('Error: Invalid type argument')
         return null;
-    }
+    };
 
     return typeList[type];
 };
