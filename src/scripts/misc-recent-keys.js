@@ -1,5 +1,4 @@
 import FilterRecent from "./filter-recent";
-import RecentKeyItem from "./recent-key";
 
 const template =
     `
@@ -38,14 +37,14 @@ const MiscRecentKeys = function () {
      */
     const insert = (object) => {
         const length = recentKeys.length;
-        
-        if (length != 0) {
-            for (let index = 0; index < length - 1; index++) {
+
+        if (length != -1) {
+            for (let index = 0; index < length; index++) {
                 const recentKey = recentKeys[index];
 
                 if (recentKey.getItemIndex() === object.getItemIndex()) {
                     recentKeys.splice(index, 1);
-                    console.log(recentKeys)
+                    break;
                 };
             };
         };
@@ -75,6 +74,10 @@ const MiscRecentKeys = function () {
         for (let recentKey of recentKeys) {
             cont_items.appendChild(await recentKey.render())
         };
+
+        // for (let i = 0; i < recentKeys.length; i++) {
+        //     console.log(recentKeys[i].getItemIndex());
+        // }
     };
 
     return {
