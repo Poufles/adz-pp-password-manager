@@ -149,6 +149,14 @@ const CreatEditComponent = function () {
      * @param {Object} data - (Optional) Object to be passed when in edit mode
      */
     const render = (mode, data = null) => {
+        // This verifies that a currently selected item in edit mode
+        // will be unclicked if user suddenly changes to create
+        if (itemData != null) {
+            const articleKeys = ArticleKeysContainer.getKeys();
+            const articleKey = articleKeys[itemData.index];
+            articleKey.clicked(false);
+        };
+
         itemData = data;
         componentMode = mode;
         component.innerHTML = component_template;
@@ -185,8 +193,16 @@ const CreatEditComponent = function () {
     const unrender = () => {
         if (container.contains(component)) {
             container.removeChild(component);
-            itemData = null;
             isShown = false;
+
+            if (itemData !== null) {
+                const articleKeyObject = ArticleKeysContainer.getKeys()[itemData.index];
+
+                articleKeyObject.clicked(false);
+            };
+
+            // Reset item data
+            itemData = null;
         }
     }
 

@@ -23,6 +23,10 @@ import SettingComponent from "./settings.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
+if (!storage) {
+    window.location.href = '/index.html';
+};
+
 const accounts = storage.app.accounts;
 let hasSession = false;
 
@@ -103,6 +107,22 @@ async function Dashboard() {
     // Load listner for user/settings button
     if (btn_user) {
         btn_user.addEventListener('click', () => {
+            if (CreatEditComponent.isRendered()) {
+                cont_crud.classList.remove('open')
+                CreatEditComponent.unrender();
+            };
+            
+            if (KeyGenComponent.isRendered()) {
+                cont_crud.classList.remove('open');
+                KeyGenComponent.unrender();
+            };
+            
+            if (ReadComponent.isRendered()) {
+                cont_crud.classList.remove('open')
+                ReadComponent.unrender();
+            };
+            
+            MiscContainer.render();
             SettingComponent.create();
             SettingComponent.render();
         });
@@ -276,19 +296,19 @@ async function Dashboard() {
                 cont_crud.classList.add('open')
                 CreatEditComponent.render('create');
 
-                const articleKeys = ArticleKeysContainer.getKeys();
-                for (let articleKey of articleKeys) {
-                    articleKey.clicked(false);
-                };
+                // const articleKeys = ArticleKeysContainer.getKeys();
+                // for (let articleKey of articleKeys) {
+                //     articleKey.clicked(false);
+                // };
 
                 return;
             };
 
             if (CreatEditComponent.getMode() === 'edit') {
-                const articleKeys = ArticleKeysContainer.getKeys();
-                for (let articleKey of articleKeys) {
-                    articleKey.clicked(false);
-                };
+                // const articleKeys = ArticleKeysContainer.getKeys();
+                // for (let articleKey of articleKeys) {
+                //     articleKey.clicked(false);
+                // };
 
                 cont_crud.classList.add('open')
                 CreatEditComponent.render('create');
@@ -330,10 +350,10 @@ async function Dashboard() {
                 KeyGenComponent.render();
 
                 if (!CreatEditComponent.isRendered()) {
-                    const articleKeys = ArticleKeysContainer.getKeys();
-                    for (let articleKey of articleKeys) {
-                        articleKey.clicked(false);
-                    };
+                    // const articleKeys = ArticleKeysContainer.getKeys();
+                    // for (let articleKey of articleKeys) {
+                    //     articleKey.clicked(false);
+                    // };
                 };
             } else {
                 cont_crud.classList.remove('open')

@@ -1,4 +1,7 @@
+import ArticleKeysContainer from "./article-keys";
+import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
+import { hidden_eye, open_eye } from "./svg";
 
 const template =
     `
@@ -144,13 +147,13 @@ const template_edit =
         <form action="#" id="settings-info">
             <div class="container inputs" id="input-username">
                 <label class="text color" for="username">Username</label>
-                <input class="text-sub color" type="text" id="username" placeholder="Loading...">
+                <input class="text-sub color" type="text" id="username" placeholder="New Username">
             </div>
             <div class="container inputs" id="input-password">
-                <label class="text color" for="password">Master Key</label>
+                <label class="text-sub color" for="password">Master Key</label>
                 <div class="container">
                     <input class="text color" id="password" type="password"
-                        placeholder="Loading...">
+                        placeholder="New Password">
                     <button class="button no-bg" id="eye-hidden">
                         <?xml version="1.0" ?><svg enable-background="new 0 0 32 32" id="Glyph" version="1.1"
                             viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
@@ -188,7 +191,7 @@ const template_edit =
 `;
 
 const SettingComponent = function () {
-    let itemData = StorageHandler.GetSessionStorage();
+    let accountData;
     const container_overlay = document.createElement('div');
     const component = document.createElement('div');
 
@@ -202,13 +205,15 @@ const SettingComponent = function () {
     component.addEventListener('click', (e) => {
         e.stopPropagation();
     });
-    
-    const getItemData = () => itemData;
-    
+
+    const getAccountData = () => accountData;
+    const setAccountData = (newData) => accountData = newData;
+
     const create = () => {
+        accountData = StorageHandler.GetSessionStorage()
         component.innerHTML = template;
         component.setAttribute('id', 'show');
-        
+
         const btn_close = component.querySelector('button#close');
         const btn_edit = component.querySelector('button#edit');
 
@@ -221,7 +226,7 @@ const SettingComponent = function () {
             edit();
         });
 
-        LoadCreateInfo(component, getItemData);
+        LoadCreateInfo(component, getAccountData);
         container_overlay.appendChild(component);
     };
 
@@ -235,6 +240,8 @@ const SettingComponent = function () {
         setTimeout(() => {
             container_overlay.removeChild(component);
             document.body.removeChild(container_overlay);
+
+            accountData = undefined;
         }, 200);
     };
 
@@ -247,7 +254,7 @@ const SettingComponent = function () {
             unrender();
         });
 
-        LoadEditInfoAndListeners(component, getItemData, create)
+        LoadEditInfoAndListeners(component, getAccountData, setAccountData, create)
     }
 
     return {
@@ -262,8 +269,9 @@ const SettingComponent = function () {
  * @param {Node} component - Setting component element
  * @param {Object} getItemData - Function to get item data
  */
-function LoadCreateInfo(component, getItemData) {
-    let data = getItemData();
+function LoadCreateInfo(component, getAccountData) {
+    let data = getAccountData();
+    console.log(data)
     const p_username = component.querySelector('#username');
     const p_date_of_creation = component.querySelector('#date');
     const cbox_dark_mode = component.querySelector('#dark');
@@ -278,21 +286,22 @@ function LoadCreateInfo(component, getItemData) {
 /**
  * Load information and listeners for component in edit mode
  * @param {Node} component - Setting component element
- * @param {Object} getItemData - Function to get item data
+ * @param {Object} getAccountData - Function to get item data
+ * @param {Object} setAccountData - Function to set item data
  * @param {Object} create - Function to go back to create mode
  */
-function LoadEditInfoAndListeners(component, getItemData, create) {
-    let data = getItemData();
+function LoadEditInfoAndListeners(component, getAccountData, setAccountData, create) {
+    let data = getAccountData();
     const btn_back = component.querySelector('#show-mode');
     const input_username = component.querySelector('input#username');
     const input_password = component.querySelector('input#password');
+    const btn_eye = component.querySelector('#eye-hidden');
     const p_date_of_creation = component.querySelector('#date');
     const cbox_dark_mode = component.querySelector('#dark');
     const cbox_animation = component.querySelector('#animation');
     const btn_edit = component.querySelector('button#edit');
 
-    input_username.placeholder = data.username;
-    input_password.placeholder = 'New Password';
+    input_username.value = data.username;
     p_date_of_creation.textContent = data.dateofcreation;
     cbox_dark_mode.checked = data.preference.dark;
     cbox_animation.checked = data.preference.animation;
@@ -301,8 +310,69 @@ function LoadEditInfoAndListeners(component, getItemData, create) {
         create();
     });
 
-    btn_edit.addEventListener('click', () => {
+    btn_eye.addEventListener('mouseup', function () {
+        let isHidden = !this.classList.contains('open-eye');
+        this.innerHTML = isHidden ? open_eye : hidden_eye;
+        if (isHidden) {
+            input_password.setAttribute('type', 'text');
+            this.classList.add('open-eye');
+        } else {
+            input_password.setAttribute('type', 'password');
+            this.classList.remove('open-eye');
+        }
+    });
 
+    btn_edit.addEventListener('click', async () => {
+        const username = input_username.value;
+        const password = input_password.value;
+
+        if (username && password) {
+            // ADD CONFIRMATION LATER
+
+            
+            data.username = username;
+            
+            const length = data.keys.length;
+            const hashedKey = await Encryption.hashPassword(password);
+            
+            for (let index = 0; index < length; index++) {
+                const key = data.keys[index];
+                
+                // Change password encryption based on new hashed key (new password)
+                const encryptedKey = key.key;
+                const decryptedKey = await Encryption.decryptData(data.masterkey, encryptedKey);
+                
+                const newEncryptedKey = await Encryption.encryptData(hashedKey, decryptedKey);
+                
+                key.key = newEncryptedKey
+
+                // Update item in DOM
+                const articleKeyObject = ArticleKeysContainer.getKeys()[index];
+
+                articleKeyObject.updateRender({
+                    item: key,
+                    index
+                });
+            }
+            
+            // Update masterkey and account data in this component
+            data.masterkey = hashedKey;
+            setAccountData(data);
+            // Update session storage
+            StorageHandler.UpdateSessionStorage(data);
+            // Get local storage 
+            const storage = StorageHandler.GetLocalStorage();
+            const accounts = storage.app.accounts;
+            // Iterate over storage
+            for (let i = 0; i < accounts.length; i++) {
+                if (accounts[i].inSession) {
+                    storage.app.accounts[i] = StorageHandler.GetSessionStorage();
+                    StorageHandler.UpdateLocalStorage(storage);
+                };
+            };
+
+            create();
+        };
     });
 };
 
