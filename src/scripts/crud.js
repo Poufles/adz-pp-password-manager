@@ -130,7 +130,7 @@ export async function UpdateKeyItem(newData, index, { isPassword = false, isOpen
     
     let timeOpened;
     if (isOpened) {
-        timeOpened = new Date();
+        timeOpened = new Date().toISOString();
     };
 
     // Create update

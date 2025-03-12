@@ -21,7 +21,6 @@ const ArticleKeysContainer = function () {
 
     const insert = ({ childNode, object, isNew = true }) => {
         if (!isNew) {
-            console.log(keys);
             component.prepend(childNode);
             return;
         };

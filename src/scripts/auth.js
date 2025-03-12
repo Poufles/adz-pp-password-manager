@@ -28,77 +28,80 @@ for (let account of accounts) {
     }
 }
 
-const btn_suggestion_sign_up = document.querySelector('#login_page button#sign-up');
-const btn_visibility = document.querySelector('#login_page #visibility');
-const btn_login = document.querySelector('#login_page button#login');
-const input_username = document.querySelector('#login_page #username');
-const input_password = document.querySelector('#login_page #password');
+function Auth() {
+    const btn_suggestion_sign_up = document.querySelector('#login_page button#sign-up');
+    const btn_visibility = document.querySelector('#login_page #visibility');
+    const btn_login = document.querySelector('#login_page button#login');
+    const input_username = document.querySelector('#login_page #username');
+    const input_password = document.querySelector('#login_page #password');
 
-let state = { isHolding: false, hasMoved: false }
+    let state = { isHolding: false, hasMoved: false }
 
-// Listener for log in button
-if (btn_login) {
-    btn_login.addEventListener('click', async () => {
-        const user = document.querySelector('#login_page #username');
-        const pass = document.querySelector('#login_page #password');
+    // Listener for log in button
+    if (btn_login) {
+        btn_login.addEventListener('click', async () => {
+            const user = document.querySelector('#login_page #username');
+            const pass = document.querySelector('#login_page #password');
 
-        // Verify for empty inputs
-        if (user.value === '' || pass.value === '') {
-            const txt_invalid = document.querySelector('#invalid');
-    
-            txt_invalid.textContent = 'Please enter your account credentials !'
-            txt_invalid.classList.add('invalid');
-            return;
-        }
+            // Verify for empty inputs
+            if (user.value === '' || pass.value === '') {
+                const txt_invalid = document.querySelector('#invalid');
 
-        // Verify account credentials
-        const isLoggedIn = await Login(user.value, pass.value);
+                txt_invalid.textContent = 'Please enter your account credentials !'
+                txt_invalid.classList.add('invalid');
+                return;
+            }
 
-        if (isLoggedIn) {
-            window.location.href = '/dashboard.html';
-        } else {
-            const txt_invalid = document.querySelector('#invalid');
+            // Verify account credentials
+            const isLoggedIn = await Login(user.value, pass.value);
 
-            txt_invalid.textContent = 'Invalid Username/Password !';
-            txt_invalid.classList.add('invalid');
-            console.error('Invalid Username/Password');
-        }
-    });
-}
+            if (isLoggedIn) {
+                window.location.href = '/dashboard.html';
+            } else {
+                const txt_invalid = document.querySelector('#invalid');
 
-// Listener for sign up suggestion link
-if (btn_suggestion_sign_up) {
-    MouseHandler(btn_suggestion_sign_up, state);
+                txt_invalid.textContent = 'Invalid Username/Password !';
+                txt_invalid.classList.add('invalid');
+                console.error('Invalid Username/Password');
+            }
+        });
+    }
 
-    btn_suggestion_sign_up.addEventListener('mouseup', () => {
-        if (state.isHolding && !state.hasMoved) {
-            window.location.href = '/register.html';
-        }
+    // Listener for sign up suggestion link
+    if (btn_suggestion_sign_up) {
+        MouseHandler(btn_suggestion_sign_up, state);
 
-        state.isHolding = false;
-    });
-}
+        btn_suggestion_sign_up.addEventListener('mouseup', () => {
+            if (state.isHolding && !state.hasMoved) {
+                window.location.href = '/register.html';
+            }
 
-// Listener for eye icon and password input elements
-if (input_password && btn_visibility) {
-    MouseHandler(btn_visibility, state);
-    VisibilityFunction(input_password, btn_visibility, state)
-}
+            state.isHolding = false;
+        });
+    }
 
-// Listener for username input element
-if (input_username) {
-    input_username.addEventListener('focus', () => {
-        RemoveInvalid()
-    })
-}
+    // Listener for eye icon and password input elements
+    if (input_password && btn_visibility) {
+        MouseHandler(btn_visibility, state);
+        VisibilityFunction(input_password, btn_visibility, state)
+    }
 
-// Listener for password input element
-if (input_password) {
-    input_password.addEventListener('focus', () => {
-        RemoveInvalid();
-    })
-}
+    // Listener for username input element
+    if (input_username) {
+        input_username.addEventListener('focus', () => {
+            RemoveInvalid()
+        })
+    }
 
+    // Listener for password input element
+    if (input_password) {
+        input_password.addEventListener('focus', () => {
+            RemoveInvalid();
+        })
+    };
+};
+
+Auth();
 
 /**
  * @param {Node} button - Element to add event listener to handle mouse input 
@@ -109,7 +112,7 @@ export function MouseHandler(button, state) {
         state.isHolding = true;
         state.hasMoved = false;
     });
-    
+
     button.addEventListener('mousemove', () => {
         if (state.isHolding) {
             state.hasMoved = true;
@@ -146,6 +149,6 @@ export function VisibilityFunction(inputField, button, state) {
  */
 export function RemoveInvalid() {
     const txt_invalid = document.querySelector('#invalid');
-        
+
     txt_invalid.classList.remove('invalid');
 }
