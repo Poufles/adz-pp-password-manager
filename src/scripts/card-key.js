@@ -2,7 +2,7 @@ import ArticleKeysContainer from "./article-keys";
 import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
 import KeyGenComponent from "./card-keygen";
-import { DeleteKeyItem, UpdateFolderItem, UpdateKeyItem } from "./crud";
+import { DeleteKeyItem, UpdateKeyItem } from "./crud";
 import MiscContainer from "./misc-container";
 import MiscRecentKeys from "./misc-recent-keys";
 import Encryption from "./password-encryption";
@@ -87,13 +87,20 @@ export default function KeyItem(data) {
 
     const getItemData = () => itemData;
     const setItemData = (newData) => { itemData = newData };
+    const clicked = (status) => {
+        if (status) {
+            component.classList.add('clicked');
+        } else {
+            component.classList.remove('clicked');
+        }
+    }
 
     const render = () => {
         component.dataset.item = itemData.index;
         component.setAttribute('id', `item-${itemData.index}`);
 
         LoadInformation(component, itemData);
-        LoadListeners(component, getItemData, setItemData);
+        LoadListeners(component, getItemData, setItemData, clicked);
 
         return component;
     }
@@ -110,7 +117,9 @@ export default function KeyItem(data) {
     return {
         render,
         updateRender,
-        unrender
+        unrender,
+        clicked,
+        getItemData
     };
 };
 
@@ -150,7 +159,7 @@ function LoadInformation(component, data) {
  * @param {Node} component - Key item component
  * @param {Object} data - Object that contains information for the key
  */
-function LoadListeners(component, getItemData, setItemData) {
+function LoadListeners(component, getItemData, setItemData, clicked) {
     const btn_fav = component.querySelector('span#favorite');
     const btn_email = component.querySelector('span#email');
     const cont_folder = component.querySelector('.compartment-mid');
@@ -168,6 +177,12 @@ function LoadListeners(component, getItemData, setItemData) {
             isOpened: true
         });
 
+        const articleKeys = ArticleKeysContainer.getKeys();
+        for (let articleKey of articleKeys) {
+            articleKey.clicked(false);
+        };
+
+        clicked(true);
         setItemData(updatedData);
 
         const recentKeyItem = await RecentKeyItem(itemData, true);
@@ -270,6 +285,12 @@ function LoadListeners(component, getItemData, setItemData) {
         const itemData = getItemData();
         const cont_crud = document.querySelector('#bottom #crud');
 
+        const articleKeys = ArticleKeysContainer.getKeys();
+        for (let articleKey of articleKeys) {
+            articleKey.clicked(false);
+        };
+        clicked(true);
+
         if (KeyGenComponent.isRendered()) {
             KeyGenComponent.unrender();
         };
@@ -288,7 +309,7 @@ function LoadListeners(component, getItemData, setItemData) {
         e.stopPropagation();
 
         const itemData = getItemData();
-        
+
         ArticleKeysContainer.pull(itemData.index);
         // ADD CONFIRMATION LATER
         DeleteKeyItem(itemData.index);

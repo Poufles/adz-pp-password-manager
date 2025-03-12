@@ -4,6 +4,7 @@
  * WHAT I WROTE IN card-creation.js
  */
 
+import ArticleKeysContainer from "./article-keys";
 import CreatEditComponent from "./card-createdit";
 import MiscContainer from "./misc-container";
 import Encryption from "./password-encryption";
@@ -132,10 +133,13 @@ const ReadComponent = function () {
         const btn_close = component.querySelector('#close');
 
         btn_close.addEventListener('click', () => {
-            isShown = false;
+            unrender();
             container.classList.remove('open');
             MiscContainer.render();
-            unrender();
+             
+            const articleKeys = ArticleKeysContainer.getKeys();
+            const articleKey = articleKeys[itemData.index];
+            articleKey.clicked(false);
         });
 
         LoadInformation(component, getItemData);

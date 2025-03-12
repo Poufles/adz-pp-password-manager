@@ -1,4 +1,4 @@
-const ArticleKeysContainer = function(){
+const ArticleKeysContainer = function () {
     const keys = [];
     const container = document.querySelector('#page__dashboard #bottom section#articles');
     const component = document.createElement('section');
@@ -19,12 +19,17 @@ const ArticleKeysContainer = function(){
         }
     }
 
-    const insert = ({ childNode, object }) => {
+    const insert = ({ childNode, object, isNew = true }) => {
+        if (!isNew) {
+            console.log(keys);
+            component.prepend(childNode);
+            return;
+        };
+
         if (!component.contains(childNode)) {
             keys.push(object);
             component.prepend(childNode);
         };
-
     };
 
     const pull = (index) => {

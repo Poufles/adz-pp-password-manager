@@ -1,4 +1,5 @@
 import CreatEditComponent from "./card-createdit";
+import MiscContainer from "./misc-container";
 import { hidden_eye, open_eye } from "./svg";
 
 const template =
@@ -111,6 +112,7 @@ const KeyGenComponent = function () {
 
         btn_close.addEventListener('click', () => {
             unrender();
+            MiscContainer.render();
             container.classList.remove('open');
 
             if (CreatEditComponent.isRendered()) {
@@ -253,7 +255,7 @@ function GenerateKey(length, uppercase, lowercase, numbers, symbols) {
  * @param {String} password 
  * @returns Returns strength of the password in string (0 to 100);
  */
-function VerifyStrength(password) {
+export function VerifyStrength(password) {
     const length = password.length;
 
     let upperCount = 0, lowerCount = 0, numCount = 0, symbolCount = 0;

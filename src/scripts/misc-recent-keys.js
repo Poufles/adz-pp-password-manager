@@ -24,7 +24,7 @@ const MiscRecentKeys = function () {
         };
     };
 
-    const unrender = () => {
+    const unrender = (container) => {
         if (container && container.contains(component)) {
             container.removeChild(component);
         };

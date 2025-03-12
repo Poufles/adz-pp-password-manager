@@ -1,7 +1,8 @@
 .article-item {
     background-color: #fff;
+    border: 2px solid transparent;
     border-radius: var(--b-radius-1);
-    border: 0;
+    box-shadow: 0 5px 3px -5px ;
     cursor: pointer;
     padding: 10px 25px;
     height: 92px;
@@ -11,6 +12,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    transition: var(--trans-q);
+}
+
+.article-item.clicked {
+    box-shadow: 0 10px 3px -5px var(--drop-shadow);
 }
 
 .article-item .button {

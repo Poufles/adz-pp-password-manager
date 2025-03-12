@@ -84,7 +84,6 @@ const Searchbar = function () {
  * @param {Node} component - Searchbar component
  */
 function LoadListeners(component) {
-    const cont_keys = document.querySelector('#page__dashboard #articles #key-items')
     const tags = document.querySelector('#page__dashboard #articles #tags');
     const types = document.querySelector('#page__dashboard #articles #types');
     const input_search = component.querySelector('input#search-item');
@@ -169,21 +168,19 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
     };
 
     for (let index = 0; index < keyLength; index++) {
-        const key = keys[index];
+        const articleKeys = ArticleKeysContainer.getKeys();
+        const keyObject = articleKeys[index];
+        const key = keyObject.getItemData().item;
         const keyName = key.website;
-
+        
         if (fav) {
             const isFav = key.fav;
             
             if (keyName.toLowerCase().includes(query.toLowerCase()) && isFav) {
-                const item = KeyItem({
-                    item: key,
-                    index: index
-                });
-
                 ArticleKeysContainer.insert({
-                    childNode: item.render(),
-                    object: item
+                    childNode: keyObject.render(),
+                    object: keyObject,
+                    isNew: false
                 });
             };
 
@@ -191,14 +188,10 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
         }
 
         if (keyName.toLowerCase().includes(query.toLowerCase())) {
-            const item = KeyItem({
-                item: key,
-                index: index
-            });
-
             ArticleKeysContainer.insert({
-                childNode: item.render(),
-                object: item
+                childNode: keyObject.render(),
+                object: keyObject,
+                isNew: false
             });
         };
     };

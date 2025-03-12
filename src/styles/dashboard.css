@@ -340,9 +340,10 @@
 #page__dashboard #articles>#key-items {
     grid-area: items;
 
+    padding-bottom: 200px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 7px;
     overflow-y: auto;
 }
 
