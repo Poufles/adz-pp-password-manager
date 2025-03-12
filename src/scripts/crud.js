@@ -23,7 +23,7 @@ export async function CreateNewKeyItem(data) {
         fav: data.fav,
         hint: data.hint,
         folder: data.folder,
-        openedAt: ''
+        openedAt: -1
     };
 
     if (data.folder) {
@@ -44,7 +44,7 @@ export async function CreateNewKeyItem(data) {
                 name: data.folder,
                 keys: [index],
                 favorite: false,
-                openedAt: 'none'
+                openedAt: -1
             };
 
             folders.push(newFolder);
@@ -115,7 +115,7 @@ export async function UpdateKeyItem(newData, index, { isPassword = false, isOpen
                 name: newData.folder,
                 keys: [index],
                 favorite: false,
-                openedAt: 'none'
+                openedAt: -1
             };
 
             folders.push(newFolder);
@@ -187,7 +187,7 @@ export function DeleteKeyItem(index) {
 
         // Verify if it exists
         if (keyFolder !== undefined) {
-            keyFolder.keys.splice(index, 1);
+            keyFolder.keys.splice(keyFolder.keys.indexOf(index), 1);
         };
     };
 
@@ -209,8 +209,8 @@ export function DeleteKeyItem(index) {
 
 /**
  * Update article folder item
- * @param {*} data - Object containing information about folder
- * @param {*} index - Folder's index
+ * @param {Object} data - Object containing information about folder
+ * @param {Number} index - Folder's index
  * @returns true if item is updated
  */
 export function UpdateFolderItem(data, index) {

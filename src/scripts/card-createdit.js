@@ -6,6 +6,7 @@ import { hidden_eye, open_eye } from "./svg";
 import KeyGenComponent from "./card-keygen";
 import MiscContainer from "./misc-container";
 import ArticleKeysContainer from "./article-keys";
+import MiscKeysSecurity from "./misc-keys-security";
 
 const component_template =
     `
@@ -127,6 +128,7 @@ const component_template =
 
 
 const CreatEditComponent = function () {
+    let itemData;
     let isShown = false;
     let isCollapsed = false;
     let componentMode;
@@ -136,12 +138,18 @@ const CreatEditComponent = function () {
     component.classList.add('card', 'creation');
     component.setAttribute('id', 'creator');
 
+    const getItemData = () => itemData;
+    const isRendered = () => isShown;
+    const setRender = (status) => { isShown = status };
+    const getMode = () => componentMode;
+
     /**
      * Renders component
      * @param {String} mode - Mode to be rendered (create || edit) 
      * @param {Object} data - (Optional) Object to be passed when in edit mode
      */
     const render = (mode, data = null) => {
+        itemData = data;
         componentMode = mode;
         component.innerHTML = component_template;
 
@@ -153,15 +161,20 @@ const CreatEditComponent = function () {
         p_submit.textContent = componentMode.charAt(0).toUpperCase() + componentMode.slice(1);;
 
         btn_close.addEventListener('click', () => {
-            isShown = false;
-            container.classList.remove('open');
-            unrender();
+            if (itemData !== null) {
+                const articleKeys = ArticleKeysContainer.getKeys();
+                const articleKey = articleKeys[itemData.index];
+                articleKey.clicked(false);
+            };
 
+            container.classList.remove('open');
+            isShown = false;
+            unrender();
             MiscContainer.render();
         });
 
-        LoadInputInfoAndListeners(component, data);
-        LoadActionListener(component, data);
+        LoadInputInfoAndListeners(component, getItemData);
+        LoadActionListener(component, getItemData);
 
         if (!container.contains(component)) {
             container.appendChild(component);
@@ -172,6 +185,7 @@ const CreatEditComponent = function () {
     const unrender = () => {
         if (container.contains(component)) {
             container.removeChild(component);
+            itemData = null;
             isShown = false;
         }
     }
@@ -198,9 +212,6 @@ const CreatEditComponent = function () {
         component.removeAttribute('tabindex');
     }
 
-    const isRendered = () => isShown;
-    const getMode = () => componentMode;
-
     return {
         render,
         unrender,
@@ -216,7 +227,8 @@ const CreatEditComponent = function () {
  * @param {Node} component - CreatEdit component
  * @param {Object} data - Data object for edit
  */
-async function LoadInputInfoAndListeners(component, data) {
+async function LoadInputInfoAndListeners(component, getItemData) {
+    const data = getItemData();
     const p_advise = component.querySelector('#advise');
     const form = component.querySelector('form');
     const btn_fav = component.querySelector('button#favorite');
@@ -362,7 +374,10 @@ async function LoadInputInfoAndListeners(component, data) {
  * @param {Node} component - CreatEdit component
  * @param {Object} data - Data object for edit
  */
-function LoadActionListener(component, data) {
+function LoadActionListener(component, getItemData) {
+    // const container = document.querySelector('#bottom #crud');
+    // const btn_close = component.querySelector('#close');
+    const data = getItemData();
     const p_advise = component.querySelector('#advise');
     const form = component.querySelector('form');
     const btn_fav = component.querySelector('button#favorite');
@@ -382,7 +397,22 @@ function LoadActionListener(component, data) {
     const p_optional_hint = component.querySelector('#optional #item-2');
     const p_optional_folder = component.querySelector('#optional #item-3');
 
+    // btn_close.addEventListener('click', () => {
+    //     if (data !== null) {
+    //         const articleKeys = ArticleKeysContainer.getKeys();
+    //         const articleKey = articleKeys[data.index];
+    //         articleKey.updateRender(data);
+    //         articleKey.clicked(false);
+    //     };
+
+    //     setRender(false);
+    //     container.classList.remove('open');
+    //     CreatEditComponent.unrender();
+    //     MiscContainer.render();
+    // });
+
     btn_submit.addEventListener('click', async () => {
+        const container = document.querySelector('#bottom #crud');
         const email = input_email.value.trim();
         const key = input_password.value.trim();
         const website = input_website.value.trim();
@@ -409,15 +439,18 @@ function LoadActionListener(component, data) {
                 fav,
                 hint,
                 folder,
+                openedAt: data.item.openedAt
             }, data.index, { isPassword: true });
 
             const articleKeys = ArticleKeysContainer.getKeys();
             const articleKey = articleKeys[newKey.index];
-
             articleKey.updateRender(newKey);
+            articleKey.clicked(false);
 
             CreatEditComponent.unrender();
+            container.classList.remove('open')
             MiscContainer.render();
+            MiscKeysSecurity.refresh();
 
             return;
         }
@@ -439,7 +472,9 @@ function LoadActionListener(component, data) {
         });
 
         CreatEditComponent.unrender();
+        container.classList.remove('open')
         MiscContainer.render();
+        MiscKeysSecurity.refresh();
     });
 
     btn_reset.addEventListener('click', (e) => {

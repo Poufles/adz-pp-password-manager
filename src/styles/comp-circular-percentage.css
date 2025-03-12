@@ -9,11 +9,12 @@
 }
 
 .circular-percentage>#circle {
-    background-image: conic-gradient(var(--accent-color) var(--percent), transparent calc(var(--percent)));
+    background-image: conic-gradient(var(--accent-color) var(--percent), transparent var(--percent));
     border: 2px solid var(--accent-color);
     mask-image: radial-gradient(circle, transparent 50%, black 50.75%);
     width: 150px;
     position: relative;
+    transition: background-image 0.2s ease-out;
 }
 
 .circular-percentage>#circle::after {

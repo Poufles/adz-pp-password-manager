@@ -1,7 +1,9 @@
+import ArticleKeysContainer from "./article-keys";
 import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
 import KeyGenComponent from "./card-keygen";
 import { DeleteKeyItem, UpdateKeyItem } from "./crud";
+import HintTool from "./hint-tool";
 import MiscContainer from "./misc-container";
 import MiscRecentKeys from "./misc-recent-keys";
 import Encryption from "./password-encryption";
@@ -86,21 +88,27 @@ export default function KeyItem(data) {
 
     const getItemData = () => itemData;
     const setItemData = (newData) => { itemData = newData };
+    const clicked = (status) => {
+        if (status) {
+            component.classList.add('clicked');
+        } else {
+            component.classList.remove('clicked');
+        }
+    }
 
     const render = () => {
         component.dataset.item = itemData.index;
         component.setAttribute('id', `item-${itemData.index}`);
 
         LoadInformation(component, itemData);
-        LoadListeners(component, getItemData, setItemData);
+        LoadListeners(component, getItemData, setItemData, clicked);
 
         return component;
     }
 
     const updateRender = (newData) => {
-        console.log(`Update render card eky: ${newData.item.key}`);
         setItemData(newData);
-        LoadInformation(component, itemData)
+        LoadInformation(component, itemData);
     };
 
     const unrender = () => {
@@ -110,7 +118,9 @@ export default function KeyItem(data) {
     return {
         render,
         updateRender,
-        unrender
+        unrender,
+        clicked,
+        getItemData
     };
 };
 
@@ -139,6 +149,7 @@ function LoadInformation(component, data) {
 
     if (data.item.folder) {
         span_folder.textContent = data.item.folder;
+        cont_folder.removeAttribute('style');
     } else {
         cont_folder.setAttribute('style', 'display: none');
     }
@@ -149,7 +160,7 @@ function LoadInformation(component, data) {
  * @param {Node} component - Key item component
  * @param {Object} data - Object that contains information for the key
  */
-function LoadListeners(component, getItemData, setItemData) {
+function LoadListeners(component, getItemData, setItemData, clicked) {
     const btn_fav = component.querySelector('span#favorite');
     const btn_email = component.querySelector('span#email');
     const cont_folder = component.querySelector('.compartment-mid');
@@ -162,6 +173,19 @@ function LoadListeners(component, getItemData, setItemData) {
     component.addEventListener('click', async () => {
         const itemData = getItemData();
         const cont_crud = document.querySelector('#bottom #crud');
+
+        const updatedData = await UpdateKeyItem(itemData.item, itemData.index, {
+            isOpened: true
+        });
+
+        const articleKeys = ArticleKeysContainer.getKeys();
+        for (let articleKey of articleKeys) {
+            articleKey.clicked(false);
+        };
+
+        clicked(true);
+        setItemData(updatedData);
+
         const recentKeyItem = await RecentKeyItem(itemData, true);
 
         MiscRecentKeys.insert(recentKeyItem);
@@ -227,7 +251,7 @@ function LoadListeners(component, getItemData, setItemData) {
         const itemData = getItemData();
         const email = itemData.item.email;
 
-        copyToClipboard(email);
+        copyToClipboard(email, 'Email');
     });
 
     btn_folder.addEventListener('click', (e) => {
@@ -246,7 +270,7 @@ function LoadListeners(component, getItemData, setItemData) {
             const masterkey = StorageHandler.GetSessionStorage().masterkey;
             const decryptedKey = await Encryption.decryptData(masterkey, itemData.item.key);
 
-            copyToClipboard(decryptedKey);
+            copyToClipboard(decryptedKey, 'Password');
         });
     })
 
@@ -262,6 +286,12 @@ function LoadListeners(component, getItemData, setItemData) {
         const itemData = getItemData();
         const cont_crud = document.querySelector('#bottom #crud');
 
+        const articleKeys = ArticleKeysContainer.getKeys();
+        for (let articleKey of articleKeys) {
+            articleKey.clicked(false);
+        };
+        clicked(true);
+
         if (KeyGenComponent.isRendered()) {
             KeyGenComponent.unrender();
         };
@@ -271,7 +301,6 @@ function LoadListeners(component, getItemData, setItemData) {
         }
 
         cont_crud.classList.add('open');
-        console.log(itemData);
         CreatEditComponent.render('edit', itemData);
         MiscContainer.unrender();
     });
@@ -281,19 +310,15 @@ function LoadListeners(component, getItemData, setItemData) {
         e.stopPropagation();
 
         const itemData = getItemData();
-        // ADD CONFIRMATION LATER
-        if (DeleteKeyItem(itemData.index)) {
-            const container = document.querySelector('#page__dashboard section#articles #key-items');
 
-            if (container.contains(component)) {
-                container.removeChild(component);
-            };
-        };
+        ArticleKeysContainer.pull(itemData.index);
+        // ADD CONFIRMATION LATER
+        DeleteKeyItem(itemData.index);
     });
 };
 
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
-        .then(() => console.log("Texte copié !"))
-        .catch(err => console.error("Erreur lors de la copie :", err));
-}
+function copyToClipboard(textCopied, type) {
+    navigator.clipboard.writeText(textCopied).then(() => {
+        HintTool(type).play();
+    }).catch(err => console.error("Erreur lors de la copie :", err));
+};

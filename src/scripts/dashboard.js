@@ -4,6 +4,7 @@ import "../styles/comp-circular-percentage.css";
 import "../styles/comp-card-creation.css";
 import "../styles/comp-card-iteminfo.css";
 import "../styles/comp-card-keygen.css";
+import "../styles/comp-hint-tool.css";
 import StorageHandler from "./storage-handler.js";
 import { CurrentTimeToday, DateDifference } from "./date";
 import KeyItem from "./card-key.js";
@@ -222,18 +223,28 @@ if (btn_create) {
             }
         }
 
+        if (MiscContainer.getComponent()) {
+            MiscContainer.unrender()
+        };
+
         if (!CreatEditComponent.isRendered()) {
             cont_crud.classList.add('open')
             CreatEditComponent.render('create');
 
-            if (MiscContainer.getComponent()) {
-                MiscContainer.unrender()
+            const articleKeys = ArticleKeysContainer.getKeys();
+            for (let articleKey of articleKeys) {
+                articleKey.clicked(false);
             };
 
             return;
         };
 
         if (CreatEditComponent.getMode() === 'edit') {
+            const articleKeys = ArticleKeysContainer.getKeys();
+            for (let articleKey of articleKeys) {
+                articleKey.clicked(false);
+            };
+
             cont_crud.classList.add('open')
             CreatEditComponent.render('create');
         } else {
@@ -242,7 +253,6 @@ if (btn_create) {
 
             if (MiscContainer.getComponent()) {
                 MiscContainer.render()
-
             };
         }
     });
@@ -266,14 +276,20 @@ if (btn_keygen) {
             CreatEditComponent.collapseRender();
         };
 
+        if (MiscContainer.getComponent()) {
+            MiscContainer.unrender()
+        };
+
         if (!KeyGenComponent.isRendered()) {
             cont_crud.classList.add('open')
             KeyGenComponent.render();
 
-            if (MiscContainer.getComponent()) {
-                MiscContainer.unrender()
+            if (!CreatEditComponent.isRendered()) {
+                const articleKeys = ArticleKeysContainer.getKeys();
+                for (let articleKey of articleKeys) {
+                    articleKey.clicked(false);
+                };
             };
-
         } else {
             cont_crud.classList.remove('open')
             KeyGenComponent.unrender();

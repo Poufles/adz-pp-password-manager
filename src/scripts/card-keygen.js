@@ -1,4 +1,6 @@
 import CreatEditComponent from "./card-createdit";
+import HintTool from "./hint-tool";
+import MiscContainer from "./misc-container";
 import { hidden_eye, open_eye } from "./svg";
 
 const template =
@@ -111,6 +113,7 @@ const KeyGenComponent = function () {
 
         btn_close.addEventListener('click', () => {
             unrender();
+            MiscContainer.render();
             container.classList.remove('open');
 
             if (CreatEditComponent.isRendered()) {
@@ -213,7 +216,9 @@ function LoadListeners(component) {
     btn_copy.addEventListener('click', () => {
         const generatedKey = p_showGenerated.value;
 
-        copyToClipboard(generatedKey);
+        if (generatedKey) {
+            copyToClipboard(generatedKey, 'Password');
+        };
     });
 };
 
@@ -253,7 +258,7 @@ function GenerateKey(length, uppercase, lowercase, numbers, symbols) {
  * @param {String} password 
  * @returns Returns strength of the password in string (0 to 100);
  */
-function VerifyStrength(password) {
+export function VerifyStrength(password) {
     const length = password.length;
 
     let upperCount = 0, lowerCount = 0, numCount = 0, symbolCount = 0;
@@ -308,10 +313,10 @@ function VerifyStrength(password) {
     return score.toFixed(2);
 }
 
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
-        .then(() => console.log("Texte copié !"))
-        .catch(err => console.error("Erreur lors de la copie :", err));
-}
+function copyToClipboard(textCopied, type) {
+    navigator.clipboard.writeText(textCopied).then(() => {
+        HintTool(type).play();
+    }).catch(err => console.error("Erreur lors de la copie :", err));
+};
 
 export default KeyGenComponent;

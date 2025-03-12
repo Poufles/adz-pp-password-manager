@@ -4,8 +4,8 @@ export function DateDifference({ date, type }) {
 
     // Verify date argument
     if (isNaN(dateToDiffer.getTime())) {
-        console.error("Error: Invalid date argument");
-        return null;
+        console.error("Error: Invalid date argument.");
+        return -1;
     }
 
     // Difference between current date and date argument
