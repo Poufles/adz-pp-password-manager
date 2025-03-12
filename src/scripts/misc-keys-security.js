@@ -73,13 +73,19 @@ async function LoadSecurityInformation(component) {
     cont_circular_percentage.setAttribute('style', `--percent: ${percentCount}%`);
     p_keys.textContent = `${count} / ${length} Keys are secured !`;
     p_percentage.textContent = `${String(percentCount) === 'NaN' ? 0 : percentCount.toFixed(0)}%`;
+
+    if (length === 0) {
+        p_status.textContent = 'Add some keys !';
+        return;
+    };
     
     if (percentCount == 100) {
         p_status.textContent = 'No Vulnerabilities Found !';
+        p_status.removeAttribute('style');
     } else {
         p_status.setAttribute('style', 'color: red;');
         p_status.textContent = `${length - count} Keys are not secured !`;
-    }
+    };
 };
 
 async function CheckSecurity() {

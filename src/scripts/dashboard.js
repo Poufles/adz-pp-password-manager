@@ -4,7 +4,9 @@ import "../styles/comp-circular-percentage.css";
 import "../styles/comp-card-creation.css";
 import "../styles/comp-card-iteminfo.css";
 import "../styles/comp-card-keygen.css";
+import "../styles/comp-card-settings.css";
 import "../styles/comp-hint-tool.css";
+import "../styles/blur-overlay.css";
 import StorageHandler from "./storage-handler.js";
 import { CurrentTimeToday, DateDifference } from "./date";
 import KeyItem from "./card-key.js";
@@ -17,6 +19,7 @@ import MiscKeysSecurity from "./misc-keys-security.js";
 import ArticleKeysContainer from "./article-keys.js";
 import MiscContainer from "./misc-container.js";
 import RecentKeyItem from "./recent-key.js";
+import SettingComponent from "./settings.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
@@ -99,7 +102,10 @@ async function Dashboard() {
 
     // Load listner for user/settings button
     if (btn_user) {
-
+        btn_user.addEventListener('click', () => {
+            SettingComponent.create();
+            SettingComponent.render();
+        });
     };
 
     // Load listner for screen mode button
