@@ -1,3 +1,4 @@
+import ArticleKeysContainer from "./article-keys";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
 
@@ -249,6 +250,23 @@ export function DeleteFolderItem(index) {
     const folderLength = folderKeys.length;
     const keys = sessionStorage.keys;
 
+    // Modify with DOM items
+    const articleKeys = ArticleKeysContainer.getKeys();
+    const length = articleKeys.length;
+
+    for (let index = 0; index < length; index++) {
+        let articleKeyObject = articleKeys[index];
+        let articleKeyData = articleKeyObject.getItemData();
+        let articleKeyFolder = articleKeyData.item.folder;
+
+        if (articleKeyFolder === folder.name) {
+            articleKeyData.item.folder = '';
+            console.log(articleKeyData.item);
+            articleKeyObject.updateRender(articleKeyData);
+        };
+    };
+
+    // Modify storage items
     for (let iter = 0; iter < folderLength; iter++) {
         const key = keys[folderKeys[iter]];
 
