@@ -1,4 +1,5 @@
 import CreatEditComponent from "./card-createdit";
+import HintTool from "./hint-tool";
 import MiscContainer from "./misc-container";
 import { hidden_eye, open_eye } from "./svg";
 
@@ -215,7 +216,9 @@ function LoadListeners(component) {
     btn_copy.addEventListener('click', () => {
         const generatedKey = p_showGenerated.value;
 
-        copyToClipboard(generatedKey);
+        if (generatedKey) {
+            copyToClipboard(generatedKey, 'Password');
+        };
     });
 };
 
@@ -310,10 +313,10 @@ export function VerifyStrength(password) {
     return score.toFixed(2);
 }
 
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
-        .then(() => console.log("Texte copié !"))
-        .catch(err => console.error("Erreur lors de la copie :", err));
-}
+function copyToClipboard(textCopied, type) {
+    navigator.clipboard.writeText(textCopied).then(() => {
+        HintTool(type).play();
+    }).catch(err => console.error("Erreur lors de la copie :", err));
+};
 
 export default KeyGenComponent;

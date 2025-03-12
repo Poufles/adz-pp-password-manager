@@ -4,6 +4,7 @@ import "../styles/comp-circular-percentage.css";
 import "../styles/comp-card-creation.css";
 import "../styles/comp-card-iteminfo.css";
 import "../styles/comp-card-keygen.css";
+import "../styles/comp-hint-tool.css";
 import StorageHandler from "./storage-handler.js";
 import { CurrentTimeToday, DateDifference } from "./date";
 import KeyItem from "./card-key.js";

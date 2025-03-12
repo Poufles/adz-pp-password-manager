@@ -4,29 +4,29 @@ const template =
     <p class="text" id="message"><span id="item-name">Item</span> Copied !</p>
 `;
 
-const HintTool = function () {
+export default function HintTool(message) {
     // <div class="container comp-hint-tool" id="hint">
     const component = document.createElement('div');
     component.classList.add('container', 'comp-hint-tool');
     component.setAttribute('id', 'hint');
 
-    const play = (message) => {
+    const play = () => {
         if (document.body.contains(component)) return;
 
-        const span_itemName = component.querySelector('#item-name');
-        
         component.innerHTML = template;
+
+        const span_itemName = component.querySelector('#item-name');
         span_itemName.textContent = message;
         
         document.body.appendChild(component);
+        component.classList.add('play');
         setTimeout(() => {
             document.body.removeChild(component);
-        }, 5000);
+            component.classList.remove('play');
+        }, 4000);
     };
 
     return {
         play
     }
-}();
-
-export default HintTool;
+};

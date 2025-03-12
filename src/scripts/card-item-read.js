@@ -6,6 +6,7 @@
 
 import ArticleKeysContainer from "./article-keys";
 import CreatEditComponent from "./card-createdit";
+import HintTool from "./hint-tool";
 import MiscContainer from "./misc-container";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
@@ -217,8 +218,8 @@ async function LoadInformation(component, getItemData) {
     const btn_password_copy = component.querySelector('#item-password #copy')
     const btn_edit = component.querySelector('#submit');
 
-    btn_email_copy.addEventListener('click', () => copyToClipboard(data.item.email));
-    btn_password_copy.addEventListener('click', () => copyToClipboard(decryptedKey));
+    btn_email_copy.addEventListener('click', () => copyToClipboard(data.item.email, 'Email'));
+    btn_password_copy.addEventListener('click', () => copyToClipboard(decryptedKey, 'Email'));
     btn_edit.addEventListener('click', () => {
         if (!CreatEditComponent.isRendered()) {
             ReadComponent.unrender();
@@ -228,10 +229,10 @@ async function LoadInformation(component, getItemData) {
 };
 
 // Function by ChatGPT
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
-        .then(() => console.log("Texte copié !"))
-        .catch(err => console.error("Erreur lors de la copie :", err));
-}
+function copyToClipboard(textCopied, type) {
+    navigator.clipboard.writeText(textCopied).then(() => {
+        HintTool(type).play();
+    }).catch(err => console.error("Erreur lors de la copie :", err));
+};
 
 export default ReadComponent;

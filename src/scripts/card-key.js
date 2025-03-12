@@ -3,6 +3,7 @@ import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
 import KeyGenComponent from "./card-keygen";
 import { DeleteKeyItem, UpdateKeyItem } from "./crud";
+import HintTool from "./hint-tool";
 import MiscContainer from "./misc-container";
 import MiscRecentKeys from "./misc-recent-keys";
 import Encryption from "./password-encryption";
@@ -250,7 +251,7 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
         const itemData = getItemData();
         const email = itemData.item.email;
 
-        copyToClipboard(email);
+        copyToClipboard(email, 'Email');
     });
 
     btn_folder.addEventListener('click', (e) => {
@@ -269,7 +270,7 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
             const masterkey = StorageHandler.GetSessionStorage().masterkey;
             const decryptedKey = await Encryption.decryptData(masterkey, itemData.item.key);
 
-            copyToClipboard(decryptedKey);
+            copyToClipboard(decryptedKey, 'Password');
         });
     })
 
@@ -316,8 +317,8 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
     });
 };
 
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
-        .then(() => console.log("Texte copié !"))
-        .catch(err => console.error("Erreur lors de la copie :", err));
-}
+function copyToClipboard(textCopied, type) {
+    navigator.clipboard.writeText(textCopied).then(() => {
+        HintTool(type).play();
+    }).catch(err => console.error("Erreur lors de la copie :", err));
+};
