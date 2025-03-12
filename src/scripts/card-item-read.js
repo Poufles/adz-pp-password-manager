@@ -152,10 +152,20 @@ const ReadComponent = function () {
         }
     }
     
-    const unrender = () => {
+    /**
+     * 
+     * @param {Number} mode - Defines if component is unrendering to unrender or redirect to edit component (-1 unrender || 0 edit)  
+     */
+    const unrender = (mode = -1) => {
         if (container.contains(component)) {
             container.removeChild(component);
             isShown = false;
+
+            if (mode !== 0) {
+                const articleKeyObject = ArticleKeysContainer.getKeys()[itemData.index];
+    
+                articleKeyObject.clicked(false);
+            }
         }
     }
 
@@ -222,7 +232,7 @@ async function LoadInformation(component, getItemData) {
     btn_password_copy.addEventListener('click', () => copyToClipboard(decryptedKey, 'Email'));
     btn_edit.addEventListener('click', () => {
         if (!CreatEditComponent.isRendered()) {
-            ReadComponent.unrender();
+            ReadComponent.unrender(0);
             CreatEditComponent.render('edit', getItemData());
         }
     });
