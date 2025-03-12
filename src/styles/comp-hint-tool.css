@@ -1,0 +1,38 @@
+.comp-hint-tool {
+    background-color: var(--accent-color);
+    border-radius: 50px;
+    max-width: 200px;
+    padding: 5px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transform: translateX(-50%);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transition: var(--trans-q);
+}
+
+.comp-hint-tool.play {
+    animation: animate ease-in-out 4s;
+}
+
+.comp-hint-tool #message {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.comp-hint-tool svg {
+    width: var(--r-fn);
+    height: var(--md-fn);
+    stroke: var(--primary-color);
+    stroke-width: 4px;
+}
+
+@keyframes animate {
+    0% { bottom: 100%; }
+    10%, 85% { bottom: 95%; opacity: 1 }
+    90% { bottom: 80%; opacity: 0 }
+    100% { bottom: 80%; opacity: 0  }
+}
