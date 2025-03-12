@@ -88,6 +88,7 @@ export default function KeyItem(data) {
 
     const getItemData = () => itemData;
     const setItemData = (newData) => { itemData = newData };
+
     const clicked = (status) => {
         if (status) {
             component.classList.add('clicked');
@@ -96,6 +97,10 @@ export default function KeyItem(data) {
         }
     }
 
+    /**
+     * Creates a component to be rendered in DOM
+     * @returns Key item component to render in DOM
+     */
     const render = () => {
         component.dataset.item = itemData.index;
         component.setAttribute('id', `item-${itemData.index}`);
@@ -106,21 +111,20 @@ export default function KeyItem(data) {
         return component;
     }
 
+    /**
+     * Updates the render in DOM and itemData
+     * @param {Object} newData - Object containing properties of item (information of the key) and index as the index of the key 
+     */
     const updateRender = (newData) => {
         setItemData(newData);
         LoadInformation(component, itemData);
     };
 
-    const unrender = () => {
-
-    }
-
     return {
         render,
         updateRender,
-        unrender,
         clicked,
-        getItemData
+        getItemData,
     };
 };
 

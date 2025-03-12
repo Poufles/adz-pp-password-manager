@@ -23,6 +23,10 @@ import SettingComponent from "./settings.js";
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
+if (!storage) {
+    window.location.href = '/index.html';
+};
+
 const accounts = storage.app.accounts;
 let hasSession = false;
 
