@@ -65,6 +65,11 @@
     left: 75%;
 }
 
+.creation.settings {
+    flex-grow: 0;
+    width: 500px ;
+}
+
 .creation.settings #settings-info {
     display: flex;
     flex-wrap: wrap;
@@ -85,6 +90,12 @@
     overflow: hidden;
 }
 
+.creation.settings #settings-info>.inputs p#password,
+.creation.settings #settings-info>.inputs#info-email p#email {
+    color: rgba(95, 47, 117, 0.5);
+    font-style: italic;
+}
+
 .creation.settings #input-password .container #password {
     width: 100%;
 }
@@ -100,12 +111,8 @@
     fill: var(--accent-color);
 }
 
-.creation.settings #settings-info>.inputs#info-email p {
-    color: rgba(95, 47, 117, 0.5);
-}
-
 .creation.settings #settings-info>.inputs input::placeholder {
-    color: var(--accent-color)
+    color: rgba(95, 47, 117, 0.5);
 }
 
 .creation.settings #settings-info>.inputs svg {
@@ -117,6 +124,49 @@
 .creation.settings #advise {
     flex-grow: 1;
     align-content: end;
+}
+
+.creation.settings#edit #edit {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+}
+
+.creation.settings#edit #left {
+    gap: 0;
+}
+
+.creation.settings#edit #show-mode {
+    padding: 0;
+    cursor: pointer;
+    font-size: var(--lr-fn);
+    font-weight: bold;
+    text-decoration: underline transparent;
+    transition: var(--trans-q);
+}
+
+.creation.settings#edit #show-mode:hover {
+    text-decoration: underline;
+}
+
+.creation.settings#edit #arrow {
+    font-size: var(--md-fn);
+    transform: rotate(-90deg);
+}
+
+.creation.settings#edit #current-mode {
+    cursor: default;
+    font-size: var(--lr-fn);
+    font-weight: bold;
+}
+
+.creation.settings#edit #icon-mode {
+    margin-left: 5px;
+}
+
+.creation.settings#edit #edit svg{
+    flex-shrink: 0;
 }
 
 @media screen and (max-width: 549px) {

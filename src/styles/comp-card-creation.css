@@ -171,6 +171,7 @@
 }
 
 .creation #input-password #keygen {
+    flex-shrink: 0;
     font-weight: bold;
     padding: 5px 7px;
     width: max-content;
@@ -180,6 +181,7 @@
 }
 
 .creation #input-password #keygen svg {
+    flex-shrink: 0;
     fill: var(--primary-color);
     width: 16px;
     height: 16px;

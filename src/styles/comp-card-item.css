@@ -98,6 +98,7 @@
     transition-behavior: allow-discrete;
     transition-property: display opacity;
     transition-duration: var(--trans-q);
+    z-index: 1;
 }
 
 .article-item #actions #tooltip>#tip {

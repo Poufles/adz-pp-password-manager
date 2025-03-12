@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+import StorageHandler from "./storage-handler";
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/main.css">
-    <link rel="stylesheet" href="../styles/comp-button.css">
-    <link rel="stylesheet" href="../styles/comp-card-creation.css">
-    <link rel="stylesheet" href="../styles/comp-card-settings.css">
-    <title>Settings</title>
-</head>
-
-<body style="height: 100dvh; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 20px;">
-    <div class="card creation settings" id="show">
-        <div class="container" id="top">
+const template =
+    `
+    <div class="container" id="top">
             <div id="left">
                 <p class="text color" id="title">Settings</p>
                 <svg class="fill" width="40" height="40" viewBox="0 0 40 40" fill="none"
@@ -68,19 +57,19 @@
         <div id="settings-info">
             <div class="container inputs" id="info-username">
                 <p class="text color">Username</p>
-                <p class="text-sub color" id="username">poufsadev</p>
+                <p class="text-sub color" id="username">Loading...</p>
             </div>
             <div class="container inputs" id="info-password">
                 <p class="text color">Master Key</p>
-                <p class="text color" id="password">••••••••••••••••••••••••••••••••••••</p>
+                <p class="text color" id="password">Hashed, Encrypted, and Safe !</p>
             </div>
             <div class="container inputs" id="info-email">
                 <p class="text color">Email Address</p>
-                <p class="text-sub color" id="username">Available Soon!</p>
+                <p class="text-sub color" id="email">Available Soon!</p>
             </div>
             <div class="container inputs" id="info-date">
                 <p class="text color">Date of Creation</p>
-                <p class="text color" id="date">03/01/2025</p>
+                <p class="text color" id="date">Loading...</p>
             </div>
             <div class="container inputs" id="input-actions">
                 <button class="text" type="button" id="edit">
@@ -92,9 +81,11 @@
             </div>
         </div>
         <p class="text" id="advise">Adjust to your own liking!</p>
-    </div>
-    <div class="card creation settings" id="edit">
-        <div class="container" id="top">
+`;
+
+const template_edit =
+    `
+    <div class="container" id="top">
             <div id="left">
                 <button type="button" class="text color no-bg" id="show-mode">
                     Settings
@@ -150,16 +141,16 @@
                 </ul>
             </div>
         </div>
-        <div id="settings-info">
+        <form action="#" id="settings-info">
             <div class="container inputs" id="input-username">
                 <label class="text color" for="username">Username</label>
-                <input class="text-sub color" type="text" id="username" placeholder="poufsadev">
+                <input class="text-sub color" type="text" id="username" placeholder="Loading...">
             </div>
             <div class="container inputs" id="input-password">
                 <label class="text color" for="password">Master Key</label>
                 <div class="container">
                     <input class="text color" id="password" type="password"
-                        placeholder="••••••••••••••••••••••••••••••••••••">
+                        placeholder="Loading...">
                     <button class="button no-bg" id="eye-hidden">
                         <?xml version="1.0" ?><svg enable-background="new 0 0 32 32" id="Glyph" version="1.1"
                             viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
@@ -176,7 +167,7 @@
             </div>
             <div class="container inputs" id="info-email">
                 <p class="text color">Email Address</p>
-                <p class="text-sub color" id="username">Available Soon!</p>
+                <p class="text-sub color" id="email">Available Soon!</p>
             </div>
             <div class="container inputs" id="info-date">
                 <p class="text color">Date of Creation</p>
@@ -192,9 +183,127 @@
                     </svg>
                 </button>
             </div>
-        </div>
+        </form>
         <p class="text" id="advise">Adjust to your own liking!</p>
-    </div>
-</body>
+`;
 
-</html>
+const SettingComponent = function () {
+    let itemData = StorageHandler.GetSessionStorage();
+    const container_overlay = document.createElement('div');
+    const component = document.createElement('div');
+
+    container_overlay.setAttribute('id', 'overlay');
+    component.classList.add('card', 'creation', 'settings');
+
+    container_overlay.addEventListener('click', () => {
+        unrender();
+    });
+
+    component.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+    
+    const getItemData = () => itemData;
+    
+    const create = () => {
+        component.innerHTML = template;
+        component.setAttribute('id', 'show');
+        
+        const btn_close = component.querySelector('button#close');
+        const btn_edit = component.querySelector('button#edit');
+
+        btn_close.addEventListener('click', () => {
+            unrender();
+        });
+
+
+        btn_edit.addEventListener('click', () => {
+            edit();
+        });
+
+        LoadCreateInfo(component, getItemData);
+        container_overlay.appendChild(component);
+    };
+
+    const render = () => {
+        document.body.prepend(container_overlay);
+        container_overlay.classList.add('open');
+    }
+
+    const unrender = () => {
+        container_overlay.classList.remove('open');
+        setTimeout(() => {
+            container_overlay.removeChild(component);
+            document.body.removeChild(container_overlay);
+        }, 200);
+    };
+
+    const edit = () => {
+        component.innerHTML = template_edit;
+        component.setAttribute('id', 'edit');
+
+        const btn_close = component.querySelector('button#close');
+        btn_close.addEventListener('click', () => {
+            unrender();
+        });
+
+        LoadEditInfoAndListeners(component, getItemData, create)
+    }
+
+    return {
+        create,
+        render,
+        unrender
+    }
+}();
+
+/**
+ * Load information for component
+ * @param {Node} component - Setting component element
+ * @param {Object} getItemData - Function to get item data
+ */
+function LoadCreateInfo(component, getItemData) {
+    let data = getItemData();
+    const p_username = component.querySelector('#username');
+    const p_date_of_creation = component.querySelector('#date');
+    const cbox_dark_mode = component.querySelector('#dark');
+    const cbox_animation = component.querySelector('#animation');
+
+    p_username.textContent = data.username;
+    p_date_of_creation.textContent = data.dateofcreation;
+    cbox_dark_mode.checked = data.preference.dark;
+    cbox_animation.checked = data.preference.animation;
+};
+
+/**
+ * Load information and listeners for component in edit mode
+ * @param {Node} component - Setting component element
+ * @param {Object} getItemData - Function to get item data
+ * @param {Object} create - Function to go back to create mode
+ */
+function LoadEditInfoAndListeners(component, getItemData, create) {
+    let data = getItemData();
+    const btn_back = component.querySelector('#show-mode');
+    const input_username = component.querySelector('input#username');
+    const input_password = component.querySelector('input#password');
+    const p_date_of_creation = component.querySelector('#date');
+    const cbox_dark_mode = component.querySelector('#dark');
+    const cbox_animation = component.querySelector('#animation');
+    const btn_edit = component.querySelector('button#edit');
+
+    input_username.placeholder = data.username;
+    input_password.placeholder = 'New Password';
+    p_date_of_creation.textContent = data.dateofcreation;
+    cbox_dark_mode.checked = data.preference.dark;
+    cbox_animation.checked = data.preference.animation;
+
+    btn_back.addEventListener('click', () => {
+        create();
+    });
+
+    btn_edit.addEventListener('click', () => {
+
+    });
+};
+
+export default SettingComponent;

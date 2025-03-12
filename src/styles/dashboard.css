@@ -89,9 +89,19 @@
     font-weight: bold;
 }
 
+#page__dashboard #header>#side-1>#menu>#actions {
+    display: flex;
+    gap: 7px;
+    align-content: center;
+    justify-content: left;
+}
+
 #page__dashboard #header>#side-1>#menu>#actions>button {
-    height: 40px;
-    width: 40px;
+    height: 36px;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #page__dashboard #header>#side-1>#menu>#actions>button,
@@ -116,6 +126,7 @@
     fill: var(--primary-color);
 }
 
+#page__dashboard #header>#side-1>#menu>#actions>button:nth-of-type(2):active>svg,
 #page__dashboard #header>#side-1>#menu>#actions>button:last-of-type:active>svg {
     fill: var(--primary-color);
     stroke: var(--primary-color);
@@ -129,6 +140,7 @@
     aspect-ratio: 1;
     width: 20px;
     height: 20px;
+    stroke-width: 2px;
 }
 
 /* MIGHT CHANGE LATER */
@@ -187,7 +199,7 @@
     box-shadow: 0 4px 4px var(--drop-shadow);
     position: relative;
     overflow: hidden;
-    z-index: 1;
+    z-index: 0;
 }
 
 #page__dashboard #misc>#recent-files {
