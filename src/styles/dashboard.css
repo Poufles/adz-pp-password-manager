@@ -283,7 +283,7 @@
     display: grid;
     gap: 12px;
     grid-template-areas: 
-        'title search search'
+        'location search search'
         'tags actions types'
         'items items items'
     ;
@@ -291,12 +291,29 @@
     grid-template-columns: auto auto min-content;
 }
 
-#page__dashboard #articles>#title {
+#page__dashboard #articles>#location {
     align-self: center;
-    grid-area: title;
+    grid-area: location;
 
     font-size: var(--lr-fn);
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+#page__dashboard #articles>#location>button#root {
+    padding: 0;
+    text-decoration: underline transparent;
+    transition: var(--trans-q)
+}
+
+#page__dashboard #articles>#location>button#root:hover {
+    text-decoration: underline var(--accent-color);
+}
+
+#page__dashboard #articles>#location>svg {
+    transform: rotate(-90deg);
 }
 
 /* CHANGE LATER */

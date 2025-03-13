@@ -1,4 +1,4 @@
-import ArticleKeysContainer from "./article-keys";
+import ArticleKeysContainer from "./article-items";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
 
@@ -45,7 +45,6 @@ export async function CreateNewKeyItem(data) {
                 name: data.folder,
                 keys: [index],
                 favorite: false,
-                openedAt: -1
             };
 
             folders.push(newFolder);
@@ -116,7 +115,6 @@ export async function UpdateKeyItem(newData, index, { isPassword = false, isOpen
                 name: newData.folder,
                 keys: [index],
                 favorite: false,
-                openedAt: -1
             };
 
             folders.push(newFolder);

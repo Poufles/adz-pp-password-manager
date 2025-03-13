@@ -5,6 +5,37 @@ import { Login } from "./account.js";
 import StorageHandler from "./storage-handler.js";
 import { DateDifference } from "./date.js";
 
+// Check every second if storage was deleted
+let isMessagePopped = true;
+setInterval(() => {
+    const lowkeyLocal = StorageHandler.GetLocalStorage();
+
+    if (!lowkeyLocal && isMessagePopped) {
+        isMessagePopped = false;
+        alert('STORAGE WAS ERASED !');
+
+        const localCopy = StorageHandler.StorageCopy().localCopy;
+
+        if (localCopy) {
+            StorageHandler.UpdateLocalStorage(localCopy);
+            location.reload();
+        } else {
+            window.location.href = '/index.html';
+        };
+    };
+}, 1000);
+
+// Make a backup at interval
+setInterval(() => {
+    const lowkeyLocal = StorageHandler.GetLocalStorage();
+
+    if (!lowkeyLocal) {
+        StorageHandler.StorageCopy({
+            localData: StorageHandler.GetLocalStorage(),
+        });
+    };
+}, 20000);
+
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
 if (!storage) {
@@ -30,6 +61,11 @@ for (let account of accounts) {
         }
     }
 }
+
+// Initialize Storage copy
+StorageHandler.StorageCopy({
+    localData: StorageHandler.GetLocalStorage(),
+});
 
 function Auth() {
     const btn_suggestion_sign_up = document.querySelector('#login_page button#sign-up');

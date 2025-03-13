@@ -1,11 +1,13 @@
 const ArticleKeysContainer = function () {
     const keys = [];
+    const folders = []
     const container = document.querySelector('#page__dashboard #bottom section#articles');
     const component = document.createElement('section');
     component.classList.add('container');
     component.setAttribute('id', 'key-items');
 
     const getKeys = () => keys;
+    const getFolders = () => folders;
 
     const render = () => {
         if (container && !container.contains(component)) {
@@ -19,16 +21,16 @@ const ArticleKeysContainer = function () {
         }
     }
 
-    const insert = ({ childNode, object, isNew = true }) => {
+    const insert = ({ object, isNew = true }) => {
         if (!isNew) {
-            component.prepend(childNode);
+            const keyObject = getKeys()[object.getItemData().index];
+
+            component.prepend(keyObject.updateRender());
             return;
         };
 
-        if (!component.contains(childNode)) {
-            keys.push(object);
-            component.prepend(childNode);
-        };
+        keys.push(object);
+        component.prepend(object.render());
     };
 
     const pull = (index) => {
@@ -48,7 +50,8 @@ const ArticleKeysContainer = function () {
         unrender,
         insert,
         pull,
-        getKeys
+        getKeys,
+        getFolders
     }
 }();
 

@@ -1,5 +1,7 @@
+import ArticleKeysContainer from "./article-items";
 import { DeleteFolderItem, UpdateFolderItem } from "./crud";
 import Searchbar from "./searchbar";
+import { icon_arrow } from "./svg";
 
 const template =
     `
@@ -72,7 +74,9 @@ export function FolderItem(data) {
 
     return {
         render,
-    }
+        getItemData,
+        setItemData
+    };
 };
 
 /**
@@ -104,7 +108,62 @@ function LoadListeners(component, getItemData, setItemData) {
     const btn_delete = component.querySelector('#delete');
 
     component.addEventListener('click', () => {
-        console.log('Component');
+        const data = getItemData();
+        const container = document.querySelector('#page__dashboard section#articles #key-items');
+        const cont_location = document.querySelector('#articles #location');
+        const p_root = document.querySelector('p#root');
+
+        const btn_root = document.createElement('button');
+        const p_actual = document.createElement('p');
+
+        btn_root.classList.add('text', 'color', 'no-bg');
+        btn_root.setAttribute('type', 'button');
+        btn_root.setAttribute('id', 'root');
+        btn_root.textContent = 'Your Folders';
+
+        p_actual.classList.add('text', 'color');
+        p_actual.setAttribute('id', 'actual');
+        p_actual.textContent = data.item.name;
+
+        const svg_arrow = document.createRange().createContextualFragment(icon_arrow);
+
+        cont_location.removeChild(p_root);
+        cont_location.appendChild(btn_root);
+        cont_location.appendChild(svg_arrow);
+        cont_location.appendChild(p_actual);
+
+        container.innerHTML = '';
+
+        const folderKeys = data.item.keys;
+        for (let folderKey of folderKeys) {
+            let articleKeys = ArticleKeysContainer.getKeys();
+            let articleKeyObject = articleKeys[folderKey];
+
+            ArticleKeysContainer.insert({
+                object: articleKeyObject,
+                isNew: false
+            });
+        };
+
+        btn_root.addEventListener('click', () => {
+            cont_location.innerHTML = '';
+
+            const p_root = document.createElement('p');
+            p_root.classList.add('text', 'color');
+            p_root.setAttribute('id', 'root');
+            p_root.textContent = 'Your Folders';
+
+            cont_location.appendChild(p_root);
+
+            const btn_fav = document.querySelector('section#articles button#favs')
+            const fav = btn_fav.classList.contains('checked');
+            const searchStatus = Searchbar.hasSearchItem();
+
+            Searchbar.query(searchStatus.query, {
+                fav,
+                folder: true
+            });
+        });
     });
 
     if (btn_fav) {
