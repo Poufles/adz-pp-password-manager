@@ -1,4 +1,7 @@
 const StorageHandler = function () {
+    let localCopy;
+    let sessionCopy;
+
     /**
      * @returns Object that is stored in the local storage
      */
@@ -35,11 +38,19 @@ const StorageHandler = function () {
         sessionStorage.setItem('lowkey-session', JSON.stringify(update));
     }
 
+    const StorageCopy = ({ localData, sessionData } = {}) => {
+        if (localData) localCopy = localData;
+        if (sessionData) sessionCopy = sessionData;
+
+        return { localCopy, sessionCopy };
+    }
+
     return {
         GetLocalStorage,
         GetSessionStorage,
         UpdateLocalStorage,
         UpdateSessionStorage,
+        StorageCopy
     }
 }();
 

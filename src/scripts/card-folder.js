@@ -108,8 +108,8 @@ function LoadListeners(component, getItemData, setItemData) {
     const btn_delete = component.querySelector('#delete');
 
     component.addEventListener('click', () => {
-        const container = document.querySelector('#page__dashboard section#articles #key-items');
         const data = getItemData();
+        const container = document.querySelector('#page__dashboard section#articles #key-items');
         const cont_location = document.querySelector('#articles #location');
         const p_root = document.querySelector('p#root');
 

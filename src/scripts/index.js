@@ -2,19 +2,20 @@ import { DateDifference } from "./date";
 import StorageHandler from "./storage-handler";
 
 function App() {
-    let storageCopy;
-    let sessionCopy;
-
     // Validate existing local storage
     if (!StorageHandler.GetLocalStorage()) {
-        const storageTemplate = { app: { accounts: [], websites: LoadWebsites() } };
+        const storageTemplate = { app: { accounts: [], websites: LoadWebsites(), runtime: '' } };
 
         // Create new lowkey storage
         localStorage.setItem('lowkey', JSON.stringify(storageTemplate));
-        storageCopy = localStorage.getItem('lowkey');
+        // Register a copy
+        StorageHandler.StorageCopy({
+            localData: StorageHandler.GetLocalStorage()
+        });
         // Redirect to login
         window.location.href = '/auth.html';
-    }
+
+    };
 
     // Check for any current sessions
     const storage = StorageHandler.GetLocalStorage();
@@ -38,11 +39,18 @@ function App() {
                 window.location.href = '/auth.html';
                 account.inSession = false;
                 StorageHandler.UpdateLocalStorage(storage)
+                StorageHandler.StorageCopy({
+                    sessionData: StorageHandler.GetSessionStorage()
+                });
+
                 return;
             } else {
                 StorageHandler.UpdateSessionStorage(account);
-                sessionCopy = account;
+                StorageHandler.StorageCopy({
+                    sessionData: StorageHandler.GetSessionStorage()
+                });
                 window.location.href = '/dashboard.html';
+
                 return;
             }
         }

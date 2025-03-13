@@ -21,6 +21,37 @@ import MiscContainer from "./misc-container.js";
 import RecentKeyItem from "./recent-key.js";
 import SettingComponent from "./settings.js";
 
+// Check every second if storage was deleted
+let isMessagePopped = true;
+setInterval(() => {
+    const lowkeyLocal = StorageHandler.GetLocalStorage();
+    const lowkeySession = StorageHandler.GetSessionStorage();
+
+    if ((!lowkeyLocal || !lowkeySession) && isMessagePopped) {
+        isMessagePopped = false;
+        alert('STORAGE WAS ERASED !');
+
+        const localCopy = StorageHandler.StorageCopy().localCopy;
+        const sessionCopy = StorageHandler.StorageCopy().sessionCopy;
+
+        if (localCopy && sessionCopy) {
+            StorageHandler.UpdateLocalStorage(localCopy);
+            StorageHandler.UpdateSessionStorage(sessionCopy);
+            location.reload();
+        } else {
+            window.location.href = '/index.html';
+        };
+    };
+}, 1000);
+
+// Make a backup every minute
+setInterval(() => {
+    StorageHandler.StorageCopy({
+        localData: StorageHandler.GetLocalStorage(),
+        sessionData: StorageHandler.GetSessionStorage()
+    });
+}, 60000);
+
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
 if (!storage) {
@@ -48,6 +79,12 @@ for (let account of accounts) {
         }
     }
 }
+
+// Initialize Storage copy
+StorageHandler.StorageCopy({
+    localData: StorageHandler.GetLocalStorage(),
+    sessionData: StorageHandler.GetSessionStorage()
+});
 
 async function Dashboard() {
     const dashboard = document.querySelector('#page__dashboard')
