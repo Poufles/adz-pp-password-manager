@@ -1,4 +1,4 @@
-import ArticleKeysContainer from "./article-keys";
+import ArticleKeysContainer from "./article-items";
 import CreatEditComponent from "./card-createdit";
 import ReadComponent from "./card-item-read";
 import KeyGenComponent from "./card-keygen";
@@ -10,7 +10,7 @@ import Encryption from "./password-encryption";
 import RecentKeyItem from "./recent-key";
 import Searchbar from "./searchbar";
 import StorageHandler from "./storage-handler";
-import { icon_facebook } from "./svg";
+import { icon_arrow, icon_facebook } from "./svg";
 
 const template =
     `
@@ -114,10 +114,16 @@ export default function KeyItem(data) {
     /**
      * Updates the render in DOM and itemData
      * @param {Object} newData - Object containing properties of item (information of the key) and index as the index of the key 
+     * @returns Key card component
      */
-    const updateRender = (newData) => {
-        setItemData(newData);
+    const updateRender = (newData = undefined) => {
+        if (newData) {
+            setItemData(newData);
+        };
+
         LoadInformation(component, itemData);
+
+        return component;
     };
 
     return {
@@ -261,7 +267,68 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
     btn_folder.addEventListener('click', (e) => {
         // Prevent bubbling
         e.stopPropagation();
-        console.log('CHANGE ME');
+
+        const p_root = document.querySelector('p#root');
+        if (!p_root) return;
+
+        const data = getItemData();
+        const container = document.querySelector('#page__dashboard section#articles #key-items');
+        const cont_location = document.querySelector('#articles #location');
+        const btn_folders = document.querySelector('#types #folders');
+        const btn_files = document.querySelector('#types #files');
+        const btn_root = document.createElement('button');
+        const p_actual = document.createElement('p');
+
+        btn_folders.classList.add('checked');
+        btn_files.classList.remove('checked');
+
+        btn_root.classList.add('text', 'color', 'no-bg');
+        btn_root.setAttribute('type', 'button');
+        btn_root.setAttribute('id', 'root');
+        btn_root.textContent = 'Your Folders';
+
+        p_actual.classList.add('text', 'color');
+        p_actual.setAttribute('id', 'actual');
+        p_actual.textContent = data.item.folder;
+
+        const svg_arrow = document.createRange().createContextualFragment(icon_arrow);
+
+        cont_location.removeChild(p_root);
+        cont_location.appendChild(btn_root);
+        cont_location.appendChild(svg_arrow);
+        cont_location.appendChild(p_actual);
+
+        container.innerHTML = '';
+
+        btn_root.addEventListener('click', () => {
+            cont_location.innerHTML = '';
+
+            const p_root = document.createElement('p');
+            p_root.classList.add('text', 'color');
+            p_root.setAttribute('id', 'root');
+            p_root.textContent = 'Your Folders';
+
+            cont_location.appendChild(p_root);
+
+            const btn_fav = document.querySelector('section#articles button#favs')
+            const fav = btn_fav.classList.contains('checked');
+            const searchStatus = Searchbar.hasSearchItem();
+
+            Searchbar.query(searchStatus.query, {
+                fav,
+                folder: true
+            });
+        });
+
+        const btn_fav = document.querySelector('section#articles button#favs')
+        const searchStatus = Searchbar.hasSearchItem();
+        let fav = btn_fav.classList.contains('checked');
+
+        Searchbar.query(searchStatus.query, {
+            fav,
+            folder: true,
+            keyInFolder: true
+        });
     });
 
     btn_copy.forEach(button => {
@@ -294,6 +361,7 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
         for (let articleKey of articleKeys) {
             articleKey.clicked(false);
         };
+
         clicked(true);
 
         if (KeyGenComponent.isRendered()) {

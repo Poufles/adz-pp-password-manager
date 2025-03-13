@@ -40,7 +40,7 @@
     #page__dashboard #articles {
         grid-template-areas:
             'search search search'
-            'title types types'
+            'location types types'
             'tags actions actions'
             'items items items'
         ;

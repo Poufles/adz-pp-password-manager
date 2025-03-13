@@ -16,7 +16,7 @@ import KeyGenComponent from "./card-keygen.js";
 import Searchbar from "./searchbar.js";
 import MiscRecentKeys from "./misc-recent-keys.js";
 import MiscKeysSecurity from "./misc-keys-security.js";
-import ArticleKeysContainer from "./article-keys.js";
+import ArticleKeysContainer from "./article-items.js";
 import MiscContainer from "./misc-container.js";
 import RecentKeyItem from "./recent-key.js";
 import SettingComponent from "./settings.js";
@@ -58,7 +58,7 @@ async function Dashboard() {
     const btn_logout = dashboard.querySelector('#logout');
     const cont_recent_folders = dashboard.querySelector('#header #recent-folders');
     const cont_articles = dashboard.querySelector('#articles');
-    const p_title = dashboard.querySelector('#articles p#title');
+    const cont_location = dashboard.querySelector('#articles #location');
     const btn_all = dashboard.querySelector('#tags #all');
     const btn_favs = dashboard.querySelector('#tags #favs');
     const btn_files = dashboard.querySelector('#types #files');
@@ -111,17 +111,17 @@ async function Dashboard() {
                 cont_crud.classList.remove('open')
                 CreatEditComponent.unrender();
             };
-            
+
             if (KeyGenComponent.isRendered()) {
                 cont_crud.classList.remove('open');
                 KeyGenComponent.unrender();
             };
-            
+
             if (ReadComponent.isRendered()) {
                 cont_crud.classList.remove('open')
                 ReadComponent.unrender();
             };
-            
+
             MiscContainer.render();
             SettingComponent.create();
             SettingComponent.render();
@@ -149,7 +149,6 @@ async function Dashboard() {
             for (let i = 0; i < accounts.length; i++) {
                 if (accounts[i].inSession) {
                     storage.app.accounts[i] = account;
-                    console.log(storage.app.accounts[i]);
                     StorageHandler.UpdateLocalStorage(storage);
                     window.location.href = '/auth.html';
                 };
@@ -184,7 +183,7 @@ async function Dashboard() {
                 });
 
                 ArticleKeysContainer.insert({
-                    childNode: keyItem.render(),
+                    // childNode: keyItem.render(),
                     object: keyItem
                 });
             };
@@ -203,6 +202,16 @@ async function Dashboard() {
             let isFolders = btn_folders.classList.contains('checked');
 
             const searchStatus = Searchbar.hasSearchItem();
+
+            if (isFolderAndKeys(cont_location)) {
+                Searchbar.query(searchStatus.query, {
+                    folder: isFolders,
+                    keyInFolder: true
+                });
+
+                return;
+            };
+
             Searchbar.query(searchStatus.query, {
                 folder: isFolders
             });
@@ -219,8 +228,18 @@ async function Dashboard() {
 
             const btn_folders = dashboard.querySelector('#types #folders');
             let isFolders = btn_folders.classList.contains('checked');
-
             const searchStatus = Searchbar.hasSearchItem();
+
+            if (isFolderAndKeys(cont_location)) {
+                Searchbar.query(searchStatus.query, {
+                    fav: true,
+                    folder: isFolders,
+                    keyInFolder: true
+                });
+
+                return;
+            };
+
             Searchbar.query(searchStatus.query, {
                 fav: true,
                 folder: isFolders
@@ -231,12 +250,14 @@ async function Dashboard() {
     //Listener for files button
     if (btn_files) {
         btn_files.addEventListener('click', () => {
+            if (!btn_files.classList.contains('checked')) {
+                ChangeLocationText(cont_location, 'Your Keys');
+            };
+
             if (btn_folder.classList.contains('checked')) {
                 btn_folder.classList.remove('checked');
                 btn_files.classList.add('checked');
             };
-
-            p_title.textContent = 'Your Keys';
 
             const btn_favs = dashboard.querySelector('#tags #favs');
             let isFavs = btn_favs.classList.contains('checked');
@@ -251,12 +272,18 @@ async function Dashboard() {
     //Listener for folders button
     if (btn_folder) {
         btn_folder.addEventListener('click', () => {
+            if (!btn_folder.classList.contains('checked')) {
+                ChangeLocationText(cont_location, 'Your Folders');
+            };
+
             if (btn_files.classList.contains('checked')) {
                 btn_files.classList.remove('checked');
                 btn_folder.classList.add('checked');
             };
 
-            p_title.textContent = 'Your Folders';
+            if (isFolderAndKeys(cont_location)) {
+                return;
+            };
 
             const btn_favs = dashboard.querySelector('#tags #favs');
             let isFavs = btn_favs.classList.contains('checked');
@@ -296,20 +323,10 @@ async function Dashboard() {
                 cont_crud.classList.add('open')
                 CreatEditComponent.render('create');
 
-                // const articleKeys = ArticleKeysContainer.getKeys();
-                // for (let articleKey of articleKeys) {
-                //     articleKey.clicked(false);
-                // };
-
                 return;
             };
 
             if (CreatEditComponent.getMode() === 'edit') {
-                // const articleKeys = ArticleKeysContainer.getKeys();
-                // for (let articleKey of articleKeys) {
-                //     articleKey.clicked(false);
-                // };
-
                 cont_crud.classList.add('open')
                 CreatEditComponent.render('create');
             } else {
@@ -348,13 +365,6 @@ async function Dashboard() {
             if (!KeyGenComponent.isRendered()) {
                 cont_crud.classList.add('open')
                 KeyGenComponent.render();
-
-                if (!CreatEditComponent.isRendered()) {
-                    // const articleKeys = ArticleKeysContainer.getKeys();
-                    // for (let articleKey of articleKeys) {
-                    //     articleKey.clicked(false);
-                    // };
-                };
             } else {
                 cont_crud.classList.remove('open')
                 KeyGenComponent.unrender();
@@ -365,6 +375,26 @@ async function Dashboard() {
             };
         });
     };
+};
+
+function ChangeLocationText(parentNode, text) {
+    parentNode.innerHTML = '';
+
+    const p_root = document.createElement('p');
+    p_root.classList.add('text', 'color');
+    p_root.setAttribute('id', 'root');
+    p_root.textContent = text;
+
+    parentNode.appendChild(p_root);
+};
+
+function isFolderAndKeys(elementNode) {
+    const btn_root = document.querySelector('button#root');
+    if (elementNode.contains(btn_root)) {
+        return true;
+    };
+
+    return false;
 };
 
 if (hasSession) {

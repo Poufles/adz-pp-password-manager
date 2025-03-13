@@ -1,4 +1,4 @@
-import ArticleKeysContainer from "./article-keys";
+import ArticleKeysContainer from "./article-items";
 import { FolderItem } from "./card-folder";
 import KeyItem from "./card-key";
 import StorageHandler from "./storage-handler";
@@ -46,11 +46,11 @@ const Searchbar = function () {
      * @param {String} query - String text of search input 
      * @param {*} options - (Optional) Additional queries for searching. Acccepts boolean for the following properties: fav && folder
      */
-    const query = (query, { fav = false, folder = false } = {}) => {
+    const query = (query, { fav = false, folder = false, keyInFolder = false } = {}) => {
         const cont_key_items = document.querySelector('#page__dashboard section#articles #key-items');
-        
+
         cont_key_items.innerHTML = '';
-        SearchAlgorithm(query, { fav, folder });
+        SearchAlgorithm(query, { fav, folder, keyInFolder });
     };
 
     /**
@@ -125,14 +125,60 @@ function LoadListeners(component) {
 /**
  * Searching algorithm
  * @param {String} query - String of text for searching 
- * @param {*} options - (Optional) Additional queries for searching. Acccepts boolean for the following properties: fav && folder
+ * @param {*} options - (Optional) Additional queries for searching. Acccepts boolean for the following properties: fav, folder, keyInFolder
  */
-function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
+function SearchAlgorithm(query, { fav, folder, keyInFolder } = {}) {
     const sessionStorage = StorageHandler.GetSessionStorage();
     const keys = sessionStorage.keys;
     const keyLength = keys.length;
     const folders = sessionStorage.folders;
     const folderLength = folders.length;
+    const articleKeys = ArticleKeysContainer.getKeys();
+
+    if (keyInFolder) {
+        const p_actual = document.querySelector('p#actual');
+        let folderItem;
+
+        for (let index = 0; index < folderLength; index++) {
+            folderItem = folders[index];
+
+            if (folderItem.name === p_actual.textContent) {
+                break;
+            };
+        };
+
+        const length = folderItem.keys.length;
+        for (let index = 0; index < length; index++) {
+            const folderKeyIndex = folderItem.keys[index]
+            const keyObject = articleKeys[folderKeyIndex];
+            const key = keyObject.getItemData().item;
+            const keyName = key.website;
+    
+            let searchQuery = keyName.toLowerCase().includes(query.toLowerCase())
+            
+            if (fav) {
+                const isFav = key.fav;
+    
+                if (searchQuery && isFav) {
+                    ArticleKeysContainer.insert({
+                        object: keyObject,
+                        isNew: false
+                    });
+                };
+
+                continue;
+            };
+            
+            if (searchQuery) {
+                ArticleKeysContainer.insert({
+                    object: keyObject,
+                    isNew: false
+                });
+            };
+        };
+
+        return;
+    };
 
     if (folder) {
         for (let index = 0; index < folderLength; index++) {
@@ -152,7 +198,7 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
                 };
 
                 continue;
-            }
+            };
 
             if (folderName.toLowerCase().includes(query.toLowerCase())) {
                 const item = FolderItem({
@@ -168,17 +214,17 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
     };
 
     for (let index = 0; index < keyLength; index++) {
-        const articleKeys = ArticleKeysContainer.getKeys();
+        // const articleKeys = ArticleKeysContainer.getKeys();
         const keyObject = articleKeys[index];
         const key = keyObject.getItemData().item;
         const keyName = key.website;
-        
+
+
         if (fav) {
             const isFav = key.fav;
-            
+
             if (keyName.toLowerCase().includes(query.toLowerCase()) && isFav) {
                 ArticleKeysContainer.insert({
-                    childNode: keyObject.render(),
                     object: keyObject,
                     isNew: false
                 });
@@ -189,7 +235,6 @@ function SearchAlgorithm(query, { fav = false, folder = false } = {}) {
 
         if (keyName.toLowerCase().includes(query.toLowerCase())) {
             ArticleKeysContainer.insert({
-                childNode: keyObject.render(),
                 object: keyObject,
                 isNew: false
             });

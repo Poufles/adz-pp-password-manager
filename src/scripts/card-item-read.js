@@ -4,7 +4,7 @@
  * WHAT I WROTE IN card-creation.js
  */
 
-import ArticleKeysContainer from "./article-keys";
+import ArticleKeysContainer from "./article-items";
 import CreatEditComponent from "./card-createdit";
 import HintTool from "./hint-tool";
 import MiscContainer from "./misc-container";

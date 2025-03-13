@@ -1,4 +1,4 @@
-import ArticleKeysContainer from "./article-keys";
+import ArticleKeysContainer from "./article-items";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
 

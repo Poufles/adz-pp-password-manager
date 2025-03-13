@@ -5,7 +5,7 @@ import Encryption from "./password-encryption";
 import { hidden_eye, open_eye } from "./svg";
 import KeyGenComponent from "./card-keygen";
 import MiscContainer from "./misc-container";
-import ArticleKeysContainer from "./article-keys";
+import ArticleKeysContainer from "./article-items";
 import MiscKeysSecurity from "./misc-keys-security";
 
 const component_template =
@@ -140,7 +140,6 @@ const CreatEditComponent = function () {
 
     const getItemData = () => itemData;
     const isRendered = () => isShown;
-    const setRender = (status) => { isShown = status };
     const getMode = () => componentMode;
 
     /**
@@ -391,8 +390,6 @@ async function LoadInputInfoAndListeners(component, getItemData) {
  * @param {Object} data - Data object for edit
  */
 function LoadActionListener(component, getItemData) {
-    // const container = document.querySelector('#bottom #crud');
-    // const btn_close = component.querySelector('#close');
     const data = getItemData();
     const p_advise = component.querySelector('#advise');
     const form = component.querySelector('form');
@@ -412,20 +409,6 @@ function LoadActionListener(component, getItemData) {
     const p_optional_fav = component.querySelector('#optional #item-1');
     const p_optional_hint = component.querySelector('#optional #item-2');
     const p_optional_folder = component.querySelector('#optional #item-3');
-
-    // btn_close.addEventListener('click', () => {
-    //     if (data !== null) {
-    //         const articleKeys = ArticleKeysContainer.getKeys();
-    //         const articleKey = articleKeys[data.index];
-    //         articleKey.updateRender(data);
-    //         articleKey.clicked(false);
-    //     };
-
-    //     setRender(false);
-    //     container.classList.remove('open');
-    //     CreatEditComponent.unrender();
-    //     MiscContainer.render();
-    // });
 
     btn_submit.addEventListener('click', async () => {
         const container = document.querySelector('#bottom #crud');
@@ -483,7 +466,7 @@ function LoadActionListener(component, getItemData) {
         const newKey = KeyItem(newData);
 
         ArticleKeysContainer.insert({
-            childNode: newKey.render(),
+            // childNode: newKey.render(),
             object: newKey
         });
 
