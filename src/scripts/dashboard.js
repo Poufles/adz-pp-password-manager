@@ -22,6 +22,7 @@ import MiscContainer from "./misc-container.js";
 import RecentKeyItem from "./recent-key.js";
 import SettingComponent from "./settings.js";
 import MessageBox from "./message-box.js";
+import HintTool from "./hint-tool.js";
 
 // Check every second if storage was deleted
 let isMessagePopped = true;
@@ -95,7 +96,7 @@ async function Dashboard() {
     const btn_user = dashboard.querySelector('#settings');
     const btn_screen_mode = dashboard.querySelector('#screen-mode');
     const btn_logout = dashboard.querySelector('#logout');
-    const cont_recent_folders = dashboard.querySelector('#header #recent-folders');
+    const cont_social_links = dashboard.querySelector('section#social-links');
     const cont_articles = dashboard.querySelector('#articles');
     const cont_location = dashboard.querySelector('#articles #location');
     const btn_all = dashboard.querySelector('#tags #all');
@@ -205,15 +206,29 @@ async function Dashboard() {
     };
 
     // Load recent folders on header
-    if (cont_recent_folders) {
-        // const session = StorageHandler.GetSessionStorage();
+    if (cont_social_links) {
+        const a_github = cont_social_links.querySelector('#github');
+        const a_instagram = cont_social_links.querySelector('#instagram');
+        const a_twitter = cont_social_links.querySelector('#twitter-x');
 
-        // for (let folder of session.folders) {
-        //     if (folder.isRecent) {
-        //         console.log('Recent Folder');
-        //     }
-        // }
-    }
+        if (a_github) {
+            a_github.addEventListener('mouseenter', () => {
+                HintTool('Visit my GitHub page !').play();
+            });
+        };
+
+        if (a_instagram) {
+            a_instagram.addEventListener('mouseenter', () => {
+                HintTool('Visit my Instagram page !').play();
+            });
+        };
+
+        if (a_twitter) {
+            a_twitter.addEventListener('mouseenter', () => {
+                HintTool('Visit my Twitter/X page !').play();
+            });
+        };
+    };
 
     // Load article items
     if (cont_articles) {

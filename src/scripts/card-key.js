@@ -403,6 +403,6 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
 
 function copyToClipboard(textCopied, type) {
     navigator.clipboard.writeText(textCopied).then(() => {
-        HintTool(type).play();
+        HintTool(`${type} Copied !`).play();
     }).catch(err => console.error("Erreur lors de la copie :", err));
 };
