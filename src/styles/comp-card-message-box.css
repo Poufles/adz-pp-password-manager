@@ -1,0 +1,180 @@
+.component-message-box {
+    background-color: var(--primary-color);
+    border-radius: var(--b-radius-1);
+    width: 300px;
+    max-height: 230px;
+    padding: 15px;
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.component-message-box>.circle {
+    aspect-ratio: 1;
+    background-color: rgba(192, 147, 226, 0.2);
+    border-radius: 50%;
+    height: 250px;
+    width: 250px;
+    position: absolute;
+    z-index: 0;
+}
+
+.component-message-box>.circle#circle-1 {
+    transform: translate(-50%, -50%);
+    top: 100%;
+    left: 0;
+}
+
+.component-message-box>.circle#circle-2 {
+    transform: translate(-50%, -50%);
+    top: 0;
+    left: 100%;
+}
+
+.component-message-box #header {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
+    z-index: 5;
+}
+
+.component-message-box #header #header-text {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.component-message-box #header #header-text-message {
+    font-size: var(--lr-fn);
+    font-weight: bold;
+    text-decoration: underline var(--accent-color);
+}
+
+.component-message-box #header #header-text svg {
+    flex-shrink: 0;
+    fill: var(--accent-color);
+    height: 25px;
+    width: 25px;
+}
+
+.component-message-box #header #header-close {
+    height: 26px;
+    width: 26px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.component-message-box #header #header-close svg{
+    flex-shrink: 0;
+    fill: var(--primary-color);
+    width: 20px;;
+    height: 20px;
+}
+
+.component-message-box #content {
+    height: 100%;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: start;
+    justify-content: space-between;
+    z-index: 5;
+}
+
+.component-message-box #content.input {
+    padding: 0 10px 10px;
+}
+
+.component-message-box #content #text-message {
+    font-weight: bold;
+    text-align: center;
+}
+
+.component-message-box #content #input {
+    border-bottom: 2px solid var(--accent-color);
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 0 5px;
+    display: flex;
+}
+
+.component-message-box #content #input input {
+    flex-grow: 1;
+    height: max-content;
+    background-color: transparent;
+    border: 0;
+    outline: none;
+}
+
+.component-message-box #content #input input::placeholder {
+    color: rgba(95, 47, 117, 0.5);
+    font-style: italic;
+}
+
+.component-message-box #content #input #visibility {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.component-message-box #content #input svg {
+    fill: var(--accent-color);
+    height: 20px;
+    width: 20px;
+}
+
+.component-message-box #action {
+    align-self: center;
+    display: flex;
+    gap: 5px;
+}
+
+.component-message-box #action button {
+    padding: 5px 10px;
+    transition: var(--trans-q);
+}
+
+.component-message-box #action button#action-cancel {
+    color: var(--accent-color);
+}
+
+.component-message-box #action button#action-cancel:active {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+}
+
+.component-message-box #action button#action-cancel:not(:hover):active {
+    background-color: var(--primary-color);
+    color: var(--accent-color);
+}
+
+.component-message-box #action button#action-confirm:active {
+    background-color: var(--primary-color);
+    color: var(--accent-color);
+}
+
+.component-message-box #action button#action-confirm:not(:hover):active {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+}
+
+.component-message-box #action button#action-confirm.critical {
+    background-color: red;
+    color: var(--primary-color);
+}
+
+.component-message-box #action button#action-confirm.critical:active {
+    background-color: var(--primary-color);
+    color: red;
+}
+
+.component-message-box #action button#action-confirm.critical:not(:hover):active {
+    background-color: red;
+    color: var(--primary-color);
+}
