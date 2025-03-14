@@ -190,7 +190,7 @@ function LoadInformation(component, message, { isEdit, isLogout, isConfirmOnly, 
 
     if (isConfirmOnly) {
         btn_cancel.setAttribute('style', 'display: none');
-        p_header_message.textContent = ' Account Updated !';
+        p_header_message.textContent = ' Logged Out !';
         btn_confirm.textContent = 'Okay';
     };
 

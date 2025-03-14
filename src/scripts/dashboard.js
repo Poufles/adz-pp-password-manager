@@ -55,6 +55,146 @@ setInterval(() => {
     });
 }, 60000);
 
+// Check if user is AFK while page is opened
+let userActivity;
+
+// Initiate timer of 5 mins
+function startInterval() {
+    userActivity = setInterval(async () => {
+        stopInterval();
+        document.body.removeEventListener('mousemove', VerifyMovement)
+
+        MessageBox.create('You were away for more than 1 min. You have been manually logged out !', {
+            isConfirmOnly: true
+        });
+
+        const isConfirm = await MessageBox.render()
+
+        if (!isConfirm) return;
+
+        const account = StorageHandler.GetSessionStorage();
+
+        account.inSession = false;
+        account.lastSession = new Date().toISOString();
+
+        StorageHandler.UpdateSessionStorage(account, true);
+        // Get local storage 
+        const storage = StorageHandler.GetLocalStorage();
+        const accounts = storage.app.accounts;
+        // Iterate over storage
+        for (let i = 0; i < accounts.length; i++) {
+            if (accounts[i].inSession) {
+                storage.app.accounts[i] = account;
+                StorageHandler.UpdateLocalStorage(storage);
+                window.location.href = '/auth.html';
+            };
+        };
+
+    }, 60000); // 1 min
+}
+
+function stopInterval() {
+    clearInterval(userActivity);
+}
+
+function VerifyMovement() {
+    stopInterval();
+    startInterval();
+}
+
+// Listener for any movement to reset timer
+document.body.addEventListener('mousemove', VerifyMovement);
+
+// Initialize interval timer
+startInterval();
+
+// =========================================================== //
+
+// Check if user is AFK while page is not visible
+let pageHidden;
+let countdown;
+
+function StartPageHiddenInterval() {
+    pageHidden = setInterval(async () => {
+        StopPageHiddenInterval();
+        StopPageHiddenCountdown();
+
+        document.title = 'AFK Timeout !';
+        document.removeEventListener('visibilitychange', VerifyPageVisibility);
+
+        MessageBox.create('You were away for more than 3 mins. You have been manually logged out !', {
+            isConfirmOnly: true
+        });
+
+        const isConfirm = await MessageBox.render()
+
+        if (!isConfirm) return;
+
+        const account = StorageHandler.GetSessionStorage();
+
+        account.inSession = false;
+        account.lastSession = new Date().toISOString();
+
+        StorageHandler.UpdateSessionStorage(account, true);
+        // Get local storage 
+        const storage = StorageHandler.GetLocalStorage();
+        const accounts = storage.app.accounts;
+        // Iterate over storage
+        for (let i = 0; i < accounts.length; i++) {
+            if (accounts[i].inSession) {
+                storage.app.accounts[i] = account;
+                StorageHandler.UpdateLocalStorage(storage);
+                window.location.href = '/auth.html';
+            };
+        };
+    }, 180000); // 3 mins
+};
+
+function StopPageHiddenInterval() {
+    clearInterval(pageHidden);
+};
+
+function StartPageHiddenCountdown() {
+    let countdownTime = 180;
+    let min;
+    let sec;
+
+    countdown = setInterval(() => {
+        --countdownTime;
+        min = countdownTime / 60;
+        sec = countdownTime % 60;
+
+        document.title = `LowKey (AFK) - ${Math.floor(min).toFixed(0)}min ${sec.toFixed(0)}sec`;
+    }, 1000);
+}
+
+function StopPageHiddenCountdown() {
+    clearInterval(countdown);
+};
+
+function VerifyPageVisibility() {
+    if (document.visibilityState === 'hidden') {
+        StartPageHiddenCountdown()
+        StartPageHiddenInterval();
+    } else if (document.visibilityState === 'visible') {
+        StopPageHiddenCountdown();
+        StopPageHiddenInterval();
+        document.title = 'LowKey - Password Manager';
+    }
+};
+
+document.addEventListener('visibilitychange', VerifyPageVisibility);
+
+
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+
+
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
 if (!storage) {
@@ -88,6 +228,16 @@ StorageHandler.StorageCopy({
     localData: StorageHandler.GetLocalStorage(),
     sessionData: StorageHandler.GetSessionStorage()
 });
+
+
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+
 
 async function Dashboard() {
     const dashboard = document.querySelector('#page__dashboard')
