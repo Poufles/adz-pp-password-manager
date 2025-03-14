@@ -112,6 +112,7 @@ function LoadListeners(component, getItemData, setItemData) {
         const container = document.querySelector('#page__dashboard section#articles #key-items');
         const cont_location = document.querySelector('#articles #location');
         const p_root = document.querySelector('p#root');
+        const __btn_create = document.querySelector('#page__dashboard section#articles button#create');
 
         const btn_root = document.createElement('button');
         const p_actual = document.createElement('p');
@@ -131,6 +132,10 @@ function LoadListeners(component, getItemData, setItemData) {
         cont_location.appendChild(btn_root);
         cont_location.appendChild(svg_arrow);
         cont_location.appendChild(p_actual);
+
+        if (__btn_create.disabled) {
+            __btn_create.disabled = false;
+        };
 
         container.innerHTML = '';
 
@@ -152,6 +157,8 @@ function LoadListeners(component, getItemData, setItemData) {
             p_root.classList.add('text', 'color');
             p_root.setAttribute('id', 'root');
             p_root.textContent = 'Your Folders';
+
+            __btn_create.disabled = true;
 
             cont_location.appendChild(p_root);
 

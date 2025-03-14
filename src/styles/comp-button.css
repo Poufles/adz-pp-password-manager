@@ -6,6 +6,12 @@ button {
     border-radius: var(--b-radius-2);
     cursor: pointer;
     color: var(--primary-color);
+    transition: var(--trans-q);
+}
+
+button:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5;
 }
 
 button.button {

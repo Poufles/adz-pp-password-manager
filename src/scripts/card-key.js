@@ -4,6 +4,7 @@ import ReadComponent from "./card-item-read";
 import KeyGenComponent from "./card-keygen";
 import { DeleteKeyItem, UpdateKeyItem } from "./crud";
 import HintTool from "./hint-tool";
+import MessageBox from "./message-box";
 import MiscContainer from "./misc-container";
 import MiscRecentKeys from "./misc-recent-keys";
 import Encryption from "./password-encryption";
@@ -276,6 +277,8 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
         const cont_location = document.querySelector('#articles #location');
         const btn_folders = document.querySelector('#types #folders');
         const btn_files = document.querySelector('#types #files');
+        const __btn_create = document.querySelector('#page__dashboard section#articles button#create');
+
         const btn_root = document.createElement('button');
         const p_actual = document.createElement('p');
 
@@ -291,6 +294,10 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
         p_actual.setAttribute('id', 'actual');
         p_actual.textContent = data.item.folder;
 
+        if (__btn_create.disabled) {
+            __btn_create.disabled = false;
+        };
+
         const svg_arrow = document.createRange().createContextualFragment(icon_arrow);
 
         cont_location.removeChild(p_root);
@@ -304,9 +311,12 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
             cont_location.innerHTML = '';
 
             const p_root = document.createElement('p');
+
             p_root.classList.add('text', 'color');
             p_root.setAttribute('id', 'root');
             p_root.textContent = 'Your Folders';
+
+            __btn_create.disabled = true;
 
             cont_location.appendChild(p_root);
 
@@ -326,7 +336,6 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
 
         Searchbar.query(searchStatus.query, {
             fav,
-            folder: true,
             keyInFolder: true
         });
     });
@@ -377,20 +386,23 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
         MiscContainer.unrender();
     });
 
-    btn_delete.addEventListener('click', (e) => {
+    btn_delete.addEventListener('click', async (e) => {
         // Prevent bubbling
         e.stopPropagation();
 
         const itemData = getItemData();
 
-        ArticleKeysContainer.pull(itemData.index);
         // ADD CONFIRMATION LATER
-        DeleteKeyItem(itemData.index);
+        MessageBox.create('Are you sure you want to delete this key ?')
+        if (await MessageBox.render()) {
+            ArticleKeysContainer.pull(itemData.index);
+            DeleteKeyItem(itemData.index);
+        };
     });
 };
 
 function copyToClipboard(textCopied, type) {
     navigator.clipboard.writeText(textCopied).then(() => {
-        HintTool(type).play();
+        HintTool(`${type} Copied !`).play();
     }).catch(err => console.error("Erreur lors de la copie :", err));
 };

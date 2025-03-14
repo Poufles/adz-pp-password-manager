@@ -22,6 +22,7 @@ import MiscContainer from "./misc-container.js";
 import RecentKeyItem from "./recent-key.js";
 import SettingComponent from "./settings.js";
 import MessageBox from "./message-box.js";
+import HintTool from "./hint-tool.js";
 
 // Check every second if storage was deleted
 let isMessagePopped = true;
@@ -44,7 +45,7 @@ setInterval(() => {
             window.location.href = '/index.html';
         };
     };
-}, 1000);
+}, 3000);
 
 // Make a backup every minute
 setInterval(() => {
@@ -53,6 +54,146 @@ setInterval(() => {
         sessionData: StorageHandler.GetSessionStorage()
     });
 }, 60000);
+
+// Check if user is AFK while page is opened
+let userActivity;
+
+// Initiate timer of 5 mins
+function startInterval() {
+    userActivity = setInterval(async () => {
+        stopInterval();
+        document.body.removeEventListener('mousemove', VerifyMovement)
+
+        MessageBox.create('You were away for more than 1 min. You have been manually logged out !', {
+            isConfirmOnly: true
+        });
+
+        const isConfirm = await MessageBox.render()
+
+        if (!isConfirm) return;
+
+        const account = StorageHandler.GetSessionStorage();
+
+        account.inSession = false;
+        account.lastSession = new Date().toISOString();
+
+        StorageHandler.UpdateSessionStorage(account, true);
+        // Get local storage 
+        const storage = StorageHandler.GetLocalStorage();
+        const accounts = storage.app.accounts;
+        // Iterate over storage
+        for (let i = 0; i < accounts.length; i++) {
+            if (accounts[i].inSession) {
+                storage.app.accounts[i] = account;
+                StorageHandler.UpdateLocalStorage(storage);
+                window.location.href = '/auth.html';
+            };
+        };
+
+    }, 60000); // 1 min
+}
+
+function stopInterval() {
+    clearInterval(userActivity);
+}
+
+function VerifyMovement() {
+    stopInterval();
+    startInterval();
+}
+
+// Listener for any movement to reset timer
+document.body.addEventListener('mousemove', VerifyMovement);
+
+// Initialize interval timer
+startInterval();
+
+// =========================================================== //
+
+// Check if user is AFK while page is not visible
+let pageHidden;
+let countdown;
+
+function StartPageHiddenInterval() {
+    pageHidden = setInterval(async () => {
+        StopPageHiddenInterval();
+        StopPageHiddenCountdown();
+
+        document.title = 'AFK Timeout !';
+        document.removeEventListener('visibilitychange', VerifyPageVisibility);
+
+        MessageBox.create('You were away for more than 3 mins. You have been manually logged out !', {
+            isConfirmOnly: true
+        });
+
+        const isConfirm = await MessageBox.render()
+
+        if (!isConfirm) return;
+
+        const account = StorageHandler.GetSessionStorage();
+
+        account.inSession = false;
+        account.lastSession = new Date().toISOString();
+
+        StorageHandler.UpdateSessionStorage(account, true);
+        // Get local storage 
+        const storage = StorageHandler.GetLocalStorage();
+        const accounts = storage.app.accounts;
+        // Iterate over storage
+        for (let i = 0; i < accounts.length; i++) {
+            if (accounts[i].inSession) {
+                storage.app.accounts[i] = account;
+                StorageHandler.UpdateLocalStorage(storage);
+                window.location.href = '/auth.html';
+            };
+        };
+    }, 180000); // 3 mins
+};
+
+function StopPageHiddenInterval() {
+    clearInterval(pageHidden);
+};
+
+function StartPageHiddenCountdown() {
+    let countdownTime = 180;
+    let min;
+    let sec;
+
+    countdown = setInterval(() => {
+        --countdownTime;
+        min = countdownTime / 60;
+        sec = countdownTime % 60;
+
+        document.title = `LowKey (AFK) - ${Math.floor(min).toFixed(0)}min ${sec.toFixed(0)}sec`;
+    }, 1000);
+}
+
+function StopPageHiddenCountdown() {
+    clearInterval(countdown);
+};
+
+function VerifyPageVisibility() {
+    if (document.visibilityState === 'hidden') {
+        StartPageHiddenCountdown()
+        StartPageHiddenInterval();
+    } else if (document.visibilityState === 'visible') {
+        StopPageHiddenCountdown();
+        StopPageHiddenInterval();
+        document.title = 'LowKey - Password Manager';
+    }
+};
+
+document.addEventListener('visibilitychange', VerifyPageVisibility);
+
+
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+
 
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
@@ -88,6 +229,16 @@ StorageHandler.StorageCopy({
     sessionData: StorageHandler.GetSessionStorage()
 });
 
+
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+// =========================================================== //
+
+
 async function Dashboard() {
     const dashboard = document.querySelector('#page__dashboard')
     const p_username = dashboard.querySelector('#header #username');
@@ -95,7 +246,7 @@ async function Dashboard() {
     const btn_user = dashboard.querySelector('#settings');
     const btn_screen_mode = dashboard.querySelector('#screen-mode');
     const btn_logout = dashboard.querySelector('#logout');
-    const cont_recent_folders = dashboard.querySelector('#header #recent-folders');
+    const cont_social_links = dashboard.querySelector('section#social-links');
     const cont_articles = dashboard.querySelector('#articles');
     const cont_location = dashboard.querySelector('#articles #location');
     const btn_all = dashboard.querySelector('#tags #all');
@@ -170,7 +321,7 @@ async function Dashboard() {
     // Load listner for screen mode button
     if (btn_screen_mode) {
         btn_screen_mode.addEventListener('click', () => {
-            
+
         });
     };
 
@@ -205,15 +356,29 @@ async function Dashboard() {
     };
 
     // Load recent folders on header
-    if (cont_recent_folders) {
-        // const session = StorageHandler.GetSessionStorage();
+    if (cont_social_links) {
+        const a_github = cont_social_links.querySelector('#github');
+        const a_instagram = cont_social_links.querySelector('#instagram');
+        const a_twitter = cont_social_links.querySelector('#twitter-x');
 
-        // for (let folder of session.folders) {
-        //     if (folder.isRecent) {
-        //         console.log('Recent Folder');
-        //     }
-        // }
-    }
+        if (a_github) {
+            a_github.addEventListener('mouseenter', () => {
+                HintTool('Visit my GitHub page !').play();
+            });
+        };
+
+        if (a_instagram) {
+            a_instagram.addEventListener('mouseenter', () => {
+                HintTool('Visit my Instagram page !').play();
+            });
+        };
+
+        if (a_twitter) {
+            a_twitter.addEventListener('mouseenter', () => {
+                HintTool('Visit my Twitter/X page !').play();
+            });
+        };
+    };
 
     // Load article items
     if (cont_articles) {
@@ -307,6 +472,10 @@ async function Dashboard() {
                 btn_files.classList.add('checked');
             };
 
+            if (btn_create.disabled) {
+                btn_create.disabled = false;
+            };
+
             const btn_favs = dashboard.querySelector('#tags #favs');
             let isFavs = btn_favs.classList.contains('checked');
 
@@ -329,7 +498,13 @@ async function Dashboard() {
                 btn_folder.classList.add('checked');
             };
 
+            if (!isFolderAndKeys(cont_location)) {
+                btn_create.disabled = true;
+            }
+
             if (isFolderAndKeys(cont_location)) {
+                btn_create.disabled = false;
+                dashboard.appendChild(btn_create);
                 return;
             };
 
@@ -368,8 +543,17 @@ async function Dashboard() {
             };
 
             if (!CreatEditComponent.isRendered()) {
+                const p_root = dashboard.querySelector('p#root');
+                let isFav = btn_favs.classList.contains('checked');
+                let isFolderAndKeys = p_root === null ? true : false
+
+                console.log(isFolderAndKeys);
+
                 cont_crud.classList.add('open')
-                CreatEditComponent.render('create');
+                CreatEditComponent.render('create', null, {
+                    isFavOpen: isFav,
+                    isFolderAndKeysOpen: isFolderAndKeys
+                });
 
                 return;
             };

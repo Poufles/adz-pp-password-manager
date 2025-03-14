@@ -241,7 +241,7 @@ async function LoadInformation(component, getItemData) {
 // Function by ChatGPT
 function copyToClipboard(textCopied, type) {
     navigator.clipboard.writeText(textCopied).then(() => {
-        HintTool(type).play();
+        HintTool(`${type} Copied !`).play();
     }).catch(err => console.error("Erreur lors de la copie :", err));
 };
 

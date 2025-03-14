@@ -7,6 +7,7 @@ import KeyGenComponent from "./card-keygen";
 import MiscContainer from "./misc-container";
 import ArticleKeysContainer from "./article-items";
 import MiscKeysSecurity from "./misc-keys-security";
+import Searchbar from "./searchbar";
 
 const component_template =
     `
@@ -146,8 +147,9 @@ const CreatEditComponent = function () {
      * Renders component
      * @param {String} mode - Mode to be rendered (create || edit) 
      * @param {Object} data - (Optional) Object to be passed when in edit mode
+     * @param {Object} options - (Optional) Object that verifies if the component is clicked on fav button and/or folder button
      */
-    const render = (mode, data = null) => {
+    const render = (mode, data = null, { isFavOpen, isFolderAndKeysOpen } = {}) => {
         // This verifies that a currently selected item in edit mode
         // will be unclicked if user suddenly changes to create
         if (itemData != null) {
@@ -180,7 +182,9 @@ const CreatEditComponent = function () {
             MiscContainer.render();
         });
 
-        LoadInputInfoAndListeners(component, getItemData);
+        LoadInputInfoAndListeners(component, getItemData, {
+            isFavOpen, isFolderAndKeysOpen
+        });
         LoadActionListener(component, getItemData);
 
         if (!container.contains(component)) {
@@ -242,7 +246,7 @@ const CreatEditComponent = function () {
  * @param {Node} component - CreatEdit component
  * @param {Object} data - Data object for edit
  */
-async function LoadInputInfoAndListeners(component, getItemData) {
+async function LoadInputInfoAndListeners(component, getItemData, { isFavOpen, isFolderAndKeysOpen }) {
     const data = getItemData();
     const p_advise = component.querySelector('#advise');
     const form = component.querySelector('form');
@@ -263,6 +267,19 @@ async function LoadInputInfoAndListeners(component, getItemData) {
     const p_optional_hint = component.querySelector('#optional #item-2');
     const p_optional_folder = component.querySelector('#optional #item-3');
     const btn_eye = component.querySelector('button#eye-hidden');
+
+    if (isFavOpen) {
+        btn_fav.classList.add('ticked');
+        p_optional_fav.classList.add('ticked');
+    };
+
+    if (isFolderAndKeysOpen) {
+        console.log('Hello');
+        const __p_actual = document.querySelector('#page__dashboard #bottom p#actual');
+
+        p_optional_folder.classList.add('ticked');
+        input_folder.value = __p_actual.textContent;
+    };
 
     if (data !== null) {
         LoadExistingData(data.item, {
@@ -419,6 +436,14 @@ function LoadActionListener(component, getItemData) {
         const hint = input_hint.value.trim();
         const folder = input_folder.value.trim();
 
+        const searchStatus = Searchbar.hasSearchItem();
+
+        const __btn_root = document.querySelector('#page__dashboard #bottom button#root');
+        const __btn_favs = document.querySelector('#page__dashboard #bottom #tags #favs');
+
+        let isFolderAndKeys = __btn_root === null ? false : true;
+        let isFavs = __btn_favs.classList.contains('checked');
+
         VerifyRequired('email', email, input_email, p_advise);
         VerifyRequired('password', key, cont_password, p_advise);
         VerifyRequired('website', website, cont_website, p_advise);
@@ -446,6 +471,11 @@ function LoadActionListener(component, getItemData) {
             articleKey.updateRender(newKey);
             articleKey.clicked(false);
 
+            Searchbar.query(searchStatus.query, {
+                fav: isFavs,
+                keyInFolder: isFolderAndKeys
+            });
+
             CreatEditComponent.unrender();
             container.classList.remove('open')
             MiscContainer.render();
@@ -466,8 +496,12 @@ function LoadActionListener(component, getItemData) {
         const newKey = KeyItem(newData);
 
         ArticleKeysContainer.insert({
-            // childNode: newKey.render(),
             object: newKey
+        });
+
+        Searchbar.query(searchStatus.query, {
+            fav: isFavs,
+            keyInFolder: isFolderAndKeys
         });
 
         CreatEditComponent.unrender();
