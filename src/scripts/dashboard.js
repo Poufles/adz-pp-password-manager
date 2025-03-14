@@ -44,7 +44,7 @@ setInterval(() => {
             window.location.href = '/index.html';
         };
     };
-}, 1000);
+}, 3000);
 
 // Make a backup every minute
 setInterval(() => {

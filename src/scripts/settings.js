@@ -1,4 +1,5 @@
 import ArticleKeysContainer from "./article-items";
+import MessageBox from "./message-box";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
 import { hidden_eye, open_eye } from "./svg";
@@ -152,7 +153,7 @@ const template_edit =
             <div class="container inputs" id="input-password">
                 <label class="text-sub color" for="password">Master Key</label>
                 <div class="container">
-                    <input class="text color" id="password" type="password"
+                    <input class="text-sub color" id="password" type="password"
                         placeholder="New Password">
                     <button class="button no-bg" id="eye-hidden">
                         <?xml version="1.0" ?><svg enable-background="new 0 0 32 32" id="Glyph" version="1.1"
@@ -235,7 +236,16 @@ const SettingComponent = function () {
         container_overlay.classList.add('open');
     }
 
-    const unrender = () => {
+    const unrender = (isHide = false) => {
+        if (isHide) {
+            container_overlay.classList.remove('open');
+            setTimeout(() => {
+                document.body.removeChild(container_overlay);
+            }, 200);
+
+            return;
+        };
+
         container_overlay.classList.remove('open');
         setTimeout(() => {
             container_overlay.removeChild(component);
@@ -299,6 +309,7 @@ function LoadEditInfoAndListeners(component, getAccountData, setAccountData, cre
     const p_date_of_creation = component.querySelector('#date');
     const cbox_dark_mode = component.querySelector('#dark');
     const cbox_animation = component.querySelector('#animation');
+    const btn_reset = component.querySelector('button#reset');
     const btn_edit = component.querySelector('button#edit');
 
     input_username.value = data.username;
@@ -322,28 +333,46 @@ function LoadEditInfoAndListeners(component, getAccountData, setAccountData, cre
         }
     });
 
+    btn_reset.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        input_username.value = data.username;
+        input_password.value = '';
+    });
+
     btn_edit.addEventListener('click', async () => {
         const username = input_username.value;
         const password = input_password.value;
 
         if (username && password) {
-            // ADD CONFIRMATION LATER
+            SettingComponent.unrender(true);
 
-            
+            // ADD CONFIRMATION LATER
+            MessageBox.create('default', {
+                isCritical: true
+            });
+
+            const isConfirm = await MessageBox.render();
+
+            if (!isConfirm) {
+                SettingComponent.render();
+                return;
+            };
+
             data.username = username;
-            
+
             const length = data.keys.length;
             const hashedKey = await Encryption.hashPassword(password);
-            
+
             for (let index = 0; index < length; index++) {
                 const key = data.keys[index];
-                
+
                 // Change password encryption based on new hashed key (new password)
                 const encryptedKey = key.key;
                 const decryptedKey = await Encryption.decryptData(data.masterkey, encryptedKey);
-                
+
                 const newEncryptedKey = await Encryption.encryptData(hashedKey, decryptedKey);
-                
+
                 key.key = newEncryptedKey
 
                 // Update item in DOM
@@ -354,7 +383,7 @@ function LoadEditInfoAndListeners(component, getAccountData, setAccountData, cre
                     index
                 });
             }
-            
+
             // Update masterkey and account data in this component
             data.masterkey = hashedKey;
             setAccountData(data);
@@ -371,7 +400,33 @@ function LoadEditInfoAndListeners(component, getAccountData, setAccountData, cre
                 };
             };
 
-            create();
+            setTimeout(async () => {
+                MessageBox.create('Account has been successfully updated ! Signing out of session.', {
+                    isConfirmOnly: true
+                });
+
+                let isForcedLogout = await MessageBox.render();
+
+                if (isForcedLogout) {
+                    const account = StorageHandler.GetSessionStorage();
+
+                    account.inSession = false;
+                    account.lastSession = new Date().toISOString();
+
+                    StorageHandler.UpdateSessionStorage(account, true);
+                    // Get local storage 
+                    const storage = StorageHandler.GetLocalStorage();
+                    const accounts = storage.app.accounts;
+                    // Iterate over storage
+                    for (let i = 0; i < accounts.length; i++) {
+                        if (accounts[i].inSession) {
+                            storage.app.accounts[i] = account;
+                            StorageHandler.UpdateLocalStorage(storage);
+                            window.location.href = '/auth.html';
+                        };
+                    };
+                };
+            }, 200);
         };
     });
 };
