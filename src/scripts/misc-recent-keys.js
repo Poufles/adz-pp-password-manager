@@ -52,9 +52,19 @@ const MiscRecentKeys = function () {
         recentKeys.push(object);
     };
 
-    const pull = () => {
+    const pull = ({ isDeletedKey , deleteKeyIndex } = {}) => {
         const cont_items = component.querySelector('#items');
         let lastChild;
+
+        if (isDeletedKey) {
+            if (recentKeys.length != 0) {
+                lastChild = recentKeys[deleteKeyIndex];
+                cont_items.removeChild(lastChild.render());
+                recentKeys.splice(deleteKeyIndex, 1);
+            };
+
+            return;
+        };
 
         if (recentKeys.length != 0) {
             lastChild = recentKeys.pop();

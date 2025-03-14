@@ -8,6 +8,8 @@ import MiscContainer from "./misc-container";
 import ArticleKeysContainer from "./article-items";
 import MiscKeysSecurity from "./misc-keys-security";
 import Searchbar from "./searchbar";
+import MiscRecentKeys from "./misc-recent-keys";
+import RecentKeyItem from "./recent-key";
 
 const component_template =
     `
@@ -476,10 +478,15 @@ function LoadActionListener(component, getItemData) {
                 keyInFolder: isFolderAndKeys
             });
 
+            const recentKeyItem = await RecentKeyItem(newKey, true);
+
+            MiscRecentKeys.insert(recentKeyItem);
+            MiscRecentKeys.filter();
+
             CreatEditComponent.unrender();
             container.classList.remove('open')
-            MiscContainer.render();
             MiscKeysSecurity.refresh();
+            MiscContainer.render();
 
             return;
         }

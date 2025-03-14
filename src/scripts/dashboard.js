@@ -182,7 +182,7 @@ function StartPageHiddenCountdown() {
         min = countdownTime / 60;
         sec = countdownTime % 60;
 
-        document.title = `LowKey (AFK) - ${Math.floor(min).toFixed(0)}min ${sec.toFixed(0)}sec`;
+        document.title = `LowKey - AFK (${Math.floor(min).toFixed(0)}min ${sec.toFixed(0)}sec)`;
     }, 1000);
 }
 

@@ -395,6 +395,10 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
         // ADD CONFIRMATION LATER
         MessageBox.create('Are you sure you want to delete this key ?')
         if (await MessageBox.render()) {
+            MiscRecentKeys.pull({
+                isDeletedKey: true,
+                deleteKeyIndex: itemData.index
+            });
             ArticleKeysContainer.pull(itemData.index);
             DeleteKeyItem(itemData.index);
         };
