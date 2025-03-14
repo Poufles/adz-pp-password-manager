@@ -26,6 +26,7 @@ import HintTool from "./hint-tool.js";
 
 // Check every second if storage was deleted
 let isMessagePopped = true;
+
 setInterval(() => {
     const lowkeyLocal = StorageHandler.GetLocalStorage();
     const lowkeySession = StorageHandler.GetSessionStorage();
@@ -45,70 +46,87 @@ setInterval(() => {
             window.location.href = '/index.html';
         };
     };
-}, 3000);
+}, 5000); // 5s
 
-// Make a backup every minute
+// Make a backup every minute and half
 setInterval(() => {
     StorageHandler.StorageCopy({
         localData: StorageHandler.GetLocalStorage(),
         sessionData: StorageHandler.GetSessionStorage()
     });
-}, 60000);
+}, 90000); // 1m30s
 
 // Check if user is AFK while page is opened
 let userActivity;
 
 // Initiate timer of 5 mins
 function startInterval() {
-    userActivity = setInterval(async () => {
-        stopInterval();
-        document.body.removeEventListener('mousemove', VerifyMovement)
+    if (document.visibilityState === 'visible') {
+        userActivity = setInterval(async () => {
+            stopInterval();
 
-        MessageBox.create('You were away for more than 1 min. You have been manually logged out !', {
-            isConfirmOnly: true
-        });
+            document.removeEventListener('visibilitychange', VerifyVisibility);
+            document.body.removeEventListener('mousemove', VerifyMovement)
 
-        const isConfirm = await MessageBox.render()
+            MessageBox.create('You were away for more than 1 min. You have been manually logged out !', {
+                isConfirmOnly: true
+            });
 
-        if (!isConfirm) return;
+            const isConfirm = await MessageBox.render()
 
-        const account = StorageHandler.GetSessionStorage();
+            if (!isConfirm) return;
 
-        account.inSession = false;
-        account.lastSession = new Date().toISOString();
+            const account = StorageHandler.GetSessionStorage();
 
-        StorageHandler.UpdateSessionStorage(account, true);
-        // Get local storage 
-        const storage = StorageHandler.GetLocalStorage();
-        const accounts = storage.app.accounts;
-        // Iterate over storage
-        for (let i = 0; i < accounts.length; i++) {
-            if (accounts[i].inSession) {
-                storage.app.accounts[i] = account;
-                StorageHandler.UpdateLocalStorage(storage);
-                window.location.href = '/auth.html';
+            account.inSession = false;
+            account.lastSession = new Date().toISOString();
+
+            StorageHandler.UpdateSessionStorage(account, true);
+            // Get local storage 
+            const storage = StorageHandler.GetLocalStorage();
+            const accounts = storage.app.accounts;
+            // Iterate over storage
+            for (let i = 0; i < accounts.length; i++) {
+                if (accounts[i].inSession) {
+                    storage.app.accounts[i] = account;
+                    StorageHandler.UpdateLocalStorage(storage);
+                    window.location.href = '/auth.html';
+                };
             };
-        };
 
-    }, 60000); // 1 min
-}
+        }, 90000); // 1 min
+    } else {
+        stopInterval();
+    };
+};
 
 function stopInterval() {
     clearInterval(userActivity);
-}
+};
 
 function VerifyMovement() {
     stopInterval();
     startInterval();
-}
+};
+
+function VerifyVisibility() {
+    if (document.visibilityState === 'hidden') {
+        stopInterval();
+    } else if (document.visibilityState === 'visible') {
+        startInterval();
+    };
+};
 
 // Listener for any movement to reset timer
 document.body.addEventListener('mousemove', VerifyMovement);
+document.addEventListener('visibilitychange', VerifyVisibility);
 
 // Initialize interval timer
 startInterval();
 
+
 // =========================================================== //
+
 
 // Check if user is AFK while page is not visible
 let pageHidden;
@@ -164,7 +182,7 @@ function StartPageHiddenCountdown() {
         min = countdownTime / 60;
         sec = countdownTime % 60;
 
-        document.title = `LowKey (AFK) - ${Math.floor(min).toFixed(0)}min ${sec.toFixed(0)}sec`;
+        document.title = `LowKey - AFK (${Math.floor(min).toFixed(0)}min ${sec.toFixed(0)}sec)`;
     }, 1000);
 }
 
