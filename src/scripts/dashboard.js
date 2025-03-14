@@ -170,7 +170,7 @@ async function Dashboard() {
     // Load listner for screen mode button
     if (btn_screen_mode) {
         btn_screen_mode.addEventListener('click', () => {
-            
+
         });
     };
 
@@ -307,6 +307,10 @@ async function Dashboard() {
                 btn_files.classList.add('checked');
             };
 
+            if (btn_create.disabled) {
+                btn_create.disabled = false;
+            };
+
             const btn_favs = dashboard.querySelector('#tags #favs');
             let isFavs = btn_favs.classList.contains('checked');
 
@@ -329,7 +333,13 @@ async function Dashboard() {
                 btn_folder.classList.add('checked');
             };
 
+            if (!isFolderAndKeys(cont_location)) {
+                btn_create.disabled = true;
+            }
+
             if (isFolderAndKeys(cont_location)) {
+                btn_create.disabled = false;
+                dashboard.appendChild(btn_create);
                 return;
             };
 
@@ -368,8 +378,17 @@ async function Dashboard() {
             };
 
             if (!CreatEditComponent.isRendered()) {
+                const p_root = dashboard.querySelector('p#root');
+                let isFav = btn_favs.classList.contains('checked');
+                let isFolderAndKeys = p_root === null ? true : false
+
+                console.log(isFolderAndKeys);
+
                 cont_crud.classList.add('open')
-                CreatEditComponent.render('create');
+                CreatEditComponent.render('create', null, {
+                    isFavOpen: isFav,
+                    isFolderAndKeysOpen: isFolderAndKeys
+                });
 
                 return;
             };

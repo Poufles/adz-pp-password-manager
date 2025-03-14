@@ -12,7 +12,7 @@ const template =
                         <?xml version="1.0" ?><svg style="enable-background:new 0 0 24 24;" version="1.1" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="grid_system"/><g id="_icons"><g><path d="M21.2,16.5L14.6,4.7c-0.5-1-1.5-1.5-2.6-1.5S9.9,3.7,9.4,4.7L2.8,16.5c-0.5,0.9-0.5,2.1,0,3S4.3,21,5.4,21h13.2    c1.1,0,2-0.6,2.6-1.5S21.7,17.5,21.2,16.5z M19.5,18.5c-0.1,0.1-0.3,0.5-0.9,0.5H5.4c-0.5,0-0.8-0.3-0.9-0.5s-0.3-0.5,0-1    l6.6-11.9c0.3-0.5,0.7-0.5,0.9-0.5s0.6,0,0.9,0.5l6.6,11.9C19.7,18,19.5,18.4,19.5,18.5z"/><path d="M12,9c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1s1-0.4,1-1v-3C13,9.4,12.6,9,12,9z"/><circle cx="12" cy="16" r="1"/></g></g></svg>
                     </div>
                     <p class="text color" id="header-text-message">
-                        Attention
+                        Attention !
                     </p>
                 </div>
                 <button type="button" class="button circle" id="header-close">
@@ -102,7 +102,7 @@ const MessageBox = function () {
             cont_overlay.addEventListener('click', (e) => {
                 if (confirmOnly) {
                     unrender()
-                    resolve(true);    
+                    resolve(true);
                 };
 
                 unrender();
@@ -112,7 +112,7 @@ const MessageBox = function () {
             btn_close.addEventListener('click', () => {
                 if (confirmOnly) {
                     unrender()
-                    resolve(true);    
+                    resolve(true);
                 };
 
                 unrender();
@@ -179,8 +179,11 @@ function LoadInformation(component, message, { isEdit, isLogout, isConfirmOnly, 
     const btn_cancel = component.querySelector('button#action-cancel');
     const btn_confirm = component.querySelector('button#action-confirm');
 
+    cont_input.setAttribute('style', 'display: none');
+    p_header_message.textContent = 'Delete Key ?';
+    btn_confirm.textContent = 'Delete Key';
+
     if (isLogout) {
-        cont_input.setAttribute('style', 'display: none');
         p_header_message.textContent = 'End Session ?';
         btn_confirm.textContent = 'End Session';
     };
@@ -188,17 +191,19 @@ function LoadInformation(component, message, { isEdit, isLogout, isConfirmOnly, 
     if (isConfirmOnly) {
         btn_cancel.setAttribute('style', 'display: none');
         p_header_message.textContent = ' Account Updated !';
-        cont_input.setAttribute('style', 'display: none');
+        btn_confirm.textContent = 'Okay';
     };
 
     if (isEdit) {
         p_header_message.textContent = 'Cancel Edit ?';
-        cont_input.setAttribute('style', 'display: none');
         btn_confirm.textContent = 'Apply Changes';
     };
 
     if (isCritical) {
+        cont_input.removeAttribute('style');
         p_header_message.textContent = 'Attention !';
+        btn_confirm.textContent = 'I AGREE';
+        btn_confirm.classList.add('critical');
     };
 
     if (message !== 'default') {
