@@ -6,6 +6,7 @@ import "../styles/comp-card-iteminfo.css";
 import "../styles/comp-card-keygen.css";
 import "../styles/comp-card-settings.css";
 import "../styles/comp-hint-tool.css";
+import "../styles/comp-card-message-box.css";
 import "../styles/blur-overlay.css";
 import StorageHandler from "./storage-handler.js";
 import { CurrentTimeToday, DateDifference } from "./date";
@@ -20,6 +21,7 @@ import ArticleKeysContainer from "./article-items.js";
 import MiscContainer from "./misc-container.js";
 import RecentKeyItem from "./recent-key.js";
 import SettingComponent from "./settings.js";
+import MessageBox from "./message-box.js";
 
 // Check every second if storage was deleted
 let isMessagePopped = true;
@@ -167,12 +169,21 @@ async function Dashboard() {
 
     // Load listner for screen mode button
     if (btn_screen_mode) {
-
+        btn_screen_mode.addEventListener('click', () => {
+            
+        });
     };
 
     // Load listner for logout button
     if (btn_logout) {
-        btn_logout.addEventListener('click', () => {
+        btn_logout.addEventListener('click', async () => {
+            MessageBox.create('Are you sure you want to terminate session?', {
+                isLogout: true
+            });
+            const isConfirm = await MessageBox.render()
+
+            if (!isConfirm) return;
+
             const account = StorageHandler.GetSessionStorage();
 
             account.inSession = false;
