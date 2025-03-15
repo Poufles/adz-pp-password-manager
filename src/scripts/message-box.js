@@ -1,6 +1,6 @@
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
-import { hidden_eye, open_eye } from "./svg";
+import SVG from "./svg";
 
 const template =
     `
@@ -80,7 +80,7 @@ const MessageBox = function () {
 
         btn_visibility.addEventListener('click', function () {
             let isHidden = !this.classList.contains('open-eye');
-            this.innerHTML = isHidden ? open_eye : hidden_eye;
+            this.innerHTML = isHidden ? SVG.getSVG('open eye') : SVG.getSVG('hidden eye');
             if (isHidden) {
                 input_password.setAttribute('type', 'text');
                 this.classList.add('open-eye');
@@ -130,8 +130,6 @@ const MessageBox = function () {
                     const input_password = cont_input.querySelector('input');
 
                     const isMatch = await VerifyPassword(input_password.value)
-
-                    console.log(isMatch);
 
                     if (!isMatch) {
                         cont_input.classList.add('invalid');

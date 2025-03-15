@@ -2,7 +2,7 @@ import { CreateNewKeyItem, UpdateKeyItem } from "./crud";
 import KeyItem from "./card-key";
 import StorageHandler from "./storage-handler";
 import Encryption from "./password-encryption";
-import { hidden_eye, open_eye } from "./svg";
+import SVG from "./svg";
 import KeyGenComponent from "./card-keygen";
 import MiscContainer from "./misc-container";
 import ArticleKeysContainer from "./article-items";
@@ -276,7 +276,6 @@ async function LoadInputInfoAndListeners(component, getItemData, { isFavOpen, is
     };
 
     if (isFolderAndKeysOpen) {
-        console.log('Hello');
         const __p_actual = document.querySelector('#page__dashboard #bottom p#actual');
 
         p_optional_folder.classList.add('ticked');
@@ -381,7 +380,7 @@ async function LoadInputInfoAndListeners(component, getItemData, { isFavOpen, is
 
     btn_eye.addEventListener('mouseup', function () {
         let isHidden = !this.classList.contains('open-eye');
-        this.innerHTML = isHidden ? open_eye : hidden_eye;
+        this.innerHTML = isHidden ? SVG.getSVG('open eye') : SVG.getSVG('hidden eye');
         if (isHidden) {
             input_password.setAttribute('type', 'text');
             this.classList.add('open-eye');

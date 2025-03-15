@@ -1,6 +1,6 @@
 import "../styles/auth.css";
 import "../styles/auth-responsiveness.css";
-import { hidden_eye, open_eye } from './svg.js';
+import SVG from './svg.js';
 import { Login } from "./account.js";
 import StorageHandler from "./storage-handler.js";
 import { DateDifference } from "./date.js";
@@ -169,7 +169,7 @@ export function VisibilityFunction(inputField, button, state) {
     button.addEventListener('mouseup', function () {
         let isHidden = !this.classList.contains('open-eye');
         if (state.isHolding && !state.hasMoved) {
-            this.innerHTML = isHidden ? open_eye : hidden_eye;
+            this.innerHTML = isHidden ? SVG.getSVG('open eye') : SVG.getSVG('hidden eye');
             if (isHidden) {
                 inputField.setAttribute('type', 'text');
                 this.classList.add('open-eye');

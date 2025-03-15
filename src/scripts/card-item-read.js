@@ -10,7 +10,7 @@ import HintTool from "./hint-tool";
 import MiscContainer from "./misc-container";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
-import { icon_facebook } from "./svg";
+import SVG, { icon_facebook } from "./svg";
 
 const template =
     `
@@ -210,7 +210,8 @@ async function LoadInformation(component, getItemData) {
     } else {
         btn_fav.classList.remove('ticked')
     };
-    cont_icon.innerHTML = icon_facebook; // CHANGE LATER;
+    
+    cont_icon.innerHTML = SVG.getSVG(data.item.website.toLowerCase()); // CHANGE LATER;
     p_website.textContent = data.item.website;
     for (let website of websites) {
         if (website.name == data.item.website) {

@@ -2,7 +2,7 @@ import ArticleKeysContainer from "./article-items";
 import MessageBox from "./message-box";
 import Encryption from "./password-encryption";
 import StorageHandler from "./storage-handler";
-import { hidden_eye, open_eye } from "./svg";
+import SVG from "./svg";
 
 const template =
     `
@@ -281,7 +281,6 @@ const SettingComponent = function () {
  */
 function LoadCreateInfo(component, getAccountData) {
     let data = getAccountData();
-    console.log(data)
     const p_username = component.querySelector('#username');
     const p_date_of_creation = component.querySelector('#date');
     const cbox_dark_mode = component.querySelector('#dark');
@@ -323,7 +322,7 @@ function LoadEditInfoAndListeners(component, getAccountData, setAccountData, cre
 
     btn_eye.addEventListener('mouseup', function () {
         let isHidden = !this.classList.contains('open-eye');
-        this.innerHTML = isHidden ? open_eye : hidden_eye;
+        this.innerHTML = isHidden ? SVG.getSVG('open eye') : SVG.getSVG('hidden eye');
         if (isHidden) {
             input_password.setAttribute('type', 'text');
             this.classList.add('open-eye');
@@ -347,7 +346,6 @@ function LoadEditInfoAndListeners(component, getAccountData, setAccountData, cre
         if (username && password) {
             SettingComponent.unrender(true);
 
-            // ADD CONFIRMATION LATER
             MessageBox.create('default', {
                 isCritical: true
             });

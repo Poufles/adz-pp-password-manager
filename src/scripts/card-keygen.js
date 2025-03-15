@@ -1,7 +1,7 @@
 import CreatEditComponent from "./card-createdit";
 import HintTool from "./hint-tool";
 import MiscContainer from "./misc-container";
-import { hidden_eye, open_eye } from "./svg";
+import SVG from "./svg";
 
 const template =
     `
@@ -178,7 +178,7 @@ function LoadListeners(component) {
 
     btn_visibility.addEventListener('click', function() {
         let isHidden = !this.classList.contains('open-eye');
-        this.innerHTML = isHidden ? open_eye : hidden_eye;
+        this.innerHTML = isHidden ? SVG.getSVG('open eye') : SVG.getSVG('hidden eye');
         if (isHidden) {
             p_showGenerated.setAttribute('type', 'text');
             this.classList.add('open-eye');

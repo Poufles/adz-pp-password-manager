@@ -1,7 +1,7 @@
 import ArticleKeysContainer from "./article-items";
 import { DeleteFolderItem, UpdateFolderItem } from "./crud";
 import Searchbar from "./searchbar";
-import { icon_arrow } from "./svg";
+import SVG from "./svg";
 
 const template =
     `
@@ -126,7 +126,8 @@ function LoadListeners(component, getItemData, setItemData) {
         p_actual.setAttribute('id', 'actual');
         p_actual.textContent = data.item.name;
 
-        const svg_arrow = document.createRange().createContextualFragment(icon_arrow);
+        const svgIcon = SVG.getSVG('arrow');
+        const svg_arrow = document.createRange().createContextualFragment(svgIcon);
 
         cont_location.removeChild(p_root);
         cont_location.appendChild(btn_root);

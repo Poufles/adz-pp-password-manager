@@ -5,7 +5,6 @@ const template =
 `;
 
 export default function HintTool(message) {
-    // <div class="container comp-hint-tool" id="hint">
     const component = document.createElement('div');
     component.classList.add('container', 'comp-hint-tool');
     component.setAttribute('id', 'hint');
