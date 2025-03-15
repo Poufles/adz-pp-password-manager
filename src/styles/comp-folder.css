@@ -93,3 +93,37 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+@media screen and (max-width: 899px) {
+    .card-folder {
+        height: 35px;
+        min-height: 0;
+        max-width: 220px;
+        width: 100%;
+        min-width: 220px;
+        flex-direction: row;
+    }
+
+    .card-folder>#folder-info {
+        order: 1
+    }
+
+    .card-folder>#folder-info p {
+        max-width: 60px;
+    }
+
+    .card-folder.type-2>#key-item {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+    }
+
+    .card-folder.type-2>#key-item p {
+        max-width: 90px;
+    }
+
+    .card-folder.type-2>#key-item svg {
+        height: 14px;
+        width: 14px;
+    }
+}
