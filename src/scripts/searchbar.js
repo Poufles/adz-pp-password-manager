@@ -214,7 +214,6 @@ function SearchAlgorithm(query, { fav, folder, keyInFolder } = {}) {
     };
 
     for (let index = 0; index < keyLength; index++) {
-        // const articleKeys = ArticleKeysContainer.getKeys();
         const keyObject = articleKeys[index];
         const key = keyObject.getItemData().item;
         const keyName = key.website;

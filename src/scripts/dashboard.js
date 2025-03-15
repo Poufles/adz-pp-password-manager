@@ -414,7 +414,6 @@ async function Dashboard() {
                 });
 
                 ArticleKeysContainer.insert({
-                    // childNode: keyItem.render(),
                     object: keyItem
                 });
             };
@@ -539,7 +538,6 @@ async function Dashboard() {
 
     // Listener for create button 
     if (btn_create) {
-        // CHANGE THIS LATER
         btn_create.addEventListener('click', () => {
             if (ReadComponent.isRendered()) {
                 cont_crud.classList.remove('open')
@@ -564,8 +562,6 @@ async function Dashboard() {
                 const p_root = dashboard.querySelector('p#root');
                 let isFav = btn_favs.classList.contains('checked');
                 let isFolderAndKeys = p_root === null ? true : false
-
-                console.log(isFolderAndKeys);
 
                 cont_crud.classList.add('open')
                 CreatEditComponent.render('create', null, {

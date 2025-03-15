@@ -6,6 +6,7 @@ button {
     border-radius: var(--b-radius-2);
     cursor: pointer;
     color: var(--primary-color);
+    max-height: 44px;
     transition: var(--trans-q);
 }
 

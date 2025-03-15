@@ -259,7 +259,6 @@ export function DeleteFolderItem(index) {
 
         if (articleKeyFolder === folder.name) {
             articleKeyData.item.folder = '';
-            console.log(articleKeyData.item);
             articleKeyObject.updateRender(articleKeyData);
         };
     };

@@ -11,7 +11,7 @@ import Encryption from "./password-encryption";
 import RecentKeyItem from "./recent-key";
 import Searchbar from "./searchbar";
 import StorageHandler from "./storage-handler";
-import { icon_arrow, icon_facebook } from "./svg";
+import SVG from "./svg";
 
 const template =
     `
@@ -82,7 +82,6 @@ const template =
  */
 export default function KeyItem(data) {
     let itemData = data;
-    // const container = document.querySelector('#bottom #articles #key-items')
     const component = document.createElement('button');
     component.classList.add('container', 'article-item');
     component.innerHTML = template;
@@ -153,8 +152,9 @@ function LoadInformation(component, data) {
     } else {
         svg_fav.classList.remove('ticked');
     }
+
     // CHANGE LATER
-    cont_icon.innerHTML = icon_facebook;
+    cont_icon.innerHTML = SVG.getSVG(data.item.website.toLowerCase());
     p_name.textContent = data.item.website.charAt(0).toUpperCase() + data.item.website.slice(1);
     p_email.textContent = data.item.email;
 
@@ -298,7 +298,8 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
             __btn_create.disabled = false;
         };
 
-        const svg_arrow = document.createRange().createContextualFragment(icon_arrow);
+        const svgIcon = SVG.getSVG('arrow');
+        const svg_arrow = document.createRange().createContextualFragment(svgIcon);
 
         cont_location.removeChild(p_root);
         cont_location.appendChild(btn_root);
@@ -392,7 +393,6 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
 
         const itemData = getItemData();
 
-        // ADD CONFIRMATION LATER
         MessageBox.create('Are you sure you want to delete this key ?')
         if (await MessageBox.render()) {
             MiscRecentKeys.pull({
