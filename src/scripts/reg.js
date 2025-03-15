@@ -20,7 +20,7 @@ function Reg() {
 
         btn_login.addEventListener('mouseup', () => {
             if (state.isHolding && !state.hasMoved) {
-                window.location.href = '/auth.html';
+                window.location.href = './auth.html';
             }
 
             state.isHolding = false;
@@ -55,7 +55,7 @@ function Reg() {
             // Verify registry
             let isRegistered = await Register(username.value, conf_pass.value);
             if (isRegistered) {
-                window.location.href = '/dashboard.html';
+                window.location.href = './dashboard.html';
             } else {
                 const txt_invalid = document.querySelector('#register_page #invalid');
 

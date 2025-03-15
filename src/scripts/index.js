@@ -13,7 +13,7 @@ function App() {
             localData: StorageHandler.GetLocalStorage()
         });
         // Redirect to login
-        window.location.href = '/auth.html';
+        window.location.href = './auth.html';
 
     };
 
@@ -23,7 +23,7 @@ function App() {
 
     // Check if first time
     if (accounts.length === 0) {
-        window.location.href = '/register.html';
+        window.location.href = './register.html';
         return;
     }
 
@@ -36,7 +36,7 @@ function App() {
             });
 
             if (minuteDifference > 20) {
-                window.location.href = '/auth.html';
+                window.location.href = './auth.html';
                 account.inSession = false;
                 StorageHandler.UpdateLocalStorage(storage)
                 StorageHandler.StorageCopy({
@@ -49,14 +49,14 @@ function App() {
                 StorageHandler.StorageCopy({
                     sessionData: StorageHandler.GetSessionStorage()
                 });
-                window.location.href = '/dashboard.html';
+                window.location.href = './dashboard.html';
 
                 return;
             }
         }
     }
 
-    window.location.href = '/auth.html';
+    window.location.href = './auth.html';
 };
 
 // Start app

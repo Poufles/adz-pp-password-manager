@@ -420,7 +420,7 @@ function LoadEditInfoAndListeners(component, getAccountData, setAccountData, cre
                         if (accounts[i].inSession) {
                             storage.app.accounts[i] = account;
                             StorageHandler.UpdateLocalStorage(storage);
-                            window.location.href = '/auth.html';
+                            window.location.href = './auth.html';
                         };
                     };
                 };

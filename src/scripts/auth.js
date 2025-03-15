@@ -20,7 +20,7 @@ setInterval(() => {
             StorageHandler.UpdateLocalStorage(localCopy);
             location.reload();
         } else {
-            window.location.href = '/index.html';
+            window.location.href = './index.html';
         };
     };
 }, 1000);
@@ -39,7 +39,7 @@ setInterval(() => {
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
 if (!storage) {
-    window.location.href = '/index.html';
+    window.location.href = './index.html';
 };
 const accounts = storage.app.accounts;
 
@@ -51,13 +51,13 @@ for (let account of accounts) {
         });
 
         if (minuteDifference > 20) {
-            window.location.href = '/auth.html';
+            window.location.href = './auth.html';
             account.inSession = false;
             StorageHandler.UpdateSessionStorage({}, true)
             StorageHandler.UpdateLocalStorage(storage);
         } else {
             StorageHandler.UpdateSessionStorage(account);
-            window.location.href = '/dashboard.html';
+            window.location.href = './dashboard.html';
         }
     }
 }
@@ -95,7 +95,7 @@ function Auth() {
             const isLoggedIn = await Login(user.value, pass.value);
 
             if (isLoggedIn) {
-                window.location.href = '/dashboard.html';
+                window.location.href = './dashboard.html';
             } else {
                 const txt_invalid = document.querySelector('#invalid');
 
@@ -112,7 +112,7 @@ function Auth() {
 
         btn_suggestion_sign_up.addEventListener('mouseup', () => {
             if (state.isHolding && !state.hasMoved) {
-                window.location.href = '/register.html';
+                window.location.href = './register.html';
             }
 
             state.isHolding = false;

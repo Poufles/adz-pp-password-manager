@@ -43,7 +43,7 @@ setInterval(() => {
             StorageHandler.UpdateSessionStorage(sessionCopy);
             location.reload();
         } else {
-            window.location.href = '/index.html';
+            window.location.href = './index.html';
         };
     };
 }, 5000); // 5s
@@ -90,7 +90,7 @@ function startInterval() {
                 if (accounts[i].inSession) {
                     storage.app.accounts[i] = account;
                     StorageHandler.UpdateLocalStorage(storage);
-                    window.location.href = '/auth.html';
+                    window.location.href = './auth.html';
                 };
             };
 
@@ -162,7 +162,7 @@ function StartPageHiddenInterval() {
             if (accounts[i].inSession) {
                 storage.app.accounts[i] = account;
                 StorageHandler.UpdateLocalStorage(storage);
-                window.location.href = '/auth.html';
+                window.location.href = './auth.html';
             };
         };
     }, 180000); // 3 mins
@@ -216,7 +216,7 @@ document.addEventListener('visibilitychange', VerifyPageVisibility);
 // Check account in session 
 const storage = StorageHandler.GetLocalStorage();
 if (!storage) {
-    window.location.href = '/index.html';
+    window.location.href = './index.html';
 };
 
 const accounts = storage.app.accounts;
@@ -230,7 +230,7 @@ for (let account of accounts) {
         });
 
         if (minuteDifference > 20) {
-            window.location.href = '/auth.html';
+            window.location.href = './auth.html';
             account.inSession = false;
             StorageHandler.UpdateSessionStorage({}, true)
             StorageHandler.UpdateLocalStorage(storage);
@@ -367,7 +367,7 @@ async function Dashboard() {
                 if (accounts[i].inSession) {
                     storage.app.accounts[i] = account;
                     StorageHandler.UpdateLocalStorage(storage);
-                    window.location.href = '/auth.html';
+                    window.location.href = './auth.html';
                 };
             };
         });
@@ -646,5 +646,5 @@ function isFolderAndKeys(elementNode) {
 if (hasSession) {
     Dashboard();
 } else {
-    window.location.href = '/auth.html';
+    window.location.href = './auth.html';
 }
