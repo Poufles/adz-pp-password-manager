@@ -63,6 +63,7 @@
     & span {
         color: rgb(50, 50, 50);
         margin-top: -10px;
+        width: max-content;
         text-wrap: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;

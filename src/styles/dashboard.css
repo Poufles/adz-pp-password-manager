@@ -246,9 +246,32 @@
     background-color: rgba(192, 147, 226, 0.2);
     width: 280px;
     height: 316px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-rows: min-content min-content min-content min-content;
+    grid-template-areas:
+        'title'
+        'circular-percentage'
+        'key-checked'
+        'status'
+    ;
+
+    place-items: center;
+}
+
+#page__dashboard #misc>#key-status p#title{
+    grid-area: title;
+}
+
+#page__dashboard #misc>#key-status .circular-percentage {
+    grid-area: circular-percentage;
+}
+
+#page__dashboard #misc>#key-status p#keys-checked{
+    grid-area: key-checked;
+}
+
+#page__dashboard #misc>#key-status p#status{
+    grid-area: status;
 }
 
 #page__dashboard #misc>#key-status>.circle {

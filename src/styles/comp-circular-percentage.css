@@ -37,3 +37,17 @@
     top: 50%;
     left: 50%;
 }
+
+@media screen and (max-width: 899px) {
+    .circular-percentage>#circle {
+        width: 70px;
+    }
+
+    .circular-percentage>#circle::after {
+        width: calc(70px * 0.8);
+    }
+
+    .circular-percentage>#percentage {
+        font-size: var(--md-fn);
+    }
+}

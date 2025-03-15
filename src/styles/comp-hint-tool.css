@@ -12,6 +12,7 @@
     bottom: 100%;
     left: 50%;
     transition: var(--trans-q);
+    z-index: 99;
 }
 
 .comp-hint-tool.play {
