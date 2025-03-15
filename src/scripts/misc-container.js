@@ -8,14 +8,18 @@ const MiscContainer = function() {
     const isRendered = () => isShown;
 
     const render = () => {
-        if (container && !container.contains(component)) {
+        const innerWidth = window.innerWidth;
+
+        if (container && !container.contains(component) && innerWidth) {
             container.prepend(component);
             isShown = true;
         };
     };
     
     const unrender = () => {
-        if (container && container.contains(component)) {
+        const innerWidth = window.innerWidth;
+
+        if (container && container.contains(component) && innerWidth > 899) {
             container.removeChild(component);
             isShown = false;
         };
