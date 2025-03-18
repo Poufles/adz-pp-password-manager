@@ -154,7 +154,7 @@ function LoadInformation(component, data) {
     }
 
     // CHANGE LATER
-    cont_icon.innerHTML = SVG.getSVG(data.item.website.toLowerCase());
+    cont_icon.innerHTML = SVG.getSVG(data.item.website.toLowerCase()) || SVG.getSVG('world');
     p_name.textContent = data.item.website.charAt(0).toUpperCase() + data.item.website.slice(1);
     p_email.textContent = data.item.email;
 
