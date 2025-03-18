@@ -1,7 +1,10 @@
 import "../styles/auth.css";
 import "../styles/auth-responsiveness.css";
+import "../styles/blur-overlay.css";
+import "../styles/terms-n-condition.css";
 import { MouseHandler, RemoveInvalid, VisibilityFunction } from "./auth.js";
 import { Register } from "./account.js";
+import TermsAndConditions from "./card-tnc.js";
 
 function Reg() {
     const input_username = document.querySelector('#register_page #username');
@@ -51,6 +54,11 @@ function Reg() {
                 txt_invalid.classList.add('invalid');
                 return;
             }
+
+            // Verify agreement
+            const isAccept = await TermsAndConditions.render();
+
+            if (!isAccept) return;
 
             // Verify registry
             let isRegistered = await Register(username.value, conf_pass.value);

@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/main.css">
-    <link rel="stylesheet" href="../styles/terms-n-condition.css">
-    <title>Terms and Condition</title>
-</head>
-<body style="height: 100dvh; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 20px;">
-    <div class="container comp-tac" id="terms-and-conditions">
-        <div class="circle" id="circle-1"></div>
+const template =
+    `
+    <div class="circle" id="circle-1"></div>
         <div class="circle" id="circle-2"></div>
         <div class="container" id="header">
             <p class="text color" id="title">Terms and Conditions</p>
@@ -75,8 +66,69 @@
             </ul>
         </div>
         <div class="container" id="actions">
-            <button type="button" class="button text" id="confirm">I understand, proceed.</button>
+            <button type="button" class="button text" id="confirm" disabled>I understand, proceed.</button>
         </div>
-    </div>
-</body>
-</html>
+`;
+
+const TermsAndConditions = function () {
+    const container_overlay = document.createElement('div');
+    const component = document.createElement('div');
+
+    component.classList.add('container', 'comp-tac');
+    component.setAttribute('id', 'terms-and-conditions');
+
+    container_overlay.setAttribute('id', 'overlay');
+    container_overlay.appendChild(component)
+
+    component.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+    
+    const render = () => {
+        const body = document.body;
+        component.innerHTML = template;
+
+        if (!body.contains(container_overlay)) {
+            body.prepend(container_overlay);
+            container_overlay.classList.add('open');
+        }
+
+        const cont_tnc_body = component.querySelector('#body');
+        const btn_confirm = component.querySelector('#actions #confirm');
+
+        cont_tnc_body.addEventListener('scroll', () => {
+            if (cont_tnc_body.scrollTop + cont_tnc_body.clientHeight >= cont_tnc_body.scrollHeight) {
+                btn_confirm.disabled = false;
+            }
+        });
+
+        return new Promise((resolve) => {
+            container_overlay.addEventListener('click', () => {
+                unrender();
+                resolve(false);
+            }, { once: true });
+    
+            btn_confirm.addEventListener('click', () => {
+                unrender();
+                resolve(true);
+            }, { once: true });
+        });
+    };
+
+    const unrender = () => {
+        const body = document.body;
+
+        if (body.contains(container_overlay)) {
+            container_overlay.classList.remove('open');
+
+            setTimeout(() => {
+                body.removeChild(container_overlay);
+                component.innerHTML = '';
+            }, 200);
+        };
+    };
+
+    return { render }
+}();
+
+export default TermsAndConditions
