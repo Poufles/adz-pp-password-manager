@@ -339,7 +339,7 @@ async function Dashboard() {
     // Load listner for screen mode button
     if (btn_screen_mode) {
         btn_screen_mode.addEventListener('click', () => {
-
+            document.body.classList.toggle('dark-mode');
         });
     };
 

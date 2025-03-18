@@ -46,14 +46,14 @@
 }
 
 #page__dashboard #header>#circle-1 {
-    background-color: rgba(192, 147, 226, 0.2);
+    background-color: var(--opacity-light);
     border-radius: 50%;
     top: 40%;
     right: clamp(20%, 10vw, 50%);
 }
 
 #page__dashboard #header>#circle-2 {
-    background-color: rgbA(95, 47, 117, 0.2);
+    background-color: var(--opacity-dark);
     border-radius: 50%;
     top: 40%;
     left: clamp(20%, 10vw, 80%);

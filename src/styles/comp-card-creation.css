@@ -1,6 +1,6 @@
 .creation {
     flex-grow: 1;
-    background-color: #FFF;
+    background-color: var(--white-color);
     border-radius: var(--b-radius-1);
     padding: 20px;
     /* width: 100%; */
@@ -207,6 +207,7 @@
 }
 
 .creation .inputs input {
+    background-color: transparent;
     transition: var(--trans-q);
 }
 

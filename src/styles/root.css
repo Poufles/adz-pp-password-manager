@@ -2,10 +2,13 @@
     --font-main: "Alegreya Sans SC", sans-serif;
     --font-sub: "Alegreya Sans", sans-serif;
     --white-color: #FFF;
+    --white-color-opacity: rgba(255, 255, 255, 0.5);
     --primary-color: #FEF4FF;
     --secondary-color: #C093E2;
     --accent-color: #5F2F75;
     --meddle-color: #08041F;
+    --opacity-light: rgba(192, 147, 226, 0.2);
+    --opacity-dark: rgba(95, 47, 117, 0.2);
     --drop-shadow: rgba(192, 147, 226, 0.5);
     --xsm-fn: 10px;
     --sm-fn: 14px;
@@ -17,4 +20,15 @@
     --b-radius-3: 5px;
     --trans-q: 0.2s;
     --trans-m: 0.5s;
+}
+
+:root .dark-mode {
+    --white-color: #0D0A17;
+    --white-color-opacity: rgba(13, 10, 23, 0.5);
+    --primary-color: #1A0F26;
+    --secondary-color: #794DA3;
+    --accent-color: #BFA2D9;
+    --meddle-color: #BFA2D9;
+    --opacity-light: rgba(150, 100, 200, 0.3);
+    --opacity-dark: rgba(180, 140, 220, 0.25);
 }
