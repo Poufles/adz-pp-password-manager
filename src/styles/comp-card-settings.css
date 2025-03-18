@@ -36,7 +36,7 @@
     height: 20px;
     width: 35px;
     position: relative;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation.settings #box .option #thumb {
@@ -48,7 +48,7 @@
     position: absolute;
     top: 50%;
     left: 26%;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation.settings #box .option input[type=checkbox] {
@@ -143,7 +143,7 @@
     font-size: var(--lr-fn);
     font-weight: bold;
     text-decoration: underline transparent;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation.settings#edit #show-mode:hover {

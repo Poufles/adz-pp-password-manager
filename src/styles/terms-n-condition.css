@@ -103,6 +103,7 @@
     cursor: pointer;
     font-weight: bold;
     padding: 3px 10px;
+    transition: var(--trans-q);
 }
 
 .comp-tac #actions button:disabled {

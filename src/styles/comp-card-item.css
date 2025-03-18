@@ -12,7 +12,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: var(--trans-q);
 }
 
 .article-item.clicked {
@@ -103,7 +102,7 @@
     left: 50%;
     transition-behavior: allow-discrete;
     transition-property: display opacity;
-    transition-duration: var(--trans-q);
+    /* transition-duration: var(--trans-q); */
     z-index: 1;
 }
 
@@ -166,7 +165,7 @@
 .article-item.folder #delete>svg {
     fill: red;
     opacity: 0.5;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .article-item.folder #delete:hover>svg {

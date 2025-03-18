@@ -7,7 +7,7 @@ button {
     cursor: pointer;
     color: var(--primary-color);
     max-height: 44px;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 button:disabled {

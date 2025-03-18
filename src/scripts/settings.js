@@ -227,7 +227,7 @@ const SettingComponent = function () {
             edit();
         });
 
-        LoadCreateInfo(component, getAccountData);
+        LoadCreateInfo(component, getAccountData, setAccountData);
         container_overlay.appendChild(component);
     };
 
@@ -251,6 +251,7 @@ const SettingComponent = function () {
             container_overlay.removeChild(component);
             document.body.removeChild(container_overlay);
 
+            component.innerHTML = '';
             accountData = undefined;
         }, 200);
     };
@@ -279,7 +280,7 @@ const SettingComponent = function () {
  * @param {Node} component - Setting component element
  * @param {Object} getItemData - Function to get item data
  */
-function LoadCreateInfo(component, getAccountData) {
+function LoadCreateInfo(component, getAccountData, setAccountData) {
     let data = getAccountData();
     const p_username = component.querySelector('#username');
     const p_date_of_creation = component.querySelector('#date');
@@ -290,6 +291,26 @@ function LoadCreateInfo(component, getAccountData) {
     p_date_of_creation.textContent = data.dateofcreation;
     cbox_dark_mode.checked = data.preference.dark;
     cbox_animation.checked = data.preference.animation;
+
+    cbox_dark_mode.addEventListener('change', () => {
+        document.body.classList.toggle('dark-mode');
+
+        data.preference.dark = cbox_dark_mode.checked;
+
+        setAccountData(data);
+        // Update session storage
+        UpdateData(data);
+    });
+
+    cbox_animation.addEventListener('change', () => {
+        document.body.classList.toggle('animated');
+
+        data.preference.animation = cbox_animation.checked;
+
+        setAccountData(data);
+        // Update session storage
+        UpdateData(data)
+    });
 };
 
 /**
@@ -315,6 +336,26 @@ function LoadEditInfoAndListeners(component, getAccountData, setAccountData, cre
     p_date_of_creation.textContent = data.dateofcreation;
     cbox_dark_mode.checked = data.preference.dark;
     cbox_animation.checked = data.preference.animation;
+
+    cbox_dark_mode.addEventListener('change', () => {
+        document.body.classList.toggle('dark-mode');
+
+        data.preference.dark = cbox_dark_mode.checked;
+
+        setAccountData(data);
+        // Update session storage
+        UpdateData(data)
+    });
+
+    cbox_animation.addEventListener('change', () => {
+        document.body.classList.toggle('animated');
+
+        data.preference.animation = cbox_animation.checked;
+
+        setAccountData(data);
+        // Update session storage
+        UpdateData(data)
+    });
 
     btn_back.addEventListener('click', () => {
         create();
@@ -386,17 +427,7 @@ function LoadEditInfoAndListeners(component, getAccountData, setAccountData, cre
             data.masterkey = hashedKey;
             setAccountData(data);
             // Update session storage
-            StorageHandler.UpdateSessionStorage(data);
-            // Get local storage 
-            const storage = StorageHandler.GetLocalStorage();
-            const accounts = storage.app.accounts;
-            // Iterate over storage
-            for (let i = 0; i < accounts.length; i++) {
-                if (accounts[i].inSession) {
-                    storage.app.accounts[i] = StorageHandler.GetSessionStorage();
-                    StorageHandler.UpdateLocalStorage(storage);
-                };
-            };
+            UpdateData(data);
 
             setTimeout(async () => {
                 MessageBox.create('Account has been successfully updated ! Signing out of session.', {
@@ -428,5 +459,19 @@ function LoadEditInfoAndListeners(component, getAccountData, setAccountData, cre
         };
     });
 };
+
+function UpdateData(data) {
+    StorageHandler.UpdateSessionStorage(data);
+    // Get local storage 
+    const storage = StorageHandler.GetLocalStorage();
+    const accounts = storage.app.accounts;
+    // Iterate over storage
+    for (let i = 0; i < accounts.length; i++) {
+        if (accounts[i].inSession) {
+            storage.app.accounts[i] = StorageHandler.GetSessionStorage();
+            StorageHandler.UpdateLocalStorage(storage);
+        };
+    };
+}
 
 export default SettingComponent;

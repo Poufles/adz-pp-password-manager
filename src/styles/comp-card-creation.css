@@ -3,7 +3,6 @@
     background-color: var(--white-color);
     border-radius: var(--b-radius-1);
     padding: 20px;
-    /* width: 100%; */
     width: 350px;
     height: 569px;
     height: 100%;
@@ -42,7 +41,7 @@
     color: rgba(95, 47, 117, 0.5);
     font-weight: bold;
     text-align: center;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation #advise.invalid {
@@ -152,7 +151,7 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation #input-password .container.invalid {
@@ -208,7 +207,7 @@
 
 .creation .inputs input {
     background-color: transparent;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation form>.inputs>input.invalid {
@@ -331,7 +330,7 @@
     gap: 3px;
     align-items: center;
     position: relative;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation#creator .inputs .dropdown.invalid {
@@ -372,7 +371,7 @@
     padding: 5px 10px;
     text-align: left;
     width: 100%;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation#creator .inputs .dropdown #dropdown-items .item:hover {

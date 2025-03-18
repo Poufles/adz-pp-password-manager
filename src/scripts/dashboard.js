@@ -277,7 +277,15 @@ async function Dashboard() {
     const cont_crud = dashboard.querySelector('section#crud');
 
     Searchbar.render();
+    
+    // Load preferences
+    const sessionPreference = StorageHandler.GetSessionStorage().preference;
+    let isPreferDark = sessionPreference.dark;
+    let isPreferAnimation = sessionPreference.animation;
 
+    if (isPreferDark) document.body.classList.add('dark-mode');
+    if (isPreferAnimation) document.body.classList.add('animated');
+    
     // Load username on header
     if (p_username) {
         const session = StorageHandler.GetSessionStorage();

@@ -52,7 +52,7 @@
     background-color: var(--accent-color);
     border-radius: inherit;
     width: var(--value);
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation#generator .inputs#input-length input[type=range] {
@@ -100,7 +100,7 @@
     width: 35px;
     height: 20px;
     position: relative;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation#generator .inputs:has(input[type=checkbox]) label #thumb{
@@ -113,7 +113,7 @@
     position: absolute;
     top: 50%;
     left: 25%;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .creation#generator .inputs input[type=checkbox] {

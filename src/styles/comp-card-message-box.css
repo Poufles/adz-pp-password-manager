@@ -101,7 +101,7 @@
     width: 100%;
     padding: 0 5px;
     display: flex;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .component-message-box #content #input.invalid {
@@ -143,7 +143,7 @@
 
 .component-message-box #action button {
     padding: 5px 10px;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .component-message-box #action button#action-cancel {

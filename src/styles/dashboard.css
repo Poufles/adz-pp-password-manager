@@ -109,7 +109,7 @@
     background-color: transparent;
     border-radius: 0;
     border-bottom: 2px solid transparent;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 #page__dashboard #header>#side-1>#menu>#actions>button:hover {
@@ -164,7 +164,7 @@
 #page__dashboard #header>#side-2 section#social-links>.soc-med {
     border-bottom: 2px solid transparent;
     padding-bottom: 3px;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 #page__dashboard #header>#side-2 section#social-links>.soc-med:hover {
@@ -324,7 +324,7 @@
 #page__dashboard #articles>#location>button#root {
     padding: 0;
     text-decoration: underline transparent;
-    transition: var(--trans-q)
+    /* transition: var(--trans-q) */
 }
 
 #page__dashboard #articles>#location>button#root:hover {

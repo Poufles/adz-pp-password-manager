@@ -97,7 +97,9 @@ const TermsAndConditions = function () {
         const btn_confirm = component.querySelector('#actions #confirm');
 
         cont_tnc_body.addEventListener('scroll', () => {
-            if (cont_tnc_body.scrollTop + cont_tnc_body.clientHeight >= cont_tnc_body.scrollHeight) {
+            console.log(cont_tnc_body.scrollTop + cont_tnc_body.clientHeight);
+            console.log(cont_tnc_body.scrollHeight);
+            if (cont_tnc_body.scrollTop + cont_tnc_body.clientHeight >= cont_tnc_body.scrollHeight - 1) {
                 btn_confirm.disabled = false;
             }
         });
