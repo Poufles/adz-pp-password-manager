@@ -14,7 +14,7 @@
     mask-image: radial-gradient(circle, transparent 50%, black 50.75%);
     width: 150px;
     position: relative;
-    transition: background-image 0.2s ease-out;
+    /* transition: background-image 0.2s ease-out; */
 }
 
 .circular-percentage>#circle::after {

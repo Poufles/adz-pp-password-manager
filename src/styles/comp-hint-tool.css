@@ -11,7 +11,7 @@
     position: absolute;
     bottom: 100%;
     left: 50%;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
     z-index: 99;
 }
 

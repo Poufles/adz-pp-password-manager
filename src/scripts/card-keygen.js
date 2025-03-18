@@ -113,11 +113,11 @@ const KeyGenComponent = function () {
 
         btn_close.addEventListener('click', () => {
             unrender();
-            MiscContainer.render();
-            container.classList.remove('open');
-
-            if (CreatEditComponent.isRendered()) {
-                container.classList.add('open');
+            
+            if (!CreatEditComponent.isRendered()) {
+                MiscContainer.render();
+                container.classList.remove('open');
+            } else {
                 CreatEditComponent.uncollapseRender();
             };
         });

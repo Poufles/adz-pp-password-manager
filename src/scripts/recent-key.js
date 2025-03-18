@@ -85,7 +85,7 @@ function LoadInfo(component, data) {
     const cont_keyItem = component.querySelector('#key-item');
     const p_folderName = cont_folderInfo.querySelector('#folder-name');
     const p_keyName = cont_keyItem.querySelector('#key-name');
-    const svgIcon = SVG.getSVG(data.website.toLowerCase())
+    const svgIcon = SVG.getSVG(data.website.toLowerCase()) || SVG.getSVG('world');
 
     cont_keyItem.prepend(document.createRange().createContextualFragment(svgIcon));
     p_folderName.textContent = data.folder || 'None';

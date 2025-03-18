@@ -3,8 +3,37 @@
 @import './css-reset-jc.css';
 @import './root.css';
 
+@property --gradient-1 {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #FFF;
+}
+
+@property --gradient-2 {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #FEF4FF;
+}
+
 body {
-    background-image: linear-gradient(180deg, var(--white-color) 20%, var(--primary-color));
+    --gradient-1: #FFF;
+    --gradient-2: #FEF4FF;
+    background-image: linear-gradient(180deg, var(--gradient-1) 20%, var(--gradient-2));
+}
+
+body.animated {
+    transition:
+        --gradient-1 var(--trans-q),
+        --gradient-2 var(--trans-q);
+}
+
+body.dark-mode {
+    --gradient-1: #0D0A17;
+    --gradient-2: #1A0F26;
+}
+
+body.animated * {
+    transition: var(--trans-q);
 }
 
 .hidden {

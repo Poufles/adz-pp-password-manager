@@ -12,6 +12,7 @@
 
 .searchbar input[type=text] {
     flex-grow: 1;
+    background-color: transparent;
     border: 0;
     font-weight: bold;
     mask-image: linear-gradient(90deg, transparent 5%, black 8%);

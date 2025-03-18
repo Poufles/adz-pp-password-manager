@@ -1,5 +1,5 @@
 .article-item {
-    background-color: #fff;
+    background-color: var(--white-color);
     border: 2px solid transparent;
     border-radius: var(--b-radius-1);
     box-shadow: 0 5px 3px -5px ;
@@ -12,12 +12,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: var(--trans-q);
 }
 
 .article-item.clicked {
+    border: 2px solid var(--secondary-color);
     box-shadow: 0 10px 3px -5px var(--drop-shadow);
 }
+
+/* .article-item.unsecured {
+    border: 2px solid red;
+} */
 
 .article-item .button {
     cursor: pointer;
@@ -98,7 +102,7 @@
     left: 50%;
     transition-behavior: allow-discrete;
     transition-property: display opacity;
-    transition-duration: var(--trans-q);
+    /* transition-duration: var(--trans-q); */
     z-index: 1;
 }
 
@@ -161,7 +165,7 @@
 .article-item.folder #delete>svg {
     fill: red;
     opacity: 0.5;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 .article-item.folder #delete:hover>svg {

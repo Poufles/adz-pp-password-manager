@@ -22,6 +22,15 @@ const MiscRecentKeys = function () {
         if (container && !container.contains(component)) {
             container.appendChild(component);
         };
+
+        const cont_items = component.querySelector('#items');
+
+        cont_items.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault(); 
+                cont_items.scrollBy({ left: e.deltaY, behavior: "smooth" });
+            }
+        });
     };
 
     const unrender = (container) => {
@@ -52,7 +61,7 @@ const MiscRecentKeys = function () {
         recentKeys.push(object);
     };
 
-    const pull = ({ isDeletedKey , deleteKeyIndex } = {}) => {
+    const pull = ({ isDeletedKey, deleteKeyIndex } = {}) => {
         const cont_items = component.querySelector('#items');
         let lastChild;
 
@@ -94,7 +103,7 @@ const MiscRecentKeys = function () {
             }
 
             let recentKey = recentKeys[index];
-            cont_items.appendChild(await recentKey.render()); 
+            cont_items.appendChild(await recentKey.render());
 
             recentCount++;
         }

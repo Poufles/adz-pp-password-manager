@@ -46,14 +46,14 @@
 }
 
 #page__dashboard #header>#circle-1 {
-    background-color: rgba(192, 147, 226, 0.2);
+    background-color: var(--opacity-light);
     border-radius: 50%;
     top: 40%;
     right: clamp(20%, 10vw, 50%);
 }
 
 #page__dashboard #header>#circle-2 {
-    background-color: rgbA(95, 47, 117, 0.2);
+    background-color: var(--opacity-dark);
     border-radius: 50%;
     top: 40%;
     left: clamp(20%, 10vw, 80%);
@@ -109,7 +109,7 @@
     background-color: transparent;
     border-radius: 0;
     border-bottom: 2px solid transparent;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 #page__dashboard #header>#side-1>#menu>#actions>button:hover {
@@ -164,7 +164,7 @@
 #page__dashboard #header>#side-2 section#social-links>.soc-med {
     border-bottom: 2px solid transparent;
     padding-bottom: 3px;
-    transition: var(--trans-q);
+    /* transition: var(--trans-q); */
 }
 
 #page__dashboard #header>#side-2 section#social-links>.soc-med:hover {
@@ -324,7 +324,7 @@
 #page__dashboard #articles>#location>button#root {
     padding: 0;
     text-decoration: underline transparent;
-    transition: var(--trans-q)
+    /* transition: var(--trans-q) */
 }
 
 #page__dashboard #articles>#location>button#root:hover {
