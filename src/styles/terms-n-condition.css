@@ -1,0 +1,110 @@
+.comp-tac {
+    background-color: var(--primary-color);
+    border-radius: var(--b-radius-1);
+    box-shadow: 0 5px 5px var(--drop-shadow);
+    color: var(--primary-color);
+    width: 320px;
+    height: 400px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.comp-tac .important {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.comp-tac .circle {
+    background-color: var(--secondary-color);
+    border-radius: 50%;
+    height: 300px;
+    width: 375px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    left: 50%;
+    opacity: 0.2;
+    z-index: 0;
+}
+
+.comp-tac .circle#circle-1 {
+    top: -20%;
+}
+
+.comp-tac .circle#circle-2 {
+    top: 120%;
+}
+
+.comp-tac #header #title,
+.comp-tac #header #sub-title {
+    text-align: center;
+}
+
+.comp-tac #header,
+.comp-tac #body,
+.comp-tac #actions {
+    z-index: 2;
+}
+
+.comp-tac #header #title {
+    font-weight: bold;
+    font-size: var(--xlr-fn);
+    line-height: 90%;
+}
+
+.comp-tac #header #sub-title {
+    font-style: italic;
+}
+
+.comp-tac #body {
+    border-top: 2px solid var(--accent-color);
+    border-bottom: 2px solid var(--accent-color);
+    padding: 5px 7px 5px 0;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+}
+
+.comp-tac #body::-webkit-scrollbar {
+    appearance: none;
+    width: 3px;
+}
+
+.comp-tac #body::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 100px;
+}
+
+.comp-tac #body #terms {
+    display: flex;
+    flex-direction: column;
+    gap: 15px
+}
+
+.comp-tac #body #terms .term-title {
+    font-size: var(--lr-fn);
+    font-weight: bold;
+    line-height: 90%;
+}
+
+.comp-tac #body #terms .example{
+    color: gray;
+    font-style: italic
+}
+
+.comp-tac #actions button {
+    background-color: var(--accent-color);
+    border: 0;
+    border-radius: var(--b-radius-2);
+    color: var(--primary-color);
+    cursor: pointer;
+    font-weight: bold;
+    padding: 3px 10px;
+}
+
+.comp-tac #actions button:disabled {
+    opacity: 0.5;
+}
