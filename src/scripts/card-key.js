@@ -400,6 +400,7 @@ function LoadListeners(component, getItemData, setItemData, clicked) {
                 deleteKeyIndex: itemData.index
             });
             ArticleKeysContainer.pull(itemData.index);
+            ArticleKeysContainer.UpdateEmptyList();
             DeleteKeyItem(itemData.index);
         };
     });

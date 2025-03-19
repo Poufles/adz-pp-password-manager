@@ -408,7 +408,7 @@ async function Dashboard() {
 
     // Load article items
     if (cont_articles) {
-        ArticleKeysContainer.render();
+        // ArticleKeysContainer.render();
 
         const session = StorageHandler.GetSessionStorage();
         const key = session.keys;
@@ -426,6 +426,8 @@ async function Dashboard() {
                 });
             };
         };
+
+        ArticleKeysContainer.render();
     };
 
     // Listener for all button
