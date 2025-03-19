@@ -102,11 +102,14 @@ const MiscRecentKeys = function () {
                 continue;
             }
 
-            let recentKey = recentKeys[index];
-            cont_items.appendChild(await recentKey.render());
+            const recentKey = recentKeys[index];
+            const keyItem = recentKey.getItemData().item;
 
-            recentCount++;
-        }
+            if (keyItem.openedAt !== -1) {
+                cont_items.appendChild(await recentKey.render());
+                recentCount++;
+            };
+        };
     };
 
     return {
