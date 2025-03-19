@@ -177,6 +177,7 @@ function SearchAlgorithm(query, { fav, folder, keyInFolder } = {}) {
             };
         };
 
+        ArticleKeysContainer.UpdateEmptyList();
         return;
     };
 
@@ -210,6 +211,7 @@ function SearchAlgorithm(query, { fav, folder, keyInFolder } = {}) {
             };
         };
 
+        ArticleKeysContainer.UpdateEmptyList();
         return;
     };
 
@@ -239,6 +241,8 @@ function SearchAlgorithm(query, { fav, folder, keyInFolder } = {}) {
             });
         };
     };
+
+    ArticleKeysContainer.UpdateEmptyList();
 }
 
 export default Searchbar;

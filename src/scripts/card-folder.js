@@ -151,6 +151,8 @@ function LoadListeners(component, getItemData, setItemData) {
             });
         };
 
+        ArticleKeysContainer.UpdateEmptyList();
+
         btn_root.addEventListener('click', () => {
             cont_location.innerHTML = '';
 
@@ -214,6 +216,7 @@ function LoadListeners(component, getItemData, setItemData) {
 
                 if (container.contains(component)) {
                     container.removeChild(component);
+                    ArticleKeysContainer.UpdateEmptyList();
                 };
             };
         });

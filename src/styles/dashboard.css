@@ -164,7 +164,6 @@
 #page__dashboard #header>#side-2 section#social-links>.soc-med {
     border-bottom: 2px solid transparent;
     padding-bottom: 3px;
-    /* transition: var(--trans-q); */
 }
 
 #page__dashboard #header>#side-2 section#social-links>.soc-med:hover {
@@ -394,11 +393,50 @@
     display: flex;
     flex-direction: column;
     gap: 7px;
+    position: relative;
     overflow-y: auto;
 }
 
 #page__dashboard #articles>#key-items::-webkit-scrollbar {
     width: 0;
+}
+
+#page__dashboard #articles>#key-items>#empty-list {
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 35%;
+    left: 52.5%;
+}
+
+#page__dashboard #articles>#key-items>#empty-list>#texts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#page__dashboard #articles>#key-items>#empty-list>#texts>p {
+    width: max-content;
+}
+
+#page__dashboard #articles>#key-items>#empty-list>button#action {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    justify-content: center;
+}
+
+#page__dashboard #articles>#key-items>#empty-list svg {
+    flex-shrink: 0;
+
+    fill: var(--primary-color);
+    height: 18px;
+    width: 18px;
 }
 
 #page__dashboard #articles>#types>button svg {
